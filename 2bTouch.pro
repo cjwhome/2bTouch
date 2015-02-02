@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     serialthread.cpp
 
 HEADERS  += mainwindow.h \
-    serialthread.h
+    serialthread.h \
+    defines.h \
+    model_pom.h
 
 FORMS    += mainwindow.ui
 
