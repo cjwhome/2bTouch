@@ -7,7 +7,12 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QtGui>
+#include <QThread>
+#include <QWSServer>
+#include <QVector>
 #include "defines.h"
+#include "qcustomplot.h"
+#include "showstats.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +27,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void setupSerial();
+    QVector<double> x,y;
     
 private slots:
     void newDataLine(QString dLine);
@@ -30,6 +36,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
+    ShowStats *showStats;
     QSerialPort *serialPort;
     QLabel *ozone_output;
     QLabel *ozone_label;
@@ -47,6 +54,13 @@ private:
     double current_temp;
     double current_press;
     double current_pdv;
+    int data_point;
+
+    QDateTime tempDateTime;
+    QCustomPlot *customPlot;
+    //int y;
+    //int x;      //graphing test
+
 
 
 };

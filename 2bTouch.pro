@@ -18,14 +18,19 @@ CONFIG += serialport
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialthread.cpp
+    serialthread.cpp \
+    qcustomplot.cpp \
+    showstats.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
     defines.h \
-    model_pom.h
+    model_pom.h \
+    qcustomplot.h \
+    showstats.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    showstats.ui
 
 RESOURCES += \
     res.qrc
