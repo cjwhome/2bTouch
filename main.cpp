@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <QPixmap>
 #include <QThread>
-#include <QWSServer>
+//#include <QWSServer>
 #include <QProcess>
 
 

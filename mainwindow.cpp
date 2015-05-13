@@ -130,6 +130,7 @@ void MainWindow::setupSerial(){
         qDebug() << "Name        : " << info.portName();
         qDebug() << "Description : " << info.description();
         qDebug() << "Manufacturer: " << info.manufacturer();
+		
     }
 
 

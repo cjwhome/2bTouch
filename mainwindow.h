@@ -3,12 +3,12 @@
 
 #include <QMainWindow>
 #include "serialthread.h"
-#include <QSerialPort>
+#include <QtSerialPort/QSerialPort>
 #include <QMessageBox>
 #include <QLabel>
 #include <QtGui>
 #include <QThread>
-#include <QWSServer>
+//#include <QWSServer>
 #include <QVector>
 #include "defines.h"
 #include "qcustomplot.h"

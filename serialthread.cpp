@@ -28,13 +28,14 @@ void SerialThread::run()
     QByteArray tmp;
 
     while (!s_stop) {
-        tmp = s_port->readLine();
-
-        if(!tmp.size()){
-
-            msleep(500);
-            continue;
+		while(!s_port->canReadLine()){
+			msleep(5);
 		}
+        tmp = s_port->readAll();
+		s_port->flush();
+		s_port->clear();
+		qDebug()<<"read new line";
+        //emitdataline(tmp);
 
         emit newDataLine(QString(tmp));			//signal connected to
 
@@ -43,3 +44,4 @@ void SerialThread::run()
 
     //stop_serial();      //if the port is closed, stop the thread
 }
+
