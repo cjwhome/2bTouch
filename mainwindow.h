@@ -28,10 +28,12 @@ public:
     ~MainWindow();
     void setupSerial();
     QVector<double> x,y;
-    
+signals:
+	void readyToPlot();
 private slots:
     void newDataLine(QString dLine);
     void parseDataLine(QString dLine);
+	void rePlot(void);
 
 private:
     Ui::MainWindow *ui;

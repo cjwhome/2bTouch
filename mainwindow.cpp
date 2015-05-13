@@ -126,17 +126,20 @@ MainWindow::~MainWindow()
 void MainWindow::setupSerial(){
     // in here is where we determine which serial port to use -
     //TODO: check each port description for the ccs string and use that if it is the POM or 106
+	serialPort = new QSerialPort();
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         qDebug() << "Name        : " << info.portName();
         qDebug() << "Description : " << info.description();
         qDebug() << "Manufacturer: " << info.manufacturer();
-		
+		if(!QString::compare(info.manufacturer(), "Microchip Technology, Inc.", Qt::CaseInsensitive)){  // if strings are equal x should return 0
+			serialPort = new QSerialPort(info.portName());
+		}
     }
 
 
 
-    serialPort = new QSerialPort();
-    serialPort->setPortName("ttyO0");
+   
+    //serialPort->setPortName("ttyO0");
     //serialPort->setBaudRate(19200,QSerialPort::AllDirections);
     serialPort->setBaudRate(9600);
     s_serialThread = new SerialThread();
@@ -149,6 +152,7 @@ void MainWindow::setupSerial(){
     }
 
     connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);
+	connect(this, SIGNAL(readyToPlot()), this, SLOT(rePlot()));
 }
 
 void MainWindow::newDataLine(QString dLine){
@@ -184,10 +188,15 @@ void MainWindow::parseDataLine(QString dLine){
         customPlot->xAxis->setRange(0, x.size());
         customPlot->graph(0)->setData(x, y);
 
-        customPlot->replot();
+		emit readyToPlot();
+        
 
 
     }else{
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
     }
+}
+
+void MainWindow::rePlot(void){
+	customPlot->replot();
 }
