@@ -34,7 +34,7 @@ void SerialThread::run()
         tmp = s_port->readAll();
 		s_port->flush();
 		s_port->clear();
-		qDebug()<<"read new line";
+		//qDebug()<<"read new line";
         //emitdataline(tmp);
 
         emit newDataLine(QString(tmp));			//signal connected to

@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	
+
     setupSerial();
     ozone_label = new QLabel("Ozone=");
     ozone_output = new QLabel("0.0");
@@ -31,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *centralWidget = new QWidget();
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
     QVBoxLayout *buttonLayout = new QVBoxLayout();
+	QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
+	
+	ozoneDisplay = new QLCDNumber();	
+		
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -59,20 +65,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QGridLayout *gridLayout = new QGridLayout();
 
-    gridLayout->addWidget(ozone_label,0,0,1,1,0);
-    gridLayout->addWidget(ozone_output,0,1,1,1,0);
-    gridLayout->addWidget(ozone_units_label,0,2,1,1,0);
+    //gridLayout->addWidget(ozone_label,0,0,1,1,0);
+    //gridLayout->addWidget(ozone_output,0,1,1,1,0);
+    //gridLayout->addWidget(ozone_units_label,0,2,1,1,0);
 
-    gridLayout->addWidget(temperature_label,1,0,1,1,0);
-    gridLayout->addWidget(temperature_output,1,1,1,1,0);
-    gridLayout->addWidget(temperature_units_label,1,2,1,1,0);
+    gridLayout->addWidget(temperature_label,0,0,1,1,0);
+    gridLayout->addWidget(temperature_output,0,1,1,1,0);
+    gridLayout->addWidget(temperature_units_label,0,2,1,1,0);
 
-    gridLayout->addWidget(pressure_label,2,0,1,1,0);
-    gridLayout->addWidget(pressure_output,2,1,1,1,0);
-    gridLayout->addWidget(pressure_units_label,2,2,1,1,0);
+    gridLayout->addWidget(pressure_label,1,0,1,1,0);
+    gridLayout->addWidget(pressure_output,1,1,1,1,0);
+    gridLayout->addWidget(pressure_units_label,1,2,1,1,0);
 
     //gridLayout->addWidget(current_time_label,3,0,1,1,0);
-    gridLayout->addWidget(current_time,3,1,1,1,0);
+    gridLayout->addWidget(current_time,2,1,1,1,0);
 
 
     buttonLayout->addWidget(configure_button);
@@ -80,25 +86,26 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonLayout->addWidget(avg_button);
     horizontalLayout->addLayout(buttonLayout);
     horizontalLayout->addWidget(myFrame);
-    horizontalLayout->addLayout(gridLayout);
+	measurementDisplayLayoutArea->addWidget(ozoneDisplay);
+	measurementDisplayLayoutArea->addLayout(gridLayout);
+    horizontalLayout->addLayout(measurementDisplayLayoutArea);
     // generate some data:
     //x(101);
     //y(101);
 
-
+	ozoneDisplay->setFixedSize(600, 345);
+	ozoneDisplay->setDigitCount(7);
+	ozoneDisplay->display("0.0 ppb");
+	
+	
     data_point = 0;
-
+	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     customPlot = new QCustomPlot();
     // create graph and assign data to it:
     customPlot->addGraph();
 
-    // give the axes some labels:
-    customPlot->xAxis->setLabel("x");
-    customPlot->yAxis->setLabel("Ozone (ppb)");
-    // set axes ranges, so we see all data:
-    //customPlot->xAxis->setRange(0, 100);
-    customPlot->yAxis->setRange(0, 50);
+    
 
 
     horizontalLayout->addWidget(myFrame);
@@ -164,17 +171,32 @@ void MainWindow::newDataLine(QString dLine){
 void MainWindow::parseDataLine(QString dLine){
     QStringList fields;
     QVector<double> t,u;
+	QDateTime tempDateTime;
+	double current_seconds;
+	double ellapsed_seconds;
 
-
+	dLine.remove(QRegExp("[\\n\\t\\r]"));
     fields = dLine.split(QRegExp(","));
     if(fields.length()==NUMBER_OF_COLUMNS){
         current_ozone = fields[OZONE_COLUMN].toDouble();
         current_temp = fields[TEMPERATURE_COLUMN].toDouble();
         current_press = fields[PRESSURE_COLUMN].toDouble();
-        //qDebug()<<"Time"<<fields[TIME_COLUMN];
+        
+		
+		
         tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
-        //qDebug()<<"Converted time: "<<tempDateTime.toString();
-        ozone_output->setText(QString::number(current_ozone));
+		tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
+		current_seconds = tempDateTime.toTime_t();			//convert to seconds;
+		if(start_time_seconds > current_seconds)
+			start_time_seconds = current_seconds;
+		ellapsed_seconds = current_seconds - start_time_seconds;
+        qDebug()<<"Converted time: "<<tempDateTime.toString();
+		qDebug()<<"Ellapsed time: "<<ellapsed_seconds;
+		
+		
+		
+        //ozone_output->setText(QString::number(current_ozone));
+		ozoneDisplay->display(QString::number(current_ozone)+" ppb");
         temperature_output->setText(QString::number(current_temp));
         pressure_output->setText(QString::number(current_press));
         current_time->setText(fields[TIME_COLUMN]);
@@ -185,8 +207,21 @@ void MainWindow::parseDataLine(QString dLine){
         u=y;
         data_point++;
 
-        customPlot->xAxis->setRange(0, x.size());
+        customPlot->xAxis->setRange(0, t.size());
         customPlot->graph(0)->setData(x, y);
+		
+		// give the axes some labels:
+	    customPlot->xAxis->setLabel("Time");
+		//customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+		customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
+		customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
+	    customPlot->yAxis->setLabel("Ozone (ppb)");
+	    // set axes ranges, so we see all data:
+	    //customPlot->xAxis->setRange(0, 100);
+		std::sort(u.begin(),u.end());
+		//int highest_value;
+		//qDebug()<<"Max value is:"<<u.last();
+	    customPlot->yAxis->setRange(u.first()-1, u.last()+1);
 
 		emit readyToPlot();
         
@@ -200,3 +235,9 @@ void MainWindow::parseDataLine(QString dLine){
 void MainWindow::rePlot(void){
 	customPlot->replot();
 }
+
+
+ 
+/*bool MainWindow::yLessThan(const int &p1, const int &p2){
+	return p1()<p2();
+}*/

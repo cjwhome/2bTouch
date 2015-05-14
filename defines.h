@@ -7,6 +7,7 @@
 #define APP_NAME "2BTouch"
 
 #define MODEL "POM"
+#define MINIMUM_BIG_SCREEN_WIDTH 800	//usefull for determining if using embedded system screen
 
 
 #endif // DEFINES_H

@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QApplication>
 #include "serialthread.h"
 #include <QtSerialPort/QSerialPort>
+#include <QDateTime>
 #include <QMessageBox>
 #include <QLabel>
 #include <QtGui>
@@ -13,6 +15,7 @@
 #include "defines.h"
 #include "qcustomplot.h"
 #include "showstats.h"
+#include "defines.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +31,7 @@ public:
     ~MainWindow();
     void setupSerial();
     QVector<double> x,y;
+	
 signals:
 	void readyToPlot();
 private slots:
@@ -36,6 +40,7 @@ private slots:
 	void rePlot(void);
 
 private:
+	//bool yLessThan(const double &p1, const double &p2);
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     ShowStats *showStats;
@@ -51,14 +56,17 @@ private:
     QLabel *pressure_units_label;
     QLabel *current_time;
     QLabel *current_time_label;
+	QLCDNumber *ozoneDisplay;
 
     double current_ozone;
     double current_temp;
     double current_press;
     double current_pdv;
     int data_point;
+	double start_time_seconds;
+	
 
-    QDateTime tempDateTime;
+    //QDateTime tempDateTime;
     QCustomPlot *customPlot;
     //int y;
     //int x;      //graphing test

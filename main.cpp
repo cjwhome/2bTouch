@@ -6,9 +6,10 @@
 #include <QTimer>
 #include <QPixmap>
 #include <QThread>
-//#include <QWSServer>
 #include <QProcess>
 
+int screen_height;
+int screen_width;
 
 class I : public QThread
 {
@@ -23,20 +24,23 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
+	QRect rec = QApplication::desktop()->screenGeometry();
+	screen_height = rec.height();
+	screen_width = rec.width();
+	if(screen_width < MINIMUM_BIG_SCREEN_WIDTH){
+		w.setMinimumSize(screen_width,screen_height);						//only usefull for raspberrypi but make this different for pc version
+		w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);			//hides the title bar
+	}else{
+		w.setMinimumSize(screen_width-300, screen_height-250);
+	}
     QSplashScreen *splash = new QSplashScreen();
     QPixmap pix(":/splash/pics/2B_Tech_Logo.jpg");
 
     QString versionString;		//needed because too close to edge of screen
-    //versionString.append(QString(tmp));
+    
     versionString.append(APP_NAME);
     versionString.append("\nVersion ");
     versionString.append(APP_VERSION);
-
-    //QString ipString;
-    //ipString.append("\nIP:");
-    //ipString.append(QString(tmp));
-    //versionString.append("\n\n");
-
 
     splash->setPixmap(pix);
     splash->show();
@@ -49,8 +53,8 @@ int main(int argc, char *argv[])
     I::sleep(3);
     QTimer::singleShot(4500,splash,SLOT(close()));
 
-    w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);			//hides the title bar
-
+   
+	
     w.show();
     
     return a.exec();
