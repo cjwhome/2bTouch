@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 2bTouch
     target.files = 2bTouch
-    target.path = /home/root
+    target.path = /home/pi
 INSTALLS += target
 TEMPLATE = app
 CONFIG += serialport
