@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 2bTouch
     target.files = 2bTouch
-    target.path = /home/pi
+    target.path = /home/armadillo
 INSTALLS += target
 TEMPLATE = app
 CONFIG += serialport
@@ -20,17 +20,20 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     serialthread.cpp \
     qcustomplot.cpp \
-    showstats.cpp
+    showstats.cpp \
+    displaygraph.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
     defines.h \
     model_pom.h \
     qcustomplot.h \
-    showstats.h
+    showstats.h \
+    displaygraph.h
 
 FORMS    += mainwindow.ui \
-    showstats.ui
+    showstats.ui \
+    displaygraph.ui
 
 RESOURCES += \
     res.qrc

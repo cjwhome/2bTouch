@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	screen_width = rec.width();
 	if(screen_width < MINIMUM_BIG_SCREEN_WIDTH){
 		w.setMinimumSize(screen_width,screen_height);						//only usefull for raspberrypi but make this different for pc version
-		w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);			//hides the title bar
+        w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);			//hides the title bar
 	}else{
 		w.setMinimumSize(screen_width-300, screen_height-250);
 	}
