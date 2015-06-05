@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QtGui>
+#include <QPushButton>
 #include <QThread>
 //#include <QWSServer>
 #include <QVector>
@@ -16,6 +17,7 @@
 #include "qcustomplot.h"
 #include "showstats.h"
 #include "defines.h"
+#include "displaygraph.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,10 +36,12 @@ public:
 	
 signals:
 	void readyToPlot();
+    
 private slots:
     void newDataLine(QString dLine);
     void parseDataLine(QString dLine);
 	void rePlot(void);
+    void displayBigPlot(void);
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
@@ -45,6 +49,7 @@ private:
     SerialThread *s_serialThread;
     ShowStats *showStats;
     QSerialPort *serialPort;
+    DisplayGraph *displayGraph;
     QLabel *ozone_output;
     QLabel *ozone_label;
     QLabel *ozone_units_label;
@@ -56,7 +61,9 @@ private:
     QLabel *pressure_units_label;
     QLabel *current_time;
     QLabel *current_time_label;
+    QLabel *current_date;
 	QLCDNumber *ozoneDisplay;
+    QPushButton *graph_button;
 
     double current_ozone;
     double current_temp;

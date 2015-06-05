@@ -26,10 +26,10 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     serialthread.h \
     defines.h \
-    model_pom.h \
     qcustomplot.h \
     showstats.h \
-    displaygraph.h
+    displaygraph.h \
+    model_aiq.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
