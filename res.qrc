@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/splash">
         <file>pics/2B_Tech_Logo.jpg</file>
+        <file>pics/2btechlogo_block.jpg</file>
+        <file>pics/2btechlogo_small.jpg</file>
     </qresource>
     <qresource prefix="/buttons">
         <file>pics/config.jpg</file>

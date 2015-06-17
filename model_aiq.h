@@ -5,11 +5,14 @@
 #define OZONE_COLUMN 0
 #define TEMPERATURE_COLUMN 1
 #define PRESSURE_COLUMN 2
-#define FLOW_COLUMN 3
-#define TIME_COLUMN 5
-#define DATE_COLUMN 4
+#define VOLTA_COLUMN 3
+#define VOLTB_COLUMN 4
+#define FLOWA_COLUMN 5
+#define FLOWB_COLUMN 6
+#define TIME_COLUMN 8
+#define DATE_COLUMN 7
 #define LOGGING_OFFSET 1        //add this if logging
 
-#define NUMBER_OF_COLUMNS 6
+#define NUMBER_OF_COLUMNS 9
 
 #endif // MODEL_AIQ_H

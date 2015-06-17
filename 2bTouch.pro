@@ -13,7 +13,7 @@ TARGET = 2bTouch
     target.path = /home/armadillo
 INSTALLS += target
 TEMPLATE = app
-CONFIG += serialport
+#CONFIG += serialport
 
 
 SOURCES += main.cpp\

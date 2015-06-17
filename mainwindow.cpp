@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //graph_button->setIconSize(QSize(70,62));
     graph_button->setFixedSize(70,62);
 
+    connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
+
     QPushButton *avg_button = new QPushButton("Stats");
     //avg_button->setIcon(graphButtonIcon);
     //avg_button->setIconSize(QSize(70,62));
@@ -95,43 +97,24 @@ MainWindow::MainWindow(QWidget *parent) :
 	measurementDisplayLayoutArea->addWidget(ozoneDisplay);
 	measurementDisplayLayoutArea->addLayout(gridLayout);
     horizontalLayout->addLayout(measurementDisplayLayoutArea);
-    // generate some data:
-    //x(101);
-    //y(101);
 
-    ozoneDisplay->setFixedSize(300, 145);
-	ozoneDisplay->setDigitCount(7);
-	ozoneDisplay->display("0.0 ppb");
+
+    ozoneDisplay->setFixedSize(350, 145);
+    ozoneDisplay->setDigitCount(10);
+    ozoneDisplay->display("0.0 PPB");
     ozoneDisplay->setFrameStyle(QFrame::NoFrame);
 	
 	
     data_point = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
-    /*customPlot = new QCustomPlot();
-    // create graph and assign data to it:
-    customPlot->addGraph();
-
-    
-
-
-    horizontalLayout->addWidget(myFrame);
-    horizontalLayout->addWidget(customPlot);*/
-    //horizontalLayout->setSpacing(35);
     centralWidget->setLayout(horizontalLayout);
     setCentralWidget(centralWidget);
-    /*for (int i=0; i<101; ++i)
-    {
-      x[i] = i; // x goes from -1 to 1
-      y[i] = i; // let's plot a quadratic function
 
+    displayGraph = new DisplayGraph();
+    displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
-    }
-    customPlot->graph(0)->setData(x, y);
-    customPlot->replot();*/
-    
-    //connect(this, signal(graph_button), this, slot(displayBigPlot));
-
+    connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
 }
 
 MainWindow::~MainWindow()
@@ -157,6 +140,7 @@ void MainWindow::setupSerial(){
    
     serialPort->setPortName("ttyAMA0");
     //serialPort->setBaudRate(19200,QSerialPort::AllDirections);
+    //serialPort->setBaudRate(115200);
     serialPort->setBaudRate(9600);
     s_serialThread = new SerialThread();
 
@@ -168,14 +152,18 @@ void MainWindow::setupSerial(){
     }
 
     connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);
-    //connect(this, SIGNAL(readyToPlot()), this, SLOT(rePlot()));
+
 }
 
 void MainWindow::newDataLine(QString dLine){
-    qDebug()<<dLine;
-    parseDataLine(dLine);
+    //qDebug()<<dLine;
 
+    parseDataLine(dLine);
+    displayGraph->setData(x, y);
+    emit validDataReady();
 }
+
+
 
 void MainWindow::parseDataLine(QString dLine){
     QStringList fields;
@@ -184,7 +172,8 @@ void MainWindow::parseDataLine(QString dLine){
 	double current_seconds;
 	double ellapsed_seconds;
 
-	dLine.remove(QRegExp("[\\n\\t\\r]"));
+    dLine.remove(QRegExp("[\\n\\t\\r]"));
+    qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==NUMBER_OF_COLUMNS){
         current_ozone = fields[OZONE_COLUMN].toDouble();
@@ -192,49 +181,30 @@ void MainWindow::parseDataLine(QString dLine){
         current_press = fields[PRESSURE_COLUMN].toDouble();
         
 		
-		
+        //qDebug()<<"Date size:"<<fields[DATE_COLUMN].size()<<" time size:"<<fields[TIME_COLUMN].size();
         tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
 		tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
 		current_seconds = tempDateTime.toTime_t();			//convert to seconds;
 		if(start_time_seconds > current_seconds)
 			start_time_seconds = current_seconds;
 		ellapsed_seconds = current_seconds - start_time_seconds;
-        qDebug()<<"Converted time: "<<tempDateTime.toString();
-		qDebug()<<"Ellapsed time: "<<ellapsed_seconds;
-		
-		
+        //qDebug()<<"Converted time: "<<tempDateTime.toString();
+        //qDebug()<<"Ellapsed time: "<<ellapsed_seconds;
 		
         //ozone_output->setText(QString::number(current_ozone));
-		ozoneDisplay->display(QString::number(current_ozone)+" ppb");
+        ozoneDisplay->display(QString::number(current_ozone)+" PPB");
         temperature_output->setText(QString::number(current_temp));
         pressure_output->setText(QString::number(current_press));
         current_time->setText(fields[TIME_COLUMN]);
         current_date->setText(fields[DATE_COLUMN]);
 
-        /*x.insert(data_point,data_point);
+        x.insert(data_point,data_point);
         y.insert(data_point,current_ozone);
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
         data_point++;
 
-        customPlot->xAxis->setRange(0, t.size());
-        customPlot->graph(0)->setData(x, y);
-		
-		// give the axes some labels:
-	    customPlot->xAxis->setLabel("Time");
-		//customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-		customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
-		customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-	    customPlot->yAxis->setLabel("Ozone (ppb)");
-	    // set axes ranges, so we see all data:
-	    //customPlot->xAxis->setRange(0, 100);
-		std::sort(u.begin(),u.end());
-		//int highest_value;
-		//qDebug()<<"Max value is:"<<u.last();
-	    customPlot->yAxis->setRange(u.first()-1, u.last()+1);
 
-        emit readyToPlot();*/
-        
 
 
     }else{
@@ -242,12 +212,15 @@ void MainWindow::parseDataLine(QString dLine){
     }
 }
 
-void MainWindow::rePlot(void){
-	customPlot->replot();
-}
+
 
 void MainWindow::displayBigPlot(void){
-    
+    //displayGraph = new DisplayGraph();
+    //displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    displayGraph->setData(x, y);
+    displayGraph->drawPlot();
+    displayGraph->show();
+
 }
  
 /*bool MainWindow::yLessThan(const int &p1, const int &p2){

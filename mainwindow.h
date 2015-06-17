@@ -11,10 +11,9 @@
 #include <QtGui>
 #include <QPushButton>
 #include <QThread>
-//#include <QWSServer>
 #include <QVector>
 #include "defines.h"
-#include "qcustomplot.h"
+//#include "qcustomplot.h"
 #include "showstats.h"
 #include "defines.h"
 #include "displaygraph.h"
@@ -35,12 +34,11 @@ public:
     QVector<double> x,y;
 	
 signals:
-	void readyToPlot();
+    void validDataReady();
     
 private slots:
     void newDataLine(QString dLine);
     void parseDataLine(QString dLine);
-	void rePlot(void);
     void displayBigPlot(void);
 
 private:
@@ -74,7 +72,7 @@ private:
 	
 
     //QDateTime tempDateTime;
-    QCustomPlot *customPlot;
+    //QCustomPlot *customPlot;
     //int y;
     //int x;      //graphing test
 
