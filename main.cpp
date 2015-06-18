@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     splash->setPixmap(pix);
     splash->show();
-    Qt::Alignment topleft = Qt::AlignLeft | Qt::AlignTop;
+    //Qt::Alignment topleft = Qt::AlignLeft | Qt::AlignTop;
     Qt::Alignment bottomright = Qt::AlignRight | Qt::AlignBottom;
     //splash->showMessage(versionString, bottomright, Qt::black);
     splash->showMessage(versionString, bottomright, Qt::black);

@@ -3,13 +3,13 @@
 
 class IaqRecord
 {
-private:
+/*private:
     float ozone;
     float pressure;
     float temperature;
     float pdv;
     float tac_1;
-    float tac_2;
+    float tac_2;*/
 
 public:
     IaqRecord();

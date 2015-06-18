@@ -36,8 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setIconSize(QSize(70,62));
     configure_button->setFixedSize(70,62);
 
-    QPixmap graphPixmap(":/buttons/pics/graph.jpg");
-    QIcon graphButtonIcon(graphPixmap);
+    //QPixmap graphPixmap(":/buttons/pics/graph.jpg");
+    //QIcon graphButtonIcon(graphPixmap);
 
     graph_button = new QPushButton("Graph");
     //graph_button->setIcon(graphButtonIcon);
@@ -143,7 +143,7 @@ bool MainWindow::parseDataLine(QString dLine){
     QVector<double> t,u;
 	QDateTime tempDateTime;
 	double current_seconds;
-	double ellapsed_seconds;
+    double ellapsed_seconds;
 
     dLine.remove(QRegExp("[\\n\\t\\r]"));
     qDebug()<<dLine;
