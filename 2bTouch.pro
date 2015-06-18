@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     serialthread.cpp \
     qcustomplot.cpp \
     showstats.cpp \
-    displaygraph.cpp
+    displaygraph.cpp \
+    iaqrecord.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     qcustomplot.h \
     showstats.h \
     displaygraph.h \
-    model_aiq.h
+    model_aiq.h \
+    iaqrecord.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \

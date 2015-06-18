@@ -38,7 +38,7 @@ signals:
     
 private slots:
     void newDataLine(QString dLine);
-    void parseDataLine(QString dLine);
+    bool parseDataLine(QString dLine);
     void displayBigPlot(void);
 
 private:

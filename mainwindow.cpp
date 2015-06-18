@@ -15,22 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	
 
     setupSerial();
-    ozone_label = new QLabel("Ozone=");
-    ozone_output = new QLabel("0.0");
-    ozone_units_label = new QLabel(" ppbv");
-
-    temperature_label = new QLabel("Cell Temp=");
-    temperature_output = new QLabel("0.0");
-    temperature_units_label = new QLabel(" C");
-
-    pressure_label = new QLabel("Cell Press=");
-    pressure_output = new QLabel("0.0");
-    pressure_units_label = new QLabel(" mBar");
-
-    current_time = new QLabel();
-    current_time_label = new QLabel("Time:");
-
-    current_date = new QLabel();
 
     QWidget *centralWidget = new QWidget();
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
@@ -69,19 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QGridLayout *gridLayout = new QGridLayout();
 
-    //gridLayout->addWidget(ozone_label,0,0,1,1,0);
-    //gridLayout->addWidget(ozone_output,0,1,1,1,0);
-    //gridLayout->addWidget(ozone_units_label,0,2,1,1,0);
 
-    /*gridLayout->addWidget(temperature_label,0,0,1,1,0);
-    gridLayout->addWidget(temperature_output,0,1,1,1,0);
-    gridLayout->addWidget(temperature_units_label,0,2,1,1,0);
-
-    gridLayout->addWidget(pressure_label,1,0,1,1,0);
-    gridLayout->addWidget(pressure_output,1,1,1,1,0);
-    gridLayout->addWidget(pressure_units_label,1,2,1,1,0);*/
-
-    //gridLayout->addWidget(current_time_label,3,0,1,1,0);
     QFont labelFont("Arial", 18, QFont::Bold);
     current_time->setFont(labelFont);
     current_date->setFont(labelFont);
@@ -158,14 +130,15 @@ void MainWindow::setupSerial(){
 void MainWindow::newDataLine(QString dLine){
     //qDebug()<<dLine;
 
-    parseDataLine(dLine);
-    displayGraph->setData(x, y);
-    emit validDataReady();
+    if(parseDataLine(dLine)){
+        displayGraph->setData(x, y);
+        emit validDataReady();
+    }
 }
 
 
 
-void MainWindow::parseDataLine(QString dLine){
+bool MainWindow::parseDataLine(QString dLine){
     QStringList fields;
     QVector<double> t,u;
 	QDateTime tempDateTime;
@@ -192,6 +165,14 @@ void MainWindow::parseDataLine(QString dLine){
         //qDebug()<<"Ellapsed time: "<<ellapsed_seconds;
 		
         //ozone_output->setText(QString::number(current_ozone));
+        /*if(current_ozone >= 1000 || current_ozone <= -1000)
+            ozoneDisplay->setDigitCount(10);
+        else if(current_ozone >= 100 || current_ozone <= -100)
+            ozoneDisplay->setDigitCount(9);
+        else if(current_ozone >= 10 || current_ozone <= -10)
+            ozoneDisplay->setDigitCount(8);
+        else
+            ozoneDisplay->setDigitCount(7);*/
         ozoneDisplay->display(QString::number(current_ozone)+" PPB");
         temperature_output->setText(QString::number(current_temp));
         pressure_output->setText(QString::number(current_press));
@@ -204,11 +185,12 @@ void MainWindow::parseDataLine(QString dLine){
         u=y;
         data_point++;
 
-
+        return true;
 
 
     }else{
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
+        return false;
     }
 }
 

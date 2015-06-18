@@ -12,7 +12,12 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 
     home_button = new QPushButton("Home");
     home_button->setFixedSize(70,62);
+
+    settings_button = new QPushButton("Settings");
+    settings_button->setFixedSize(70,62);
+
     buttonLayout->addWidget(home_button);
+    buttonLayout->addWidget(settings_button);
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
