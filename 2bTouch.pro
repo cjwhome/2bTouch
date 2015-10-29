@@ -30,8 +30,8 @@ HEADERS  += mainwindow.h \
     qcustomplot.h \
     showstats.h \
     displaygraph.h \
-    model_aiq.h \
-    iaqrecord.h
+    iaqrecord.h \
+    model_106l.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \

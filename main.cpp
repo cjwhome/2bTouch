@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QThread>
 #include <QProcess>
+#include <QDebug>
 
 int screen_height;
 int screen_width;
@@ -22,8 +23,10 @@ public:
 
 int main(int argc, char *argv[])
 {
+    //qDebug()<<"1";
     QApplication a(argc, argv);
     MainWindow w;
+
 	QRect rec = QApplication::desktop()->screenGeometry();
 	screen_height = rec.height();
 	screen_width = rec.width();

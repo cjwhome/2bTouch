@@ -12,17 +12,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-	
 
-    setupSerial();
+
 
     QWidget *centralWidget = new QWidget();
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
     QVBoxLayout *buttonLayout = new QVBoxLayout();
 	QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
+    current_time = new QLabel();
+    current_date = new QLabel();
 	
 	ozoneDisplay = new QLCDNumber();	
-		
+
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setIcon(configButtonIcon);
     configure_button->setIconSize(QSize(70,62));
     configure_button->setFixedSize(70,62);
+
 
     //QPixmap graphPixmap(":/buttons/pics/graph.jpg");
     //QIcon graphButtonIcon(graphPixmap);
@@ -71,11 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
     horizontalLayout->addLayout(measurementDisplayLayoutArea);
 
 
-    ozoneDisplay->setFixedSize(350, 145);
+    ozoneDisplay->setFixedSize(300, 100);
     ozoneDisplay->setDigitCount(10);
     ozoneDisplay->display("0.0 PPB");
     ozoneDisplay->setFrameStyle(QFrame::NoFrame);
-	
+
 	
     data_point = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
@@ -87,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent) :
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
+
+
+    setupSerial();
 }
 
 MainWindow::~MainWindow()
@@ -174,8 +179,8 @@ bool MainWindow::parseDataLine(QString dLine){
         else
             ozoneDisplay->setDigitCount(7);*/
         ozoneDisplay->display(QString::number(current_ozone)+" PPB");
-        temperature_output->setText(QString::number(current_temp));
-        pressure_output->setText(QString::number(current_press));
+       /* temperature_output->setText(QString::number(current_temp));
+        pressure_output->setText(QString::number(current_press));*/
         current_time->setText(fields[TIME_COLUMN]);
         current_date->setText(fields[DATE_COLUMN]);
 

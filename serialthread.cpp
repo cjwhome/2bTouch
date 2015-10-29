@@ -29,11 +29,11 @@ void SerialThread::run()
 
     while (!s_stop) {
 		while(!s_port->canReadLine()){
-			msleep(5);
+            msleep(1);
 		}
         tmp = s_port->readAll();
-		s_port->flush();
-		s_port->clear();
+        s_port->flush();
+        s_port->clear();
 		//qDebug()<<"read new line";
         //emitdataline(tmp);
 

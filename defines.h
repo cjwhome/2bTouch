@@ -1,7 +1,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#include "model_aiq.h"
+#include "model_106l.h"
 
 #define APP_VERSION "1.0"
 #define APP_NAME "2BTouch"
