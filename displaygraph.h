@@ -24,8 +24,12 @@ public:
 
     void drawPlot();
 
+signals:
+    void userClearedPlot(void);
+
 public slots:
     void blah();
+    void clear();
 
 private slots:
     void goback();
@@ -36,6 +40,7 @@ private:
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *buttonLayout;
     QPushButton *home_button;
+    QPushButton *clear_button;
     QPushButton *settings_button;
     QCustomPlot *customPlot;
     QVector<double> x,y;

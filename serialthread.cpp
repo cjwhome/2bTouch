@@ -26,20 +26,17 @@ void SerialThread::stopSerial()
 void SerialThread::run()
 {
     QByteArray tmp;
+    QSerialPort::SerialPortError error;
 
     while (!s_stop) {
-		while(!s_port->canReadLine()){
+        while(!s_port->canReadLine()){
             msleep(1);
-		}
+        }
         tmp = s_port->readAll();
+
         s_port->flush();
         s_port->clear();
-		//qDebug()<<"read new line";
-        //emitdataline(tmp);
-
         emit newDataLine(QString(tmp));			//signal connected to
-
-
 	}
 
     //stop_serial();      //if the port is closed, stop the thread
