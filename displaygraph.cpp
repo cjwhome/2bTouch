@@ -68,11 +68,7 @@ void DisplayGraph::blah(){
 }
 
 void DisplayGraph::clear(){
-    //x.clear();
-    //y.clear();
-
     emit userClearedPlot();
-    //drawPlot();
 }
 
 void DisplayGraph::drawPlot(){
