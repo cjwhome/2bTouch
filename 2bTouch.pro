@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     qcustomplot.cpp \
     showstats.cpp \
     displaygraph.cpp \
-    iaqrecord.cpp
+    iaqrecord.cpp \
+    xmldevicereader.cpp \
+    twobtechdevice.cpp \
+    serialdataitem.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -31,7 +34,10 @@ HEADERS  += mainwindow.h \
     showstats.h \
     displaygraph.h \
     iaqrecord.h \
-    model_106l.h
+    model_106l.h \
+    xmldevicereader.h \
+    twobtechdevice.h \
+    serialdataitem.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
@@ -39,3 +45,5 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     res.qrc
+
+DISTFILES +=

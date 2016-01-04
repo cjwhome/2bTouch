@@ -7,4 +7,7 @@
     <qresource prefix="/buttons">
         <file>pics/config.jpg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>deviceConfig.xml</file>
+    </qresource>
 </RCC>
