@@ -35,6 +35,9 @@ public:
 	
 signals:
     void validDataReady();
+
+public slots:
+    void clearPlotData();
     
 private slots:
     void newDataLine(QString dLine);

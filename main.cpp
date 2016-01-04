@@ -23,7 +23,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-    //qDebug()<<"1";
+    qDebug()<<"1";
     QApplication a(argc, argv);
     MainWindow w;
 

@@ -13,10 +13,14 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     home_button = new QPushButton("Home");
     home_button->setFixedSize(70,62);
 
+    clear_button = new QPushButton("Clear");
+    clear_button->setFixedSize(70,62);
+
     settings_button = new QPushButton("Settings");
     settings_button->setFixedSize(70,62);
 
     buttonLayout->addWidget(home_button);
+    buttonLayout->addWidget(clear_button);
     buttonLayout->addWidget(settings_button);
 
     //add the separator line:
@@ -35,6 +39,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     //setCentralWidget(centralWidget);
 
     connect(home_button, SIGNAL(released()), this, SLOT(goback()));
+    connect(clear_button, SIGNAL(clicked()), this, SLOT(clear()));
 
 
 }
@@ -59,6 +64,11 @@ void DisplayGraph::setData(QVector<double> a, QVector<double> b){
 }
 void DisplayGraph::blah(){
     drawPlot();
+
+}
+
+void DisplayGraph::clear(){
+    emit userClearedPlot();
 }
 
 void DisplayGraph::drawPlot(){

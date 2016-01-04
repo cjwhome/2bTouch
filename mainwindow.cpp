@@ -89,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
+    connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
 
     setupSerial();
@@ -118,7 +119,7 @@ void MainWindow::setupSerial(){
     serialPort->setPortName("ttyAMA0");
     //serialPort->setBaudRate(19200,QSerialPort::AllDirections);
     //serialPort->setBaudRate(115200);
-    serialPort->setBaudRate(9600);
+    serialPort->setBaudRate(9600, QSerialPort::AllDirections);
     s_serialThread = new SerialThread();
 
     if(!s_serialThread->startSerial(serialPort))
@@ -133,7 +134,7 @@ void MainWindow::setupSerial(){
 }
 
 void MainWindow::newDataLine(QString dLine){
-    //qDebug()<<dLine;
+    //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
         displayGraph->setData(x, y);
@@ -207,9 +208,15 @@ void MainWindow::displayBigPlot(void){
     displayGraph->setData(x, y);
     displayGraph->drawPlot();
     displayGraph->show();
-
 }
  
+void MainWindow::clearPlotData(void){
+    //qDebug()<<"Clearing plot data, xcount:"<<x.count()<<", ycount:"<<y.count();
+    data_point = 0;
+    x.clear();
+    y.clear();
+}
+
 /*bool MainWindow::yLessThan(const int &p1, const int &p2){
 	return p1()<p2();
 }*/
