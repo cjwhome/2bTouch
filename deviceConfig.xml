@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<devices>
+      <device name="POM"
+              portName="COM1"
+              baudRate="19200"
+              parity="None"
+              dataBits="8"
+              stopBits="One"
+              enableWeather="false"
+              enableUpload="false"
+              enableGPS="true">
+         <dataFormat>
+          <dataItems>
+            <dataItem name="Log Number" type="Integer" />
+            <dataItem name="Ozone" type="Decimal" />
+            <dataItem name="Cell Temp" type="Decimal" />
+            <dataItem name="Cell Pressure" type="Decimal" />
+            <dataItem name="PDV" type="Decimal"/>
+            <dataItem name="BattV" type="Decimal" />
+            <dataItem name="Latitude" type="Decimal" />
+            <dataItem name="Longitude" type="Decimal" />
+            <dataItem name="Altitude" type="Decimal" />
+            <dataItem name="GPSquality" type="Integer" />
+            <dataItem name="Date/Time" type="DateTime" />
+          </dataItems>
+        </dataFormat>
+      </device>
+      <device name="106-L,M"
+              portName="COM1"
+              baudRate="2400"
+              parity="None"
+              dataBits="8"
+              stopBits="One"
+              enableWeather="false"
+              enableUpload="false"
+              enableGPS="false">
+        <dataFormat>
+          <dataItems>
+            <dataItem name="Log Number" type="Integer" />
+            <dataItem name="Ozone" type="Decimal" />
+            <dataItem name="Cell Temp" type="Decimal" />
+            <dataItem name="Cell Pressure" type="Decimal" />
+            <dataItem name="Flow Rate" type="Integer" />
+            <dataItem name="PDV" type="Decimal" />
+            <dataItem name="Date/Time" type="DateTime" />
+          </dataItems>
+        </dataFormat>
+      </device>
+</devices>

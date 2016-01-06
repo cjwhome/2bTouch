@@ -10,12 +10,14 @@ class XmlDeviceReader
 {
 public:
     XmlDeviceReader(const QString fname);
- 
+
     void read();
  
 private:
     void processDevices();
     void processDevice();
+    void processDataItems(TwobTechDevice *device);
+    void processDataItem(TwobTechDevice *device);
     QString readNextText();
     QString errorString();
  

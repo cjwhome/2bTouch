@@ -9,10 +9,10 @@ class TwobTechDevice
 {
 public:
     TwobTechDevice();
-    
-private:
     QString device_name;
     QList<SerialDataItem> data_items;
+private:
+
     
 };
 

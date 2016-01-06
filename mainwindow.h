@@ -17,6 +17,7 @@
 #include "showstats.h"
 #include "defines.h"
 #include "displaygraph.h"
+#include "xmldevicereader.h"
 
 namespace Ui {
 class MainWindow;

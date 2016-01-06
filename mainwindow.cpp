@@ -91,6 +91,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
+    XmlDeviceReader* xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
+    xmlDeviceReader->read();
 
     setupSerial();
 }

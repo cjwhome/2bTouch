@@ -8,10 +8,20 @@ XmlDeviceReader::XmlDeviceReader(const QString fname){
     filename = fname;
 }
 
+
+
 void XmlDeviceReader::read() {
     QFile xmlFile(filename);
+    qDebug()<<"XmlRead before open file";
     xmlFile.open(QIODevice::ReadOnly);
     xml.setDevice(&xmlFile);
+
+    //testing
+    /*while (!xml.atEnd()) {
+        if (xml.readNextStartElement())
+            qDebug()<<xml.name().toString();
+    }*/
+
 
     if (xml.readNextStartElement() && xml.name() == "devices")
        processDevices();
@@ -29,57 +39,82 @@ void XmlDeviceReader::read() {
 }
 
 void XmlDeviceReader::processDevices() {
-    if (!xml.isStartElement() || xml.name() != "devices")
-        return;
-    while (xml.readNextStartElement()) {
-        if (xml.name() == "device")
-            processDevice();
-        else
-            xml.skipCurrentElement();
+    qDebug()<<"Processing devices";
+    //if (!xml.isStartElement() || xml.name() != "devices")
+    //    return;
+    while (!xml.atEnd()) {
+        if (xml.readNextStartElement()){
+            if (xml.isStartElement() && xml.name() == "device")
+                processDevice();
+            else{
+                qDebug()<<"Skipping element in process devices:"<<xml.name().toString();
+
+            }
+        }
     }
 }
 
-// Uncomment this to see another way to read element
-// text. It returns the concatenation of the text
-// from all child elements.
-//#define USE_READ_ELEMENT_TEXT 1
+
 
 void XmlDeviceReader::processDevice() {
-    if (!xml.isStartElement() || xml.name() != "device")
-        return;
+    qDebug()<<"Processing a Device";
 
-    /*QString from;
-    QString to;
-    QString conversion;
-    
-    while (xml.readNextStartElement()) {
-        if (xml.name() == "from")
-            from = readNextText();
-        else if (xml.name() == "to")
-            to = readNextText();
-        else if (xml.name() == "conversion")
-            conversion = readNextText();
-#ifndef USE_READ_ELEMENT_TEXT
-        xml.skipCurrentElement();
-#endif
-    }*/
     QList<TwobTechDevice> deviceList;
+    TwobTechDevice twobTechDevice;
+    //get name of device and port
+    foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
+        if (attr.name().toString() == QLatin1String("name")) {
 
-    
-    if (xml.isStartElement()) {
-                if (xml.name() == "device") {
-                    TwobTechDevice twobTechDevice = new TwobTechDevice();
-                    foreach(const QXmlStreamAttribute &attr, reader.attributes()) {
-                        if (attr.name().toString() == QLatin1String("name")) {
-                            twobTechDevice.device_name = attr.value().toString();
-                        }
-                    }
-                }
-            }
+            twobTechDevice.device_name = attr.value().toString();
+            qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
+        }else if(attr.name().toString() == QLatin1String("portName")){
+            qDebug()<<"Using port:"<<attr.value().toString();
+        }
+    }
 
-    
+    xml.readNextStartElement();     //skip dataformat
+    //now find all dataItems
+    processDataItems(&twobTechDevice);
+    deviceList.append(twobTechDevice);
+    qDebug()<<"Done processing a device";
 }
 
+void XmlDeviceReader::processDataItems(TwobTechDevice *device){
+    qDebug()<<"Processing data Items";
+    do{
+        xml.readNextStartElement();
+        if (xml.isStartElement() && xml.name() == "dataItem"){
+            qDebug()<<"Found dataItem";
+            processDataItem(device);
+        }else{
+            qDebug()<<"Skipping element:"<<xml.name().toString();
+
+            //xml.skipCurrentElement();
+        }
+        //xml.readNextStartElement();
+    }while(xml.name()!="device");
+
+    qDebug()<<"Done Processing data items";
+}
+
+void XmlDeviceReader::processDataItem(TwobTechDevice *device){
+    qDebug()<<"Processing a data Items Attributes:";
+    SerialDataItem* serialDataItem = new SerialDataItem();
+    foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
+        if (attr.name().toString() == QLatin1String("name")) {
+            serialDataItem->setName(attr.value().toString());
+
+            qDebug()<<"With the name:"<<serialDataItem->getName();
+        }else if(attr.name().toString() == QLatin1String("type")){
+
+            serialDataItem->setType(attr.value().toString());
+            qDebug()<<"And Type:"<<serialDataItem->getType();
+        }
+    }
+    device->data_items.append(*serialDataItem);
+    delete serialDataItem;
+
+}
 QString XmlDeviceReader::readNextText() {
 #ifndef USE_READ_ELEMENT_TEXT
     xml.readNext();
