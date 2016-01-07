@@ -12,23 +12,26 @@ XmlDeviceReader::XmlDeviceReader(const QString fname){
 
 void XmlDeviceReader::read() {
     QFile xmlFile(filename);
-    qDebug()<<"XmlRead before open file";
     xmlFile.open(QIODevice::ReadOnly);
     xml.setDevice(&xmlFile);
 
-    //testing
-    /*while (!xml.atEnd()) {
-        if (xml.readNextStartElement())
-            qDebug()<<xml.name().toString();
-    }*/
 
 
     if (xml.readNextStartElement() && xml.name() == "devices")
        processDevices();
 
-    // readNextStartElement() leaves the stream in
-    // an invalid state at the end. A single readNext()
-    // will advance us to EndDocument.
+    qDebug()<<"After processing devices here is the qlist:";
+    for(int i=0;i<deviceList.size();i++){
+        TwobTechDevice outputDevice = (deviceList.at(i));
+        qDebug()<<"Device name:"<<outputDevice.device_name;
+        for(int a=0;a<outputDevice.data_items.size();a++){
+            SerialDataItem outputItem = outputDevice.data_items.at(a);
+            qDebug()<<"dataItem name:"<<outputItem.getName()<<" and type:"<<outputItem.getType();
+            //delete &outputItem;
+        }
+        //delete &outputDevice;
+    }
+
     if (xml.tokenType() == QXmlStreamReader::Invalid)
         xml.readNext();
 
@@ -40,8 +43,7 @@ void XmlDeviceReader::read() {
 
 void XmlDeviceReader::processDevices() {
     qDebug()<<"Processing devices";
-    //if (!xml.isStartElement() || xml.name() != "devices")
-    //    return;
+
     while (!xml.atEnd()) {
         if (xml.readNextStartElement()){
             if (xml.isStartElement() && xml.name() == "device")
@@ -52,6 +54,7 @@ void XmlDeviceReader::processDevices() {
             }
         }
     }
+
 }
 
 
@@ -59,7 +62,7 @@ void XmlDeviceReader::processDevices() {
 void XmlDeviceReader::processDevice() {
     qDebug()<<"Processing a Device";
 
-    QList<TwobTechDevice> deviceList;
+    //QList<TwobTechDevice> deviceList;
     TwobTechDevice twobTechDevice;
     //get name of device and port
     foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
@@ -86,15 +89,11 @@ void XmlDeviceReader::processDataItems(TwobTechDevice *device){
         if (xml.isStartElement() && xml.name() == "dataItem"){
             qDebug()<<"Found dataItem";
             processDataItem(device);
-        }else{
-            qDebug()<<"Skipping element:"<<xml.name().toString();
-
-            //xml.skipCurrentElement();
         }
-        //xml.readNextStartElement();
     }while(xml.name()!="device");
 
-    qDebug()<<"Done Processing data items";
+
+
 }
 
 void XmlDeviceReader::processDataItem(TwobTechDevice *device){
@@ -130,3 +129,10 @@ QString XmlDeviceReader::errorString() {
             .arg(xml.lineNumber())
             .arg(xml.columnNumber());
 }
+
+QList<TwobTechDevice> XmlDeviceReader::getDeviceList() const
+{
+    return deviceList;
+}
+
+

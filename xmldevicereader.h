@@ -13,6 +13,9 @@ public:
 
     void read();
  
+    QList<TwobTechDevice> getDeviceList() const;
+
+
 private:
     void processDevices();
     void processDevice();
@@ -23,6 +26,7 @@ private:
  
     QString filename;
     QXmlStreamReader xml;
+    QList<TwobTechDevice> deviceList;
 };
 
 #endif // XMLDEVICEREADER_H

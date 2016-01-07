@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     current_time = new QLabel();
     current_date = new QLabel();
 	
-	ozoneDisplay = new QLCDNumber();	
+    mainDisplay = new QLCDNumber();
 
 
     //add the separator line:
@@ -68,15 +68,15 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonLayout->addWidget(avg_button);
     horizontalLayout->addLayout(buttonLayout);
     horizontalLayout->addWidget(myFrame);
-	measurementDisplayLayoutArea->addWidget(ozoneDisplay);
+    measurementDisplayLayoutArea->addWidget(mainDisplay);
 	measurementDisplayLayoutArea->addLayout(gridLayout);
     horizontalLayout->addLayout(measurementDisplayLayoutArea);
 
 
-    ozoneDisplay->setFixedSize(300, 100);
-    ozoneDisplay->setDigitCount(10);
-    ozoneDisplay->display("0.0 PPB");
-    ozoneDisplay->setFrameStyle(QFrame::NoFrame);
+    mainDisplay->setFixedSize(300, 100);
+    mainDisplay->setDigitCount(10);
+    mainDisplay->display("0.0 PPB");
+    mainDisplay->setFrameStyle(QFrame::NoFrame);
 
 	
     data_point = 0;
@@ -174,14 +174,14 @@ bool MainWindow::parseDataLine(QString dLine){
 		
         //ozone_output->setText(QString::number(current_ozone));
         /*if(current_ozone >= 1000 || current_ozone <= -1000)
-            ozoneDisplay->setDigitCount(10);
+            mainDisplay->setDigitCount(10);
         else if(current_ozone >= 100 || current_ozone <= -100)
-            ozoneDisplay->setDigitCount(9);
+            mainDisplay->setDigitCount(9);
         else if(current_ozone >= 10 || current_ozone <= -10)
-            ozoneDisplay->setDigitCount(8);
+            mainDisplay->setDigitCount(8);
         else
-            ozoneDisplay->setDigitCount(7);*/
-        ozoneDisplay->display(QString::number(current_ozone)+" PPB");
+            mainDisplay->setDigitCount(7);*/
+        mainDisplay->display(QString::number(current_ozone)+" PPB");
        /* temperature_output->setText(QString::number(current_temp));
         pressure_output->setText(QString::number(current_press));*/
         current_time->setText(fields[TIME_COLUMN]);

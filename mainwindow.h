@@ -12,12 +12,14 @@
 #include <QPushButton>
 #include <QThread>
 #include <QVector>
+#include <QList>
 #include "defines.h"
 //#include "qcustomplot.h"
 #include "showstats.h"
 #include "defines.h"
 #include "displaygraph.h"
 #include "xmldevicereader.h"
+#include "twobtechdevice.h"
 
 namespace Ui {
 class MainWindow;
@@ -64,7 +66,7 @@ private:
     QLabel *current_time;
     QLabel *current_time_label;
     QLabel *current_date;
-	QLCDNumber *ozoneDisplay;
+    QLCDNumber *mainDisplay;
     QPushButton *graph_button;
 
     double current_ozone;
