@@ -20,7 +20,7 @@ void XmlDeviceReader::read() {
     if (xml.readNextStartElement() && xml.name() == "devices")
        processDevices();
 
-    qDebug()<<"After processing devices here is the qlist:";
+    /*qDebug()<<"After processing devices here is the qlist:";
     for(int i=0;i<deviceList.size();i++){
         TwobTechDevice outputDevice = (deviceList.at(i));
         qDebug()<<"Device name:"<<outputDevice.device_name;
@@ -30,7 +30,7 @@ void XmlDeviceReader::read() {
             //delete &outputItem;
         }
         //delete &outputDevice;
-    }
+    }*/
 
     if (xml.tokenType() == QXmlStreamReader::Invalid)
         xml.readNext();
@@ -106,7 +106,9 @@ void XmlDeviceReader::processDataItem(TwobTechDevice *device){
             qDebug()<<"With the name:"<<serialDataItem->getName();
         }else if(attr.name().toString() == QLatin1String("type")){
 
-            serialDataItem->setType(attr.value().toString());
+            QString typeString = attr.value().toString();
+            if(typeString=="Decimal")
+
             qDebug()<<"And Type:"<<serialDataItem->getType();
         }
     }
@@ -133,6 +135,10 @@ QString XmlDeviceReader::errorString() {
 QList<TwobTechDevice> XmlDeviceReader::getDeviceList() const
 {
     return deviceList;
+}
+
+TwobTechDevice XmlDeviceReader::getADevice(int element_number){
+    return deviceList.at(element_number);
 }
 
 

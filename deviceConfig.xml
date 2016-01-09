@@ -25,24 +25,31 @@
           </dataItems>
         </dataFormat>
       </device>
-      <device name="106-L,M"
-              portName="COM1"
-              baudRate="2400"
-              parity="None"
-              dataBits="8"
-              stopBits="One"
-              enableWeather="false"
-              enableUpload="false"
-              enableGPS="false">
+      <device name="IAQ"
+              portName="ttyAMA0"
+              baudRate="9600">
         <dataFormat>
           <dataItems>
-            <dataItem name="Log Number" type="Integer" />
-            <dataItem name="Ozone" type="Decimal" />
-            <dataItem name="Cell Temp" type="Decimal" />
-            <dataItem name="Cell Pressure" type="Decimal" />
-            <dataItem name="Flow Rate" type="Integer" />
-            <dataItem name="PDV" type="Decimal" />
-            <dataItem name="Date/Time" type="DateTime" />
+            <dataItem name="Ozone" type="Decimal" priority="0"/>
+            <dataItem name="Cell Temp" type="Decimal" priority="1"/>
+            <dataItem name="Cell Pressure" type="Decimal" priority="2"/>
+            <dataItem name="Flow Rate" type="Integer" priority="3"/>
+            <dataItem name="PDV" type="Decimal" priority="4"/>
+            <dataItem name="Date/Time" type="DateTime" priority="0"/>
+          </dataItems>
+        </dataFormat>
+      </device>
+      <device name="106-L,M"
+              portName="ttyAMA0"
+              baudRate="9600">
+        <dataFormat>
+          <dataItems>
+            <dataItem name="Ozone" type="Decimal" priority="0"/>
+            <dataItem name="Cell Temp" type="Decimal" priority="1"/>
+            <dataItem name="Cell Pressure" type="Decimal" priority="2"/>
+            <dataItem name="Flow Rate" type="Integer" priority="3"/>
+            <dataItem name="PDV" type="Decimal" priority="4"/>
+            <dataItem name="Date/Time" type="DateTime" priority="0"/>
           </dataItems>
         </dataFormat>
       </device>

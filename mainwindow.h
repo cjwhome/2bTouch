@@ -14,12 +14,12 @@
 #include <QVector>
 #include <QList>
 #include "defines.h"
-//#include "qcustomplot.h"
 #include "showstats.h"
-#include "defines.h"
 #include "displaygraph.h"
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
+#include "deviceprofile.h"
+#include "parseddata.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,9 +33,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void createDevice();
     void setupSerial();
     QVector<double> x,y;
-	
+
 signals:
     void validDataReady();
 
@@ -54,9 +55,9 @@ private:
     ShowStats *showStats;
     QSerialPort *serialPort;
     DisplayGraph *displayGraph;
-    QLabel *ozone_output;
-    QLabel *ozone_label;
-    QLabel *ozone_units_label;
+    QLabel *main_output;
+    QLabel *main_label;
+    QLabel *main_units_label;
     QLabel *temperature_output;
     QLabel *temperature_label;
     QLabel *temperature_units_label;
@@ -69,18 +70,13 @@ private:
     QLCDNumber *mainDisplay;
     QPushButton *graph_button;
 
-    double current_ozone;
-    double current_temp;
-    double current_press;
-    double current_pdv;
+
     int data_point;
 	double start_time_seconds;
 	
 
-    //QDateTime tempDateTime;
-    //QCustomPlot *customPlot;
-    //int y;
-    //int x;      //graphing test
+    TwobTechDevice twobTechDevice;
+    DeviceProfile deviceProfile;
 
 
 

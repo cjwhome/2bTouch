@@ -94,12 +94,30 @@ MainWindow::MainWindow(QWidget *parent) :
     XmlDeviceReader* xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
+    createDevice();
     setupSerial();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+//build a device from the xml and prepare place to put the data
+void MainWindow::createDevice(){
+    twobTechDevice = XmlDeviceReader.getADevice(1);
+    if(!twobTechDevice){
+        //print out an error
+        qDebug()<<"No device found";
+        return;
+    }
+    deviceProfile.setDevice_name(twobTechDevice.device_name);
+    for(int i=0;i<twobTechDevice.data_items.size();i++){
+        SerialDataItem serialDataItem = twobTechDevice.data_items.at(i);
+        if(serialDataItem.name == "")
+    }
+
+
 }
 
 void MainWindow::setupSerial(){
@@ -115,12 +133,8 @@ void MainWindow::setupSerial(){
 		}
     }*/
 
-
-
-   
     serialPort->setPortName("ttyAMA0");
-    //serialPort->setBaudRate(19200,QSerialPort::AllDirections);
-    //serialPort->setBaudRate(115200);
+
     serialPort->setBaudRate(9600, QSerialPort::AllDirections);
     s_serialThread = new SerialThread();
 
@@ -162,28 +176,15 @@ bool MainWindow::parseDataLine(QString dLine){
         current_press = fields[PRESSURE_COLUMN].toDouble();
         
 		
-        //qDebug()<<"Date size:"<<fields[DATE_COLUMN].size()<<" time size:"<<fields[TIME_COLUMN].size();
         tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
 		tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
 		current_seconds = tempDateTime.toTime_t();			//convert to seconds;
 		if(start_time_seconds > current_seconds)
 			start_time_seconds = current_seconds;
 		ellapsed_seconds = current_seconds - start_time_seconds;
-        //qDebug()<<"Converted time: "<<tempDateTime.toString();
-        //qDebug()<<"Ellapsed time: "<<ellapsed_seconds;
-		
-        //ozone_output->setText(QString::number(current_ozone));
-        /*if(current_ozone >= 1000 || current_ozone <= -1000)
-            mainDisplay->setDigitCount(10);
-        else if(current_ozone >= 100 || current_ozone <= -100)
-            mainDisplay->setDigitCount(9);
-        else if(current_ozone >= 10 || current_ozone <= -10)
-            mainDisplay->setDigitCount(8);
-        else
-            mainDisplay->setDigitCount(7);*/
+
         mainDisplay->display(QString::number(current_ozone)+" PPB");
-       /* temperature_output->setText(QString::number(current_temp));
-        pressure_output->setText(QString::number(current_press));*/
+
         current_time->setText(fields[TIME_COLUMN]);
         current_date->setText(fields[DATE_COLUMN]);
 

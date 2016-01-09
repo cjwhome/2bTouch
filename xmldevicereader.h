@@ -14,6 +14,7 @@ public:
     void read();
  
     QList<TwobTechDevice> getDeviceList() const;
+    TwobTechDevice getADevice(int element_number);        //returns a device in the divice list at element_number
 
 
 private:
@@ -27,6 +28,7 @@ private:
     QString filename;
     QXmlStreamReader xml;
     QList<TwobTechDevice> deviceList;
+
 };
 
 #endif // XMLDEVICEREADER_H
