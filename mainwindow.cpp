@@ -105,6 +105,7 @@ MainWindow::~MainWindow()
 
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
+    int i;
     twobTechDevice = XmlDeviceReader.getADevice(1);
     if(!twobTechDevice){
         //print out an error
@@ -112,11 +113,21 @@ void MainWindow::createDevice(){
         return;
     }
     deviceProfile.setDevice_name(twobTechDevice.device_name);
-    for(int i=0;i<twobTechDevice.data_items.size();i++){
+    //determine the index of elements
+    for(i=0;i<twobTechDevice.data_items.size();i++){
         SerialDataItem serialDataItem = twobTechDevice.data_items.at(i);
-        if(serialDataItem.name == "")
-    }
+        if(serialDataItem.name == "Date")
+            deviceProfile.setDate_position(i);
+        else if(serialDataItem.name == "Time")
+            deviceProfile.setTime_position(i);
+        else if(serialDataItem.priority == "0"){
+            deviceProfile.setMain_display_position(i);
+            deviceProfile.setMain_display_units(serialDataItem.units);
+        }
 
+    }
+    deviceProfile.setNumber_of_columns(i);
+    qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
 
 }
 
@@ -170,12 +181,19 @@ bool MainWindow::parseDataLine(QString dLine){
     dLine.remove(QRegExp("[\\n\\t\\r]"));
     qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
-    if(fields.length()==NUMBER_OF_COLUMNS){
-        current_ozone = fields[OZONE_COLUMN].toDouble();
-        current_temp = fields[TEMPERATURE_COLUMN].toDouble();
-        current_press = fields[PRESSURE_COLUMN].toDouble();
+    if(fields.length()==deviceProfile.getNumber_of_columns()){
+        SerialDataItem serialDataItem = new SerialDataItem();
+        for(int a=0;a<deviceProfile.getNumber_of_columns();a++){
+            if(a==deviceProfile.getDate_position())
+                serialDataItem.date = QDateTime::fromString(fields[deviceProfile.getDate_position()], "dd/MM/yy");
+            else if(a == deviceProfile.getTime_position())
+                serialDataItem.time = QDateTime::fromString(fields[deviceProfile.getTime_position()], "hh:mm:ss");
+            serialDataItem.dvalue = fields[a].toDouble();
+        }
+        //current_temp = fields[TEMPERATURE_COLUMN].toDouble();
+        //current_press = fields[PRESSURE_COLUMN].toDouble();
         
-		
+
         tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
 		tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
 		current_seconds = tempDateTime.toTime_t();			//convert to seconds;
@@ -183,7 +201,7 @@ bool MainWindow::parseDataLine(QString dLine){
 			start_time_seconds = current_seconds;
 		ellapsed_seconds = current_seconds - start_time_seconds;
 
-        mainDisplay->display(QString::number(current_ozone)+" PPB");
+        mainDisplay->display(QString::number(main_display_value)+" " + deviceProfile.getMain_display_units());
 
         current_time->setText(fields[TIME_COLUMN]);
         current_date->setText(fields[DATE_COLUMN]);

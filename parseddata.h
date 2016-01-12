@@ -3,10 +3,10 @@
 #include <QList>
 #include "serialdataitem.h"
 
-class parsedData
+class ParsedData
 {
 public:
-    parsedData();
+    ParsedData();
 private:
     QList<SerialDataItem> data_items;
 
