@@ -88,10 +88,10 @@ MainWindow::MainWindow(QWidget *parent) :
     displayGraph = new DisplayGraph();
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
-    connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
+    //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
-    XmlDeviceReader* xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
+    xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
     createDevice();
@@ -106,17 +106,13 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = XmlDeviceReader.getADevice(1);
-    if(!twobTechDevice){
-        //print out an error
-        qDebug()<<"No device found";
-        return;
-    }
+    twobTechDevice = xmlDeviceReader->getADevice(1);
+
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
         SerialDataItem serialDataItem = twobTechDevice.data_items.at(i);
-        if(serialDataItem.name == "Date")
+        if(serialDataItem.getName() == "Date")
             deviceProfile.setDate_position(i);
         else if(serialDataItem.name == "Time")
             deviceProfile.setTime_position(i);
@@ -164,7 +160,7 @@ void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
-        displayGraph->setData(x, y);
+        //displayGraph->setData(x, y);
         emit validDataReady();
     }
 }
@@ -182,35 +178,39 @@ bool MainWindow::parseDataLine(QString dLine){
     qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==deviceProfile.getNumber_of_columns()){
-        SerialDataItem serialDataItem = new SerialDataItem();
+        QList<SerialDataItem> parsedDataRecord = new QList();       //create an list of parsed data to append to the list of all parsed records
         for(int a=0;a<deviceProfile.getNumber_of_columns();a++){
+            SerialDataItem serialDataItem = new SerialDataItem();
             if(a==deviceProfile.getDate_position())
                 serialDataItem.date = QDateTime::fromString(fields[deviceProfile.getDate_position()], "dd/MM/yy");
             else if(a == deviceProfile.getTime_position())
                 serialDataItem.time = QDateTime::fromString(fields[deviceProfile.getTime_position()], "hh:mm:ss");
             serialDataItem.dvalue = fields[a].toDouble();
+            parsedDataRecord.append(serialDataItem);
         }
-        //current_temp = fields[TEMPERATURE_COLUMN].toDouble();
-        //current_press = fields[PRESSURE_COLUMN].toDouble();
-        
 
-        tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
-		tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
-		current_seconds = tempDateTime.toTime_t();			//convert to seconds;
-		if(start_time_seconds > current_seconds)
-			start_time_seconds = current_seconds;
-		ellapsed_seconds = current_seconds - start_time_seconds;
+        if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS)
+            allParsedRecordsList.append(parsedDataRecord);
+        else
+            qDebug()<<"Maxed out the qlist size, here is where we can close off the file and start a new one";
+
+        //tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
+        //tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
+        //current_seconds = tempDateTime.toTime_t();			//convert to seconds;
+        //if(start_time_seconds > current_seconds)
+        //	start_time_seconds = current_seconds;
+        //ellapsed_seconds = current_seconds - start_time_seconds;
 
         mainDisplay->display(QString::number(main_display_value)+" " + deviceProfile.getMain_display_units());
 
-        current_time->setText(fields[TIME_COLUMN]);
-        current_date->setText(fields[DATE_COLUMN]);
+        current_time->setText(fields[deviceProfile.getTime_position()]);
+        current_date->setText(fields[deviceProfile.getDate_position()]);
 
-        x.insert(data_point,data_point);
-        y.insert(data_point,current_ozone);
-        t=x;                    //copy the vectors to order them to get high and low for range
-        u=y;
-        data_point++;
+        //x.insert(data_point,data_point);
+        //y.insert(data_point,current_ozone);
+        //t=x;                    //copy the vectors to order them to get high and low for range
+        //u=y;
+        //data_point++;
 
         return true;
 

@@ -19,6 +19,7 @@
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
 #include "deviceprofile.h"
+#include "serialdataitem.h"
 #include "parseddata.h"
 
 namespace Ui {
@@ -73,11 +74,13 @@ private:
 
     int data_point;
 	double start_time_seconds;
-	
+    double main_display_value;
 
+    XmlDeviceReader* xmlDeviceReader;
     TwobTechDevice twobTechDevice;
     DeviceProfile deviceProfile;
-
+    ParsedData parsedData;
+    QList< QList<SerialDataItem> > allParsedRecordsList;
 
 
 };

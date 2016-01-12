@@ -25,13 +25,43 @@ void DeviceProfile::setMain_display_position(int value)
     main_display_position = value;
 }
 
-int DeviceProfile::getDatetime_position() const
+int DeviceProfile::getDate_position() const
 {
-    return datetime_position;
+    return date_position;
 }
 
-void DeviceProfile::setDatetime_position(int value)
+void DeviceProfile::setDate_position(int value)
 {
-    datetime_position = value;
+    date_position = value;
+}
+
+void DeviceProfile::setTime_position(int value)
+{
+    time_position = value;
+}
+
+int DeviceProfile::getTime_position() const
+{
+    return time_position;
+}
+
+QString DeviceProfile::getMain_display_units() const
+{
+    return main_display_units;
+}
+
+void DeviceProfile::setMain_display_units(const QString &value)
+{
+    main_display_units = value;
+}
+
+int DeviceProfile::getNumber_of_columns() const
+{
+    return number_of_columns;
+}
+
+void DeviceProfile::setNumber_of_columns(int value)
+{
+    number_of_columns = value;
 }
 

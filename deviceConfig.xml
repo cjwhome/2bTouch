@@ -21,7 +21,8 @@
             <dataItem name="Longitude" type="Decimal" />
             <dataItem name="Altitude" type="Decimal" />
             <dataItem name="GPSquality" type="Integer" />
-            <dataItem name="Date/Time" type="DateTime" />
+            <dataItem name="Date" type="DateTime" />
+            <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
@@ -35,7 +36,8 @@
             <dataItem name="Cell Pressure" type="Decimal" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" priority="3"/>
             <dataItem name="PDV" type="Decimal" priority="4"/>
-            <dataItem name="Date/Time" type="DateTime" priority="0"/>
+            <dataItem name="Date" type="DateTime" priority="5"/>
+            <dataItem name="Time" type="DateTime" priority="6"/>
           </dataItems>
         </dataFormat>
       </device>
@@ -44,12 +46,13 @@
               baudRate="9600">
         <dataFormat>
           <dataItems>
-            <dataItem name="Ozone" type="Decimal" priority="0"/>
-            <dataItem name="Cell Temp" type="Decimal" priority="1"/>
-            <dataItem name="Cell Pressure" type="Decimal" priority="2"/>
-            <dataItem name="Flow Rate" type="Integer" priority="3"/>
-            <dataItem name="PDV" type="Decimal" priority="4"/>
-            <dataItem name="Date/Time" type="DateTime" priority="0"/>
+            <dataItem name="Ozone" type="Decimal" units="ppb" priority="0"/>
+            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
+            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
+            <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>
+            <dataItem name="PDV" type="Decimal" units="V" priority="4"/>
+            <dataItem name="Date" type="DateTime" priority="5"/>
+            <dataItem name="Time" type="DateTime" priority="6"/>
           </dataItems>
         </dataFormat>
       </device>

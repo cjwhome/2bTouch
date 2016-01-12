@@ -8,6 +8,7 @@
 
 #define MODEL "AIQ"
 #define MINIMUM_BIG_SCREEN_WIDTH 800	//usefull for determining if using embedded system screen
+#define MAXIMUM_PARSED_DATA_RECORDS 100 //this is too small but set for testing
 
 
 #endif // DEFINES_H
