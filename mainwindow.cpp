@@ -109,16 +109,18 @@ void MainWindow::createDevice(){
     twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
+    qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
+
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
         SerialDataItem serialDataItem = twobTechDevice.data_items.at(i);
         if(serialDataItem.getName() == "Date")
             deviceProfile.setDate_position(i);
-        else if(serialDataItem.name == "Time")
+        else if(serialDataItem.getName()=="Time")
             deviceProfile.setTime_position(i);
-        else if(serialDataItem.priority == "0"){
+        else if(serialDataItem.getPriority()==0){
             deviceProfile.setMain_display_position(i);
-            deviceProfile.setMain_display_units(serialDataItem.units);
+            deviceProfile.setMain_display_units(serialDataItem.getUnits());
         }
 
     }
@@ -178,14 +180,14 @@ bool MainWindow::parseDataLine(QString dLine){
     qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==deviceProfile.getNumber_of_columns()){
-        QList<SerialDataItem> parsedDataRecord = new QList();       //create an list of parsed data to append to the list of all parsed records
+        QList<SerialDataItem> parsedDataRecord;       //create an list of parsed data to append to the list of all parsed records
         for(int a=0;a<deviceProfile.getNumber_of_columns();a++){
-            SerialDataItem serialDataItem = new SerialDataItem();
+            SerialDataItem serialDataItem;
             if(a==deviceProfile.getDate_position())
-                serialDataItem.date = QDateTime::fromString(fields[deviceProfile.getDate_position()], "dd/MM/yy");
+                serialDataItem.setDate(QDateTime::fromString(fields[deviceProfile.getDate_position()], "dd/MM/yy"));
             else if(a == deviceProfile.getTime_position())
-                serialDataItem.time = QDateTime::fromString(fields[deviceProfile.getTime_position()], "hh:mm:ss");
-            serialDataItem.dvalue = fields[a].toDouble();
+                serialDataItem.setTime(QDateTime::fromString(fields[deviceProfile.getTime_position()], "hh:mm:ss"));
+            serialDataItem.setDvalue(fields[a].toDouble());
             parsedDataRecord.append(serialDataItem);
         }
 

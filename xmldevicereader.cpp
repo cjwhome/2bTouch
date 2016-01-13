@@ -107,11 +107,11 @@ void XmlDeviceReader::processDataItem(TwobTechDevice *device){
         }else if(attr.name().toString() == QLatin1String("type")){
 
             QString typeString = attr.value().toString();
-            if(typeString=="Decimal")
 
-            qDebug()<<"And Type:"<<serialDataItem->getType();
+
+
         }else if(attr.name().toString() == QLatin1String("units")){
-            serialDataItem->setUnits(attr.value());
+            serialDataItem->setUnits(attr.value().toString());
         }
     }
     device->data_items.append(*serialDataItem);
