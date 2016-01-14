@@ -36,6 +36,7 @@ public:
     ~MainWindow();
     void createDevice();
     void setupSerial();
+    void updateDisplay();
     QVector<double> x,y;
 
 signals:
@@ -48,6 +49,7 @@ private slots:
     void newDataLine(QString dLine);
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
+    void displayStats(void);
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
@@ -59,12 +61,6 @@ private:
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;
-    QLabel *temperature_output;
-    QLabel *temperature_label;
-    QLabel *temperature_units_label;
-    QLabel *pressure_output;
-    QLabel *pressure_label;
-    QLabel *pressure_units_label;
     QLabel *current_time;
     QLabel *current_time_label;
     QLabel *current_date;

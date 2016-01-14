@@ -25,11 +25,10 @@ public:
     int getPriority() const;
     void setPriority(int value);
 
-    QDateTime getDate() const;
-    void setDate(const QDateTime &value);
+    QDateTime getDateTime() const;
+    void setDateTime(const QDateTime &value);
 
-    QDateTime getTime() const;
-    void setTime(const QDateTime &value);
+
 
 private:
     QString name;
@@ -37,8 +36,8 @@ private:
     double dvalue;
     int ivalue;
     int priority;
-    QDateTime date;
-    QDateTime time;
+    QDateTime dateTime;
+
 };
 
 #endif // SERIALDATAITEM_H

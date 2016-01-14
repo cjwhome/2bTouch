@@ -55,23 +55,12 @@ void SerialDataItem::setPriority(int value)
     priority = value;
 }
 
-QDateTime SerialDataItem::getDate() const
+QDateTime SerialDataItem::getDateTime() const
 {
-    return date;
+    return dateTime;
 }
 
-void SerialDataItem::setDate(const QDateTime &value)
+void SerialDataItem::setDateTime(const QDateTime &value)
 {
-    date = value;
+    dateTime = value;
 }
-
-QDateTime SerialDataItem::getTime() const
-{
-    return time;
-}
-
-void SerialDataItem::setTime(const QDateTime &value)
-{
-    time = value;
-}
-

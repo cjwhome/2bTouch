@@ -41,12 +41,12 @@
           </dataItems>
         </dataFormat>
       </device>
-      <device name="106-L,M"
-              portName="ttyAMA0"
+      <device name="106-M"
+              portName="ttyUSB0"
               baudRate="9600">
         <dataFormat>
           <dataItems>
-            <dataItem name="Ozone" type="Decimal" units="ppb" priority="0"/>
+            <dataItem name="Ozone" type="Decimal" units="ppm" priority="0"/>
             <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
             <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>

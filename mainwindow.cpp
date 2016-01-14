@@ -38,8 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setFixedSize(70,62);
 
 
-    //QPixmap graphPixmap(":/buttons/pics/graph.jpg");
-    //QIcon graphButtonIcon(graphPixmap);
+
 
     graph_button = new QPushButton("Graph");
     //graph_button->setIcon(graphButtonIcon);
@@ -48,34 +47,32 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
-    QPushButton *avg_button = new QPushButton("Stats");
-    //avg_button->setIcon(graphButtonIcon);
-    //avg_button->setIconSize(QSize(70,62));
-    avg_button->setFixedSize(70,62);
+    QPushButton *stats_button = new QPushButton("Stats");
+
+    stats_button->setFixedSize(70,62);
 
     QGridLayout *gridLayout = new QGridLayout();
 
 
     QFont labelFont("Arial", 18, QFont::Bold);
     current_time->setFont(labelFont);
-    current_date->setFont(labelFont);
-    gridLayout->addWidget(current_time,2,1,1,1,0);
-    gridLayout->addWidget(current_date,2,2,1,1,0);
+    //gridLayout->addWidget(current_time,2,1,1,1,0);
 
 
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
-    buttonLayout->addWidget(avg_button);
+    buttonLayout->addWidget(stats_button);
     horizontalLayout->addLayout(buttonLayout);
     horizontalLayout->addWidget(myFrame);
     measurementDisplayLayoutArea->addWidget(mainDisplay);
-	measurementDisplayLayoutArea->addLayout(gridLayout);
+    measurementDisplayLayoutArea->addWidget(current_time);
+    //measurementDisplayLayoutArea->addLayout(gridLayout);
     horizontalLayout->addLayout(measurementDisplayLayoutArea);
 
 
     mainDisplay->setFixedSize(300, 100);
     mainDisplay->setDigitCount(10);
-    mainDisplay->display("0.0 PPB");
+    //mainDisplay->display("0.0 ppb");
     mainDisplay->setFrameStyle(QFrame::NoFrame);
 
 	
@@ -91,9 +88,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
+    showStats = new ShowStats();
+    showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
+
+    current_time->setText("Time");
     createDevice();
     setupSerial();
 }
@@ -106,10 +109,12 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(2);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
+    deviceProfile.setCom_port(twobTechDevice.getCom_port());
     qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
+    qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
@@ -121,8 +126,21 @@ void MainWindow::createDevice(){
         else if(serialDataItem.getPriority()==0){
             deviceProfile.setMain_display_position(i);
             deviceProfile.setMain_display_units(serialDataItem.getUnits());
+            deviceProfile.setMain_display_name(serialDataItem.getName());
+        }else if(serialDataItem.getPriority()==1){
+            deviceProfile.setDiagnosticA_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticA_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticA_position(i);
+        }else if(serialDataItem.getPriority()==2){
+            deviceProfile.setDiagnosticB_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticB_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticB_position(i);
+        }else if(serialDataItem.getPriority()==3){
+            deviceProfile.setDiagnosticC_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticC_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticC_position(i);
         }
-
+        //qDebug()<<"For "<<i<<" priority="<<serialDataItem.getPriority();
     }
     deviceProfile.setNumber_of_columns(i);
     qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
@@ -142,7 +160,7 @@ void MainWindow::setupSerial(){
 		}
     }*/
 
-    serialPort->setPortName("ttyAMA0");
+    serialPort->setPortName(deviceProfile.getCom_port());
 
     serialPort->setBaudRate(9600, QSerialPort::AllDirections);
     s_serialThread = new SerialThread();
@@ -172,7 +190,8 @@ void MainWindow::newDataLine(QString dLine){
 bool MainWindow::parseDataLine(QString dLine){
     QStringList fields;
     QVector<double> t,u;
-	QDateTime tempDateTime;
+    QDateTime tempDate;
+
 	double current_seconds;
     double ellapsed_seconds;
 
@@ -183,13 +202,18 @@ bool MainWindow::parseDataLine(QString dLine){
         QList<SerialDataItem> parsedDataRecord;       //create an list of parsed data to append to the list of all parsed records
         for(int a=0;a<deviceProfile.getNumber_of_columns();a++){
             SerialDataItem serialDataItem;
-            if(a==deviceProfile.getDate_position())
-                serialDataItem.setDate(QDateTime::fromString(fields[deviceProfile.getDate_position()], "dd/MM/yy"));
-            else if(a == deviceProfile.getTime_position())
-                serialDataItem.setTime(QDateTime::fromString(fields[deviceProfile.getTime_position()], "hh:mm:ss"));
-            serialDataItem.setDvalue(fields[a].toDouble());
+            if(a!=deviceProfile.getDate_position()||a!=deviceProfile.getTime_position()){
+                serialDataItem.setDvalue(fields[a].toDouble());
+            }
             parsedDataRecord.append(serialDataItem);
         }
+
+        tempDate = QDateTime::fromString(fields[deviceProfile.getDate_position()]+fields[deviceProfile.getTime_position()], "dd/MM/yyhh:mm:ss");
+        if(tempDate.date().year()<2000)
+            tempDate = tempDate.addYears(100);      //only if century is not part of the format
+        SerialDataItem serialDataItemb;
+        serialDataItemb.setDateTime(tempDate);
+        parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
 
         if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS)
             allParsedRecordsList.append(parsedDataRecord);
@@ -202,11 +226,8 @@ bool MainWindow::parseDataLine(QString dLine){
         //if(start_time_seconds > current_seconds)
         //	start_time_seconds = current_seconds;
         //ellapsed_seconds = current_seconds - start_time_seconds;
+        updateDisplay();
 
-        mainDisplay->display(QString::number(main_display_value)+" " + deviceProfile.getMain_display_units());
-
-        current_time->setText(fields[deviceProfile.getTime_position()]);
-        current_date->setText(fields[deviceProfile.getDate_position()]);
 
         //x.insert(data_point,data_point);
         //y.insert(data_point,current_ozone);
@@ -223,7 +244,21 @@ bool MainWindow::parseDataLine(QString dLine){
     }
 }
 
+void MainWindow::updateDisplay(void){
+    double current_value;
 
+    SerialDataItem tempSerialDataItem;
+    tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
+    current_value = tempSerialDataItem.getDvalue();
+    mainDisplay->display(QString::number(current_value) +" " + deviceProfile.getMain_display_units());
+
+    tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
+
+    current_time->setText(tempSerialDataItem.getDateTime().toString());
+
+    showStats->setData(&allParsedRecordsList, &deviceProfile);
+    showStats->calculateMaxMinMedian(&allParsedRecordsList, &deviceProfile);
+}
 
 void MainWindow::displayBigPlot(void){
     //displayGraph = new DisplayGraph();
@@ -238,6 +273,12 @@ void MainWindow::clearPlotData(void){
     data_point = 0;
     x.clear();
     y.clear();
+}
+
+void MainWindow::displayStats(void){
+
+
+    showStats->show();
 }
 
 /*bool MainWindow::yLessThan(const int &p1, const int &p2){

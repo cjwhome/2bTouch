@@ -72,6 +72,7 @@ void XmlDeviceReader::processDevice() {
             qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
         }else if(attr.name().toString() == QLatin1String("portName")){
             qDebug()<<"Using port:"<<attr.value().toString();
+            twobTechDevice.setCom_port(attr.value().toString());
         }
     }
 
@@ -112,6 +113,8 @@ void XmlDeviceReader::processDataItem(TwobTechDevice *device){
 
         }else if(attr.name().toString() == QLatin1String("units")){
             serialDataItem->setUnits(attr.value().toString());
+        }else if(attr.name().toString() == QLatin1String("priority")){
+            serialDataItem->setPriority(attr.value().toDouble());
         }
     }
     device->data_items.append(*serialDataItem);
