@@ -217,8 +217,11 @@ bool MainWindow::parseDataLine(QString dLine){
 
         if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS)
             allParsedRecordsList.append(parsedDataRecord);
-        else
-            qDebug()<<"Maxed out the qlist size, here is where we can close off the file and start a new one";
+        else{
+            allParsedRecordsList.removeFirst();
+            allParsedRecordsList.append(parsedDataRecord);
+            qDebug()<<"Maxed out the qlist size, removing first element and adding";
+        }
 
         //tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
         //tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
@@ -257,7 +260,7 @@ void MainWindow::updateDisplay(void){
     current_time->setText(tempSerialDataItem.getDateTime().toString());
 
     showStats->setData(&allParsedRecordsList, &deviceProfile);
-    showStats->calculateMaxMinMedian(&allParsedRecordsList, &deviceProfile);
+    showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
 }
 
 void MainWindow::displayBigPlot(void){

@@ -25,9 +25,22 @@ public:
     explicit ShowStats(QWidget *parent = 0);
     ~ShowStats();
     void setData(QList< QList<SerialDataItem> > *records, DeviceProfile *deviceProfile);    //send the data records list and device profile so the displays can be updated with the latest data
-    void calculateMaxMinMedian(QList<QList<SerialDataItem> > *records, DeviceProfile *deviceProfile);
+    void calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, int element_to_sort);
 private:
     Ui::ShowStats *ui;
+
+    QLabel *non_avg_main_output;
+    QLabel *hour_avg_main_output;
+    QLabel *eight_hour_avg_main_output;
+
+    QLabel *non_avg_main_label;
+    QLabel *hour_avg_main_label;
+    QLabel *eight_hour_avg_main_label;
+
+    QLabel *non_avg_main_units_label;
+    QLabel *hour_avg_main_units_label;
+    QLabel *eight_hour_avg_main_units_label;
+
     QLabel *diagnosticA_output;
     QLabel *diagnosticA_label;
     QLabel *diagnosticA_units_label;
