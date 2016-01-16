@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     twobtechdevice.cpp \
     serialdataitem.cpp \
     parseddata.cpp \
-    deviceprofile.cpp
+    deviceprofile.cpp \
+    filewriter.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     twobtechdevice.h \
     serialdataitem.h \
     parseddata.h \
-    deviceprofile.h
+    deviceprofile.h \
+    filewriter.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \

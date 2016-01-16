@@ -13,6 +13,7 @@
 #include <QThread>
 #include <QVector>
 #include <QList>
+#include <QFile>
 #include "defines.h"
 #include "showstats.h"
 #include "displaygraph.h"
@@ -21,6 +22,7 @@
 #include "deviceprofile.h"
 #include "serialdataitem.h"
 #include "parseddata.h"
+#include "filewriter.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +40,14 @@ public:
     void setupSerial();
     void updateDisplay();
     QVector<double> x,y;
+
+    void initFile();            //determine where the file will be saved (usb, locally)
+    void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
+    void writeFile();
+
+    bool getStarted_file() const;
+    void setStarted_file(bool value);
+    QString tempDLine;
 
 signals:
     void validDataReady();
@@ -66,17 +76,21 @@ private:
     QLabel *current_date;
     QLCDNumber *mainDisplay;
     QPushButton *graph_button;
+    QFile currentFile;
 
 
     int data_point;
 	double start_time_seconds;
     double main_display_value;
+    bool started_file;
 
     XmlDeviceReader* xmlDeviceReader;
     TwobTechDevice twobTechDevice;
     DeviceProfile deviceProfile;
     ParsedData parsedData;
+
     QList< QList<SerialDataItem> > allParsedRecordsList;
+    FileWriter fileWriter;
 
 
 };

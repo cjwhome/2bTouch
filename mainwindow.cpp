@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    this->setStarted_file(false);       //init to false everytime restarts
 
     QWidget *centralWidget = new QWidget();
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	
     mainDisplay = new QLCDNumber();
 
+    //writeFile();
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -113,6 +114,7 @@ void MainWindow::createDevice(){
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
+    deviceProfile.setBaud_rate(twobTechDevice.getBaud_rate());
     qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
     qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
@@ -162,7 +164,7 @@ void MainWindow::setupSerial(){
 
     serialPort->setPortName(deviceProfile.getCom_port());
 
-    serialPort->setBaudRate(9600, QSerialPort::AllDirections);
+    serialPort->setBaudRate(deviceProfile.getBaud_rate(), QSerialPort::AllDirections);
     s_serialThread = new SerialThread();
 
     if(!s_serialThread->startSerial(serialPort))
@@ -180,7 +182,7 @@ void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
-        //displayGraph->setData(x, y);
+        displayGraph->setData(x, y);
         emit validDataReady();
     }
 }
@@ -192,13 +194,13 @@ bool MainWindow::parseDataLine(QString dLine){
     QVector<double> t,u;
     QDateTime tempDate;
 
-	double current_seconds;
-    double ellapsed_seconds;
+    tempDLine = dLine;
 
     dLine.remove(QRegExp("[\\n\\t\\r]"));
     qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==deviceProfile.getNumber_of_columns()){
+
         QList<SerialDataItem> parsedDataRecord;       //create an list of parsed data to append to the list of all parsed records
         for(int a=0;a<deviceProfile.getNumber_of_columns();a++){
             SerialDataItem serialDataItem;
@@ -211,32 +213,29 @@ bool MainWindow::parseDataLine(QString dLine){
         tempDate = QDateTime::fromString(fields[deviceProfile.getDate_position()]+fields[deviceProfile.getTime_position()], "dd/MM/yyhh:mm:ss");
         if(tempDate.date().year()<2000)
             tempDate = tempDate.addYears(100);      //only if century is not part of the format
+
         SerialDataItem serialDataItemb;
         serialDataItemb.setDateTime(tempDate);
         parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
 
-        if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS)
+        if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS){
+
             allParsedRecordsList.append(parsedDataRecord);
-        else{
+        }else{
+
             allParsedRecordsList.removeFirst();
             allParsedRecordsList.append(parsedDataRecord);
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        //tempDateTime = QDateTime::fromString(fields[DATE_COLUMN]+fields[TIME_COLUMN], "dd/MM/yyhh:mm:ss");
-        //tempDateTime = tempDateTime.addYears(100);			//for some reason, it assumes the date is 19XX instead of 20XX
-        //current_seconds = tempDateTime.toTime_t();			//convert to seconds;
-        //if(start_time_seconds > current_seconds)
-        //	start_time_seconds = current_seconds;
-        //ellapsed_seconds = current_seconds - start_time_seconds;
         updateDisplay();
 
 
-        //x.insert(data_point,data_point);
-        //y.insert(data_point,current_ozone);
-        //t=x;                    //copy the vectors to order them to get high and low for range
-        //u=y;
-        //data_point++;
+        x.insert(data_point,data_point);
+        y.insert(data_point,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        t=x;                    //copy the vectors to order them to get high and low for range
+        u=y;
+        data_point++;
 
         return true;
 
@@ -250,6 +249,11 @@ bool MainWindow::parseDataLine(QString dLine){
 void MainWindow::updateDisplay(void){
     double current_value;
 
+    if(!getStarted_file()){
+        qDebug()<<"File not started yet, attempting to start file";
+
+        this->createFileName();
+    }
     SerialDataItem tempSerialDataItem;
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
     current_value = tempSerialDataItem.getDvalue();
@@ -260,7 +264,8 @@ void MainWindow::updateDisplay(void){
     current_time->setText(tempSerialDataItem.getDateTime().toString());
 
     showStats->setData(&allParsedRecordsList, &deviceProfile);
-    showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
+    //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
+    this->writeFile();
 }
 
 void MainWindow::displayBigPlot(void){
@@ -284,6 +289,52 @@ void MainWindow::displayStats(void){
     showStats->show();
 }
 
-/*bool MainWindow::yLessThan(const int &p1, const int &p2){
-	return p1()<p2();
-}*/
+bool MainWindow::getStarted_file() const
+{
+    return started_file;
+}
+
+void MainWindow::setStarted_file(bool value)
+{
+    started_file = value;
+}
+
+void MainWindow::initFile(void){
+    //determine file location - if there is a usb drive, use it.  Otherwise use local drive home directory
+    //If there isn't a usb drive, always check if one is there each cycle.  If it does find one, make a button visible "USB" that blinks?
+    //Also have option to transfer files to usb drive that are local and an option to clear local files
+    //Next check for directory labeled with device name.  If not there, create it.
+    //This is now the path for all files to be saved
+    //
+
+
+}
+
+void MainWindow::createFileName(void){
+    if(allParsedRecordsList.empty())
+        return;
+
+    if(fileWriter.createDataFolder(deviceProfile.getDevice_name()))
+        qDebug()<<"found usb mounted at path:"<<fileWriter.getUsbPath();
+    SerialDataItem tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size()-1).at(deviceProfile.getDate_position());
+    QDateTime tempDateTime = tempSerialDataItem.getDateTime();
+
+    QString fileName = tempDateTime.toString("ddMMyyhhmmss")+".csv";
+    qDebug()<<"Filename:"<<fileName;
+    currentFile.setFileName(fileName);
+    //currentFile = new QFile(fileName);
+    this->setStarted_file(true);
+}
+
+void MainWindow::writeFile(void){
+
+    if(currentFile.open(QIODevice::Append))
+    {
+        qDebug()<<"Writing file";
+        QTextStream stream(&currentFile);
+        stream<<tempDLine;
+        currentFile.close();
+    }
+}
+
+

@@ -4,7 +4,7 @@
 
 #define SECONDS_IN_ONE_MINUTE 60
 #define SECONDS_IN_ONE_HOUR 3600
-#define SECOND_IN_EIGHT_HOURS 28800
+#define SECONDS_IN_EIGHT_HOURS 28800
 
 ShowStats::ShowStats(QWidget *parent) :
     QMainWindow(parent),
@@ -77,6 +77,8 @@ ShowStats::ShowStats(QWidget *parent) :
     gridLayout->addWidget(diagnosticC_output,5,1,1,1,0);
     gridLayout->addWidget(diagnosticC_units_label,5,2,1,1,0);
 
+    connect(home_button, SIGNAL(clicked()), this, SLOT(home()));
+
     //measurementDisplayLayoutArea->addWidget();
     horizontalLayout->addLayout(gridLayout);
 
@@ -96,6 +98,7 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
 
     tempSerialDataItem = records->at(records->size()-1).at(deviceProfile->getMain_display_position());
     non_avg_main_label->setText(deviceProfile->getMain_display_name());
+    //non_avg_main_label->setText("O<sub>3</sub>");
     non_avg_main_output->setText(QString::number(tempSerialDataItem.getDvalue()));
     non_avg_main_units_label->setText(deviceProfile->getMain_display_units());
 
@@ -105,18 +108,18 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
     //first, find the time 1 hour from timestamp
     tempSerialDataItem = records->at(records->size()-1).at(deviceProfile->getDate_position());
     QDateTime currentTimeStamp = tempSerialDataItem.getDateTime();
-    qDebug()<<"Current time stamp:"<<currentTimeStamp.toString();
+
     int counter = records->size()-1;
-    qDebug()<<"Counter:"<<counter;
+
     bool position_found = false;
     while(counter && !position_found){
         counter--;
         tempSerialDataItem = records->at(counter).at(deviceProfile->getDate_position());
         QDateTime tempTimeStamp = tempSerialDataItem.getDateTime();
-        qDebug()<<"Time:"<<tempTimeStamp.toString();
+        //qDebug()<<"Time:"<<tempTimeStamp.toString();
         double diff = tempTimeStamp.secsTo(currentTimeStamp);
-        qDebug()<<"Diff:"<<diff;
-        if(diff>=SECONDS_IN_ONE_MINUTE)
+        //qDebug()<<"Diff:"<<diff;
+        if(diff>=SECONDS_IN_ONE_HOUR)
             position_found = true;
     }
 
@@ -125,14 +128,41 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
     for(int i=counter;i<records->size()-1;i++){
         tempSerialDataItem = records->at(i).at(deviceProfile->getMain_display_position());
         sum += tempSerialDataItem.getDvalue();
-        qDebug()<<"Sum:"<<sum;
+        //qDebug()<<"Sum:"<<sum;
     }
     double hr_average = sum/((records->size()-1)-counter);
-    qDebug()<<"Average = "<<hr_average<<", using a count of:"<<records->size()-1-counter;
+
+
 
     hour_avg_main_label->setText("HrAvg "+deviceProfile->getMain_display_name());
     hour_avg_main_output->setText(QString::number(hr_average));
     hour_avg_main_units_label->setText(deviceProfile->getMain_display_units());
+
+
+    counter = records->size()-1;
+    position_found = false;
+    while(counter && !position_found){
+        counter--;
+        tempSerialDataItem = records->at(counter).at(deviceProfile->getDate_position());
+        QDateTime tempTimeStamp = tempSerialDataItem.getDateTime();
+        //qDebug()<<"Time:"<<tempTimeStamp.toString();
+        double diff = tempTimeStamp.secsTo(currentTimeStamp);
+        //qDebug()<<"Diff:"<<diff;
+        if(diff>=SECONDS_IN_EIGHT_HOURS)
+            position_found = true;
+    }
+
+    double eight_hr_average = sum/((records->size()-1)-counter);
+
+
+
+    eight_hour_avg_main_label->setText("8HrAvg "+deviceProfile->getMain_display_name());
+    eight_hour_avg_main_output->setText(QString::number(eight_hr_average));
+    //eight_hour_avg_main_output->setStyleSheet("QLabel { background-color : red; color : blue; }");
+    if(eight_hr_average>100)
+        eight_hour_avg_main_output->setStyleSheet("QLabel { color : red; }");       //just testing, in the future, all main display colors are set from user setting
+    //eight_hour_avg_main_output->setText("<font color='red'>Some text</font>");
+    eight_hour_avg_main_units_label->setText(deviceProfile->getMain_display_units());
 
     tempSerialDataItem = records->at(records->size()-1).at(deviceProfile->getDiagnosticA_position());
     diagnosticA_label->setText(deviceProfile->getDiagnosticA_name());
@@ -194,3 +224,9 @@ void ShowStats::calculateMaxMinMedian(QList< QList<SerialDataItem> > &records, i
         qDebug()<<"End";
     }*/
 }
+
+void ShowStats::home()
+{
+    this->close();
+}
+

@@ -60,6 +60,9 @@ public:
 
 
 
+    int getBaud_rate() const;
+    void setBaud_rate(int value);
+
 private:
     QString device_name;
     QString main_display_name;
@@ -78,6 +81,7 @@ private:
     int date_position;          //this tells where the date/time is located in the qlist
     int time_position;
     int number_of_columns;
+    int baud_rate;
 };
 
 #endif // DEVICEPROFILE_H

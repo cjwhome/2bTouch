@@ -175,5 +175,15 @@ void DeviceProfile::setDiagnosticC_position(int value)
     diagnosticC_position = value;
 }
 
+int DeviceProfile::getBaud_rate() const
+{
+    return baud_rate;
+}
+
+void DeviceProfile::setBaud_rate(int value)
+{
+    baud_rate = value;
+}
+
 
 

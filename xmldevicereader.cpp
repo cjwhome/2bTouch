@@ -73,6 +73,9 @@ void XmlDeviceReader::processDevice() {
         }else if(attr.name().toString() == QLatin1String("portName")){
             qDebug()<<"Using port:"<<attr.value().toString();
             twobTechDevice.setCom_port(attr.value().toString());
+        }else if(attr.name().toString() == QLatin1String("baudRate")){
+            qDebug()<<"Baud Rate:"<<attr.value().toString();
+            twobTechDevice.setBaud_rate(attr.value().toInt());
         }
     }
 

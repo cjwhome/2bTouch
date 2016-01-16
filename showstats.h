@@ -26,6 +26,9 @@ public:
     ~ShowStats();
     void setData(QList< QList<SerialDataItem> > *records, DeviceProfile *deviceProfile);    //send the data records list and device profile so the displays can be updated with the latest data
     void calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, int element_to_sort);
+private slots:
+    void home();        //close the window if user presses the home button
+
 private:
     Ui::ShowStats *ui;
 
