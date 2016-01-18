@@ -276,7 +276,7 @@ void MainWindow::updateDisplay(void){
     //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
     this->writeFile();
     if(!y.isEmpty()){
-        displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
+        //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
         displayGraph->setData(x, y);
         displayGraph->drawPlot();
     }else
