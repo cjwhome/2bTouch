@@ -189,7 +189,7 @@ void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
-        displayGraph->setData(x, y);
+        //displayGraph->setData(x, y);
         emit validDataReady();
     }
 }
@@ -235,15 +235,13 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        updateDisplay();
-
-
         x.insert(data_point,data_point);
         y.insert(data_point,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
         data_point++;
 
+        updateDisplay();
         return true;
 
 
