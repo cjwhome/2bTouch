@@ -44,7 +44,7 @@ bool FileWriter::checkIfUsbMounted(){
 
             QStringList stringList = mount_status.split(" ");
             for(int i=0;i<stringList.size();i++){
-                if(stringList[i].contains("usb")){
+                if(stringList[i].contains("usb0")){
                     this->setUsbPath(stringList[i]);
                     qDebug()<<"Found device located at: "<<getUsbPath()<<" after usbdevice string";
                     return true;
@@ -62,7 +62,7 @@ bool FileWriter::createDataFolder(QString deviceName){
 
     if(checkIfUsbMounted()){
         full_data_path = usbPath + "/" + deviceName;
-        qDebug()<<"Full data path is:"<<full_data_path;
+        qDebug()<<"USB Full data path is:"<<full_data_path;
         //QDir dir(full_data_path);
         if(!QDir(full_data_path).exists()){
             if(!QDir().mkdir(full_data_path)){
@@ -73,12 +73,41 @@ bool FileWriter::createDataFolder(QString deviceName){
         full_data_path += "/";
         if(!QDir(full_data_path).exists()){
             if(!QDir().mkdir(full_data_path)){
-                qDebug()<<"Tried but could not make mode folder";
+                qDebug()<<"Tried but could not make usb device folder";
                 return false;
             }
         }
 
         return true;
-    }else
-        return false;
+    }else{
+        full_data_path = "~/" + deviceName;
+        qDebug()<<"Local Full data path is:"<<full_data_path;
+        //QDir dir(full_data_path);
+        if(!QDir(full_data_path).exists()){
+            if(!QDir().mkdir(full_data_path)){
+                qDebug()<<"Tried but could not make base data folder";
+                return false;
+            }
+        }
+        full_data_path += "/";
+        if(!QDir(full_data_path).exists()){
+            if(!QDir().mkdir(full_data_path)){
+                qDebug()<<"Tried but could not make local device folder";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+}
+
+QString FileWriter::getFull_data_path() const
+{
+    return full_data_path;
+}
+
+void FileWriter::setFull_data_path(const QString &value)
+{
+    full_data_path = value;
 }

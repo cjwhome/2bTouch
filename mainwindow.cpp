@@ -13,18 +13,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->setStarted_file(false);       //init to false everytime restarts
+    started_file = false;
 
     QWidget *centralWidget = new QWidget();
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    QHBoxLayout *mainDisplayLayout = new QHBoxLayout();
     QVBoxLayout *buttonLayout = new QVBoxLayout();
 	QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
     current_time = new QLabel();
     current_date = new QLabel();
-	
-    mainDisplay = new QLCDNumber();
-
-    //writeFile();
+    main_label = new QLabel();
+    main_units_label = new QLabel();
+    main_lcd_display = new QLCDNumber();
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -49,15 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
     QPushButton *stats_button = new QPushButton("Stats");
-
     stats_button->setFixedSize(70,62);
-
-    QGridLayout *gridLayout = new QGridLayout();
-
-
-    QFont labelFont("Arial", 18, QFont::Bold);
-    current_time->setFont(labelFont);
-    //gridLayout->addWidget(current_time,2,1,1,1,0);
+    QFont labelFont("Arial", 30, QFont::ForceIntegerMetrics);
+    QFont timeFont("Arial", 18, QFont::ForceIntegerMetrics);
+    current_time->setFont(timeFont);
+    main_label->setFont(labelFont);
+    main_units_label->setFont(labelFont);
 
 
     buttonLayout->addWidget(configure_button);
@@ -65,16 +62,26 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonLayout->addWidget(stats_button);
     horizontalLayout->addLayout(buttonLayout);
     horizontalLayout->addWidget(myFrame);
-    measurementDisplayLayoutArea->addWidget(mainDisplay);
+    mainDisplayLayout->addWidget(main_label);
+    mainDisplayLayout->addWidget(main_lcd_display);
+    mainDisplayLayout->addWidget(main_units_label);
+    mainDisplayLayout->setAlignment(Qt::AlignCenter);
+    mainDisplayLayout->setSpacing(5);
+    measurementDisplayLayoutArea->addLayout(mainDisplayLayout);
     measurementDisplayLayoutArea->addWidget(current_time);
+    measurementDisplayLayoutArea->setAlignment(Qt::AlignCenter);
+    measurementDisplayLayoutArea->setSpacing(50);
     //measurementDisplayLayoutArea->addLayout(gridLayout);
     horizontalLayout->addLayout(measurementDisplayLayoutArea);
 
 
-    mainDisplay->setFixedSize(300, 100);
-    mainDisplay->setDigitCount(10);
-    //mainDisplay->display("0.0 ppb");
-    mainDisplay->setFrameStyle(QFrame::NoFrame);
+    //main_lcd_display->setFixedSize(50, 50);
+    main_lcd_display->setMinimumHeight(120);
+    main_lcd_display->setMinimumWidth(100);
+
+    //main_lcd_display->setDigitCount(2);
+
+    main_lcd_display->setFrameStyle(QFrame::NoFrame);
 
 	
     data_point = 0;
@@ -249,7 +256,7 @@ bool MainWindow::parseDataLine(QString dLine){
 void MainWindow::updateDisplay(void){
     double current_value;
 
-    if(!getStarted_file()){
+    if(!started_file){
         qDebug()<<"File not started yet, attempting to start file";
 
         this->createFileName();
@@ -257,7 +264,9 @@ void MainWindow::updateDisplay(void){
     SerialDataItem tempSerialDataItem;
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
     current_value = tempSerialDataItem.getDvalue();
-    mainDisplay->display(QString::number(current_value) +" " + deviceProfile.getMain_display_units());
+    main_label->setText(deviceProfile.getMain_display_name()+" =");
+    main_lcd_display->display(QString::number(current_value));
+    main_units_label->setText(deviceProfile.getMain_display_units());
 
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
 
@@ -266,14 +275,18 @@ void MainWindow::updateDisplay(void){
     showStats->setData(&allParsedRecordsList, &deviceProfile);
     //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
     this->writeFile();
+    if(!y.isEmpty()){
+        displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
+        displayGraph->setData(x, y);
+        displayGraph->drawPlot();
+    }else
+        qDebug()<<"No Data to Plot";
 }
 
 void MainWindow::displayBigPlot(void){
-    //displayGraph = new DisplayGraph();
-    //displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    displayGraph->setData(x, y);
-    displayGraph->drawPlot();
-    displayGraph->show();
+
+        displayGraph->show();
+
 }
  
 void MainWindow::clearPlotData(void){
@@ -289,15 +302,7 @@ void MainWindow::displayStats(void){
     showStats->show();
 }
 
-bool MainWindow::getStarted_file() const
-{
-    return started_file;
-}
 
-void MainWindow::setStarted_file(bool value)
-{
-    started_file = value;
-}
 
 void MainWindow::initFile(void){
     //determine file location - if there is a usb drive, use it.  Otherwise use local drive home directory
@@ -308,22 +313,26 @@ void MainWindow::initFile(void){
     //
 
 
+
 }
 
 void MainWindow::createFileName(void){
+    QString dataPath;
     if(allParsedRecordsList.empty())
         return;
 
-    if(fileWriter.createDataFolder(deviceProfile.getDevice_name()))
-        qDebug()<<"found usb mounted at path:"<<fileWriter.getUsbPath();
+    if(fileWriter.createDataFolder(deviceProfile.getDevice_name())){
+        //qDebug()<<"found usb mounted at path:"<<fileWriter.getUsbPath();
+        dataPath = fileWriter.getFull_data_path();
+    }
     SerialDataItem tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size()-1).at(deviceProfile.getDate_position());
     QDateTime tempDateTime = tempSerialDataItem.getDateTime();
 
-    QString fileName = tempDateTime.toString("ddMMyyhhmmss")+".csv";
+    QString fileName = dataPath + tempDateTime.toString("ddMMyyhhmmss")+".csv";
     qDebug()<<"Filename:"<<fileName;
     currentFile.setFileName(fileName);
     //currentFile = new QFile(fileName);
-    this->setStarted_file(true);
+    started_file = true;
 }
 
 void MainWindow::writeFile(void){

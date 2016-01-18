@@ -46,9 +46,9 @@
               baudRate="2400">
         <dataFormat>
           <dataItems>
-            <dataItem name="Ozone" type="Decimal" units="ppb" priority="0"/>
+            <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
             <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
-            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
+            <dataItem name="Cell Press" type="Decimal" units="Torr" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>
             <dataItem name="PDV" type="Decimal" units="V" priority="4"/>
             <dataItem name="Date" type="DateTime" priority="5"/>

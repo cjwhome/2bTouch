@@ -17,10 +17,17 @@ public:
     void setUsbPath(const QString &value);
 
     bool createDataFolder(QString deviceName);
+
+    QString getFull_data_path() const;
+    void setFull_data_path(const QString &value);
+
 private:
     QString usbPath;
     QString usb_device_root;
+    QString local_path;
     QString full_data_path;
+    bool usbMounted;
+
 };
 
 #endif // FILEWRITER_H

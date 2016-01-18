@@ -24,6 +24,7 @@ public:
 
     void drawPlot();
 
+    void setYaxisLabel(QString label);
 signals:
     void userClearedPlot(void);
 

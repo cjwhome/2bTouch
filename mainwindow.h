@@ -45,9 +45,8 @@ public:
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
     void writeFile();
 
-    bool getStarted_file() const;
-    void setStarted_file(bool value);
-    QString tempDLine;
+
+
 
 signals:
     void validDataReady();
@@ -74,10 +73,10 @@ private:
     QLabel *current_time;
     QLabel *current_time_label;
     QLabel *current_date;
-    QLCDNumber *mainDisplay;
+    QLCDNumber *main_lcd_display;
     QPushButton *graph_button;
     QFile currentFile;
-
+    QString tempDLine;
 
     int data_point;
 	double start_time_seconds;

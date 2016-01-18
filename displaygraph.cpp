@@ -81,7 +81,7 @@ void DisplayGraph::drawPlot(){
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    customPlot->yAxis->setLabel("Ozone (ppb)");
+    //customPlot->yAxis->setLabel("Ozone (ppb)");
     // set axes ranges, so we see all data:
     //customPlot->xAxis->setRange(0, 100);
     std::sort(u.begin(),u.end());
@@ -90,5 +90,9 @@ void DisplayGraph::drawPlot(){
     customPlot->yAxis->setRange(u.first()-1, u.last()+1);
     customPlot->replot();
 
+}
+
+void DisplayGraph::setYaxisLabel(QString label){
+    customPlot->yAxis->setLabel(label);
 }
 
