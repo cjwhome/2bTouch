@@ -29,7 +29,7 @@ signals:
     void userClearedPlot(void);
 
 public slots:
-    void blah();
+    void redrawPlot();
     void clear();
 
 private slots:

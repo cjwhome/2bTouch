@@ -27,8 +27,8 @@
         </dataFormat>
       </device>
       <device name="IAQ"
-              portName="ttyAMA0"
-              baudRate="9600">
+              portName="ttyUSB0"
+              baudRate="2400">
         <dataFormat>
           <dataItems>
             <dataItem name="Ozone" type="Decimal" priority="0"/>

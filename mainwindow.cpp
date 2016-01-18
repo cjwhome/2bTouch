@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     displayGraph = new DisplayGraph();
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
-    //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(blah()));
+    connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
     showStats = new ShowStats();
@@ -189,7 +189,7 @@ void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
-        //displayGraph->setData(x, y);
+        displayGraph->setData(x, y);
         emit validDataReady();
     }
 }
@@ -273,16 +273,17 @@ void MainWindow::updateDisplay(void){
     showStats->setData(&allParsedRecordsList, &deviceProfile);
     //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
     this->writeFile();
-    if(!y.isEmpty()){
+    /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
         displayGraph->setData(x, y);
         displayGraph->drawPlot();
     }else
-        qDebug()<<"No Data to Plot";
+        qDebug()<<"No Data to Plot";*/
 }
 
 void MainWindow::displayBigPlot(void){
-
+        displayGraph->setData(x, y);
+        displayGraph->drawPlot();
         displayGraph->show();
 
 }

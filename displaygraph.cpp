@@ -62,7 +62,7 @@ void DisplayGraph::setData(QVector<double> a, QVector<double> b){
     //qDebug()<<"Size of x:"<<x.size();
     //qDebug()<<"Size of y:"<<y.size();
 }
-void DisplayGraph::blah(){
+void DisplayGraph::redrawPlot(){
     drawPlot();
 
 }
