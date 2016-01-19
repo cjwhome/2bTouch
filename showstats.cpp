@@ -135,7 +135,7 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
 
 
     hour_avg_main_label->setText("HrAvg "+deviceProfile->getMain_display_name());
-    hour_avg_main_output->setText(QString::number(hr_average));
+    hour_avg_main_output->setText(QString::number(hr_average,'f',1));
     hour_avg_main_units_label->setText(deviceProfile->getMain_display_units());
 
 
@@ -157,7 +157,7 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
 
 
     eight_hour_avg_main_label->setText("8HrAvg "+deviceProfile->getMain_display_name());
-    eight_hour_avg_main_output->setText(QString::number(eight_hr_average));
+    eight_hour_avg_main_output->setText(QString::number(eight_hr_average,'f', 1));
     //eight_hour_avg_main_output->setStyleSheet("QLabel { background-color : red; color : blue; }");
     if(eight_hr_average>100)
         eight_hour_avg_main_output->setStyleSheet("QLabel { color : red; }");       //just testing, in the future, all main display colors are set from user setting

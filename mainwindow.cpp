@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
+
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
     showStats = new ShowStats();
