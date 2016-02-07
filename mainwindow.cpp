@@ -16,9 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
 
     QWidget *centralWidget = new QWidget();
-    QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    QVBoxLayout *verticalLayout = new QVBoxLayout();
+    QHBoxLayout *topTimeLayout = new QHBoxLayout();
     QHBoxLayout *mainDisplayLayout = new QHBoxLayout();
-    QVBoxLayout *buttonLayout = new QVBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
 	QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
     current_time = new QLabel();
     current_date = new QLabel();
@@ -29,27 +30,32 @@ MainWindow::MainWindow(QWidget *parent) :
     //add the separator line:
     QFrame* myFrame = new QFrame();
     myFrame->setFrameShape(QFrame::VLine);
+    QFrame* horizontalFrame = new QFrame();
+    horizontalFrame->setFrameShape(QFrame::HLine);
 
     QPixmap configPixmap(":/buttons/pics/config.jpg");
     QIcon configButtonIcon(configPixmap);
 
     QPushButton *configure_button = new QPushButton();
     configure_button->setIcon(configButtonIcon);
-    configure_button->setIconSize(QSize(70,62));
-    configure_button->setFixedSize(70,62);
+    configure_button->setIconSize(QSize(35,30));
+    configure_button->setFixedSize(35,30);
 
 
-
+    QPushButton *homeButton = new QPushButton();
+    QPixmap homePixmap(":/icons/icons/home_icon.png");
+    QIcon homeButtonIcon(homePixmap);
+    homeButton->setIcon(homeButtonIcon);
 
     graph_button = new QPushButton("Graph");
     //graph_button->setIcon(graphButtonIcon);
     //graph_button->setIconSize(QSize(70,62));
-    graph_button->setFixedSize(70,62);
+    graph_button->setFixedSize(35,30);
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
     QPushButton *stats_button = new QPushButton("Stats");
-    stats_button->setFixedSize(70,62);
+    stats_button->setFixedSize(35,30);
     QFont labelFont("Arial", 30, QFont::ForceIntegerMetrics);
     QFont timeFont("Arial", 18, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
@@ -57,22 +63,26 @@ MainWindow::MainWindow(QWidget *parent) :
     main_units_label->setFont(labelFont);
 
 
-    buttonLayout->addWidget(configure_button);
-    buttonLayout->addWidget(graph_button);
-    buttonLayout->addWidget(stats_button);
-    horizontalLayout->addLayout(buttonLayout);
-    horizontalLayout->addWidget(myFrame);
+    topTimeLayout->addWidget(current_time);
+    topTimeLayout->addWidget(current_date);
+
     mainDisplayLayout->addWidget(main_label);
     mainDisplayLayout->addWidget(main_lcd_display);
     mainDisplayLayout->addWidget(main_units_label);
     mainDisplayLayout->setAlignment(Qt::AlignCenter);
     mainDisplayLayout->setSpacing(5);
     measurementDisplayLayoutArea->addLayout(mainDisplayLayout);
-    measurementDisplayLayoutArea->addWidget(current_time);
+    //measurementDisplayLayoutArea->addWidget(current_time);
     measurementDisplayLayoutArea->setAlignment(Qt::AlignCenter);
     measurementDisplayLayoutArea->setSpacing(50);
     //measurementDisplayLayoutArea->addLayout(gridLayout);
-    horizontalLayout->addLayout(measurementDisplayLayoutArea);
+    verticalLayout->addLayout(topTimeLayout);
+    verticalLayout->addLayout(measurementDisplayLayoutArea);
+    verticalLayout->addWidget(horizontalFrame);
+    buttonLayout->addWidget(homeButton);
+    buttonLayout->addWidget(graph_button);
+    buttonLayout->addWidget(stats_button);
+    verticalLayout->addLayout(buttonLayout);
 
 
     //main_lcd_display->setFixedSize(50, 50);
@@ -87,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     data_point = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
-    centralWidget->setLayout(horizontalLayout);
+    centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
     displayGraph = new DisplayGraph();

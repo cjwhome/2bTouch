@@ -10,4 +10,7 @@
     <qresource prefix="/">
         <file>deviceConfig.xml</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file>icons/home-icon.png</file>
+    </qresource>
 </RCC>
