@@ -46,12 +46,10 @@ private slots:
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout;
+    QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
-    QVBoxLayout *buttonLayout;
-    QPushButton *home_button;
-    QPushButton *clear_button;
-    QPushButton *settings_button;
+    QHBoxLayout *buttonLayout;
+
     QPushButton *zoom_in_button;
     QPushButton *zoom_out_button;
     QCustomPlot *customPlot;

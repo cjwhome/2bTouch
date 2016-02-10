@@ -8,18 +8,31 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 {
     ui->setupUi(this);
     centralWidget = new QWidget();
-    horizontalLayout = new QHBoxLayout();
+    verticalLayout = new QVBoxLayout();
     zoomHLayout = new QHBoxLayout();
-    buttonLayout = new QVBoxLayout();
+    buttonLayout = new QHBoxLayout();
 
-    home_button = new QPushButton("Home");
-    home_button->setFixedSize(70,62);
+    QPushButton *homeButton = new QPushButton();
+    QPixmap homePixmap(":/buttons/pics/home-icon.jpg");
+    QIcon homeButtonIcon(homePixmap);
+    homeButton->setIcon(homeButtonIcon);
+    homeButton->setIconSize(QSize(35,31));
+    homeButton->setFixedSize(35,31);
 
-    clear_button = new QPushButton("Clear");
-    clear_button->setFixedSize(70,62);
+    QPushButton *clearButton = new QPushButton();
+    QPixmap clearPixmap(":/buttons/pics/Clear-icon.jpg");
+    QIcon clearButtonIcon(clearPixmap);
+    clearButton->setIcon(clearButtonIcon);
+    clearButton->setIconSize(QSize(35,31));
+    clearButton->setFixedSize(35,31);
 
-    settings_button = new QPushButton("Settings");
-    settings_button->setFixedSize(70,62);
+    QPushButton *settingsButton = new QPushButton();
+    QPixmap settingsPixmap(":/buttons/pics/Settings-icon.jpg");
+    QIcon settingsButtonIcon(settingsPixmap);
+    settingsButton->setIcon(settingsButtonIcon);
+    settingsButton->setIconSize(QSize(35,31));
+    settingsButton->setFixedSize(35,31);
+
     zoom_in_button = new QPushButton("+");
     zoom_in_button->setFixedSize(30,30);
     zoomHLayout->addWidget(zoom_in_button);
@@ -28,24 +41,26 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoom_out_button->setFixedSize(30,30);
     zoomHLayout->addWidget(zoom_out_button);
 
+    buttonLayout->addWidget(homeButton);
     buttonLayout->addLayout(zoomHLayout);
-    buttonLayout->addWidget(home_button);
-    buttonLayout->addWidget(clear_button);
+    buttonLayout->addWidget(clearButton);
 
-    buttonLayout->addWidget(settings_button);
+    buttonLayout->addWidget(settingsButton);
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
-    myFrame->setFrameShape(QFrame::VLine);
+    myFrame->setFrameShape(QFrame::HLine);
 
     customPlot = new QCustomPlot();
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     // create graph and assign data to it:
     customPlot->addGraph();
-    horizontalLayout->addLayout(buttonLayout);
-    horizontalLayout->addWidget(myFrame);
-    horizontalLayout->addWidget(customPlot);
-    this->setLayout(horizontalLayout);
+    verticalLayout->addWidget(customPlot);
+    verticalLayout->addWidget(myFrame);
+    verticalLayout->addLayout(buttonLayout);
+
+
+    this->setLayout(verticalLayout);
     //horizontalLayout->setSpacing(35);
     //centralWidget->setLayout(horizontalLayout);
     //setCentralWidget(centralWidget);
@@ -56,8 +71,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoom_out_button->setAutoRepeatInterval(25);
     zoom_out_button->setAutoRepeatDelay(500);
 
-    connect(home_button, SIGNAL(released()), this, SLOT(goback()));
-    connect(clear_button, SIGNAL(clicked()), this, SLOT(clear()));
+    connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
+    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(zoom_in_button, SIGNAL(pressed()), this, SLOT(zoomIn()));
     connect(zoom_out_button, SIGNAL(clicked()), this, SLOT(zoomOut()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:

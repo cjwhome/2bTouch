@@ -33,29 +33,38 @@ MainWindow::MainWindow(QWidget *parent) :
     QFrame* horizontalFrame = new QFrame();
     horizontalFrame->setFrameShape(QFrame::HLine);
 
-    QPixmap configPixmap(":/buttons/pics/config.jpg");
+    QPixmap configPixmap(":/buttons/pics/Settings-icon.jpg");
     QIcon configButtonIcon(configPixmap);
 
     QPushButton *configure_button = new QPushButton();
     configure_button->setIcon(configButtonIcon);
-    configure_button->setIconSize(QSize(35,30));
-    configure_button->setFixedSize(35,30);
+    configure_button->setIconSize(QSize(35,31));
+    configure_button->setFixedSize(35,31);
 
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/icons/icons/home_icon.png");
+    QPixmap homePixmap(":/buttons/pics/home-icon.jpg");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
+    homeButton->setIconSize(QSize(35,31));
+    homeButton->setFixedSize(35,31);
 
-    graph_button = new QPushButton("Graph");
-    //graph_button->setIcon(graphButtonIcon);
-    //graph_button->setIconSize(QSize(70,62));
-    graph_button->setFixedSize(35,30);
+    graph_button = new QPushButton();
+    QPixmap chartPixmap(":/buttons/pics/chart.jpg");
+    QIcon chartButtonIcon(chartPixmap);
+
+    graph_button->setIcon(chartButtonIcon);
+    graph_button->setIconSize(QSize(35,31));
+    graph_button->setFixedSize(35,31);
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
-    QPushButton *stats_button = new QPushButton("Stats");
-    stats_button->setFixedSize(35,30);
+    QPushButton *stats_button = new QPushButton();
+    QPixmap statsPixmap(":/buttons/pics/stats-icon.jpg");
+    QIcon statsButtonIcon(statsPixmap);
+    stats_button->setIcon(statsButtonIcon);
+    stats_button->setIconSize(QSize(35,31));
+    stats_button->setFixedSize(35,31);
     QFont labelFont("Arial", 30, QFont::ForceIntegerMetrics);
     QFont timeFont("Arial", 18, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
@@ -80,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(measurementDisplayLayoutArea);
     verticalLayout->addWidget(horizontalFrame);
     buttonLayout->addWidget(homeButton);
+    buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
     verticalLayout->addLayout(buttonLayout);
