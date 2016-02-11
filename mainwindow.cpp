@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     started_file = false;
+    this->setStyleSheet("background-color:white;");
 
     QWidget *centralWidget = new QWidget();
     QVBoxLayout *verticalLayout = new QVBoxLayout();

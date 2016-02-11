@@ -7,6 +7,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     ui(new Ui::DisplayGraph)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background-color:white;");
     centralWidget = new QWidget();
     verticalLayout = new QVBoxLayout();
     zoomHLayout = new QHBoxLayout();
@@ -84,6 +85,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
+
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
 

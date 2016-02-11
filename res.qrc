@@ -11,6 +11,7 @@
         <file>pics/Settings-icon.jpg</file>
         <file>pics/stats-icon.jpg</file>
         <file>pics/Clear-icon.jpg</file>
+        <file>pics/spreadsheet-icon.jpg</file>
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>
