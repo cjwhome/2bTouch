@@ -50,8 +50,7 @@ private:
     QHBoxLayout *zoomHLayout;
     QHBoxLayout *buttonLayout;
 
-    QPushButton *zoom_in_button;
-    QPushButton *zoom_out_button;
+
     QCustomPlot *customPlot;
     QVector<double> x,y;
 

@@ -34,13 +34,22 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     settingsButton->setIconSize(QSize(35,31));
     settingsButton->setFixedSize(35,31);
 
-    zoom_in_button = new QPushButton("+");
-    zoom_in_button->setFixedSize(30,30);
-    zoomHLayout->addWidget(zoom_in_button);
+    QPushButton *zoomInButton = new QPushButton();
+    QPixmap zoomInPixmap(":/buttons/pics/Zoom-In-icon.jpg");
+    QIcon zoomInButtonIcon(zoomInPixmap);
+    zoomInButton->setIcon(zoomInButtonIcon);
+    zoomInButton->setIconSize(QSize(35,31));
+    zoomInButton->setFixedSize(35,31);
 
-    zoom_out_button = new QPushButton("-");
-    zoom_out_button->setFixedSize(30,30);
-    zoomHLayout->addWidget(zoom_out_button);
+    QPushButton *zoomOutButton = new QPushButton();
+    QPixmap zoomOutPixmap(":/buttons/pics/Zoom-Out-icon.jpg");
+    QIcon zoomOutButtonIcon(zoomOutPixmap);
+    zoomOutButton->setIcon(zoomOutButtonIcon);
+    zoomOutButton->setIconSize(QSize(35,31));
+    zoomOutButton->setFixedSize(35,31);
+
+    zoomHLayout->addWidget(zoomOutButton);
+    zoomHLayout->addWidget(zoomInButton);
 
     buttonLayout->addWidget(homeButton);
     buttonLayout->addLayout(zoomHLayout);
@@ -65,17 +74,17 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     //horizontalLayout->setSpacing(35);
     //centralWidget->setLayout(horizontalLayout);
     //setCentralWidget(centralWidget);
-    zoom_in_button->setAutoRepeat(true);
-    zoom_in_button->setAutoRepeatInterval(25);
-    zoom_in_button->setAutoRepeatDelay(500);
-    zoom_out_button->setAutoRepeat(true);
-    zoom_out_button->setAutoRepeatInterval(25);
-    zoom_out_button->setAutoRepeatDelay(500);
+    zoomInButton->setAutoRepeat(true);
+    zoomInButton->setAutoRepeatInterval(25);
+    zoomInButton->setAutoRepeatDelay(500);
+    zoomInButton->setAutoRepeat(true);
+    zoomInButton->setAutoRepeatInterval(25);
+    zoomInButton->setAutoRepeatDelay(500);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(zoom_in_button, SIGNAL(pressed()), this, SLOT(zoomIn()));
-    connect(zoom_out_button, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
+    connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
@@ -87,10 +96,6 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-
-
-
-
 
 }
 
