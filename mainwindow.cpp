@@ -67,14 +67,17 @@ MainWindow::MainWindow(QWidget *parent) :
     stats_button->setIconSize(QSize(35,31));
     stats_button->setFixedSize(35,31);
     QFont labelFont("Arial", 30, QFont::ForceIntegerMetrics);
-    QFont timeFont("Arial", 18, QFont::ForceIntegerMetrics);
+    QFont timeFont("Arial", 10, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
+    current_date->setFont(timeFont);
     main_label->setFont(labelFont);
     main_units_label->setFont(labelFont);
 
-
-    topTimeLayout->addWidget(current_time);
+    topTimeLayout->addSpacing(190);
     topTimeLayout->addWidget(current_date);
+    topTimeLayout->addSpacing(150);
+    topTimeLayout->addWidget(current_time);
+
 
     mainDisplayLayout->addWidget(main_label);
     mainDisplayLayout->addWidget(main_lcd_display);
@@ -87,8 +90,11 @@ MainWindow::MainWindow(QWidget *parent) :
     measurementDisplayLayoutArea->setSpacing(50);
     //measurementDisplayLayoutArea->addLayout(gridLayout);
     verticalLayout->addLayout(topTimeLayout);
+    verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
+    verticalLayout->addSpacing(20);
     verticalLayout->addWidget(horizontalFrame);
+    verticalLayout->addSpacing(10);
     buttonLayout->addWidget(homeButton);
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
@@ -126,7 +132,8 @@ MainWindow::MainWindow(QWidget *parent) :
     xmlDeviceReader->read();
 
 
-    current_time->setText("Time");
+    current_time->setText("8:30:45");
+    current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
 }
