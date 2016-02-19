@@ -93,8 +93,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->graph(0)->setData(x, y);
     customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
-
+    //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
+    customPlot->xAxis->setTickLabelFont(QFont("Cabin", 8));
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
 }

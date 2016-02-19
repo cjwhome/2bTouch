@@ -44,6 +44,7 @@ public:
     void initFile();            //determine where the file will be saved (usb, locally)
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
     void writeFile();
+    void listFonts();
 
 
 
@@ -70,6 +71,7 @@ private:
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;
+    QLabel *main_measurement_display;
     QLabel *current_time;
     QLabel *current_time_label;
     QLabel *current_date;

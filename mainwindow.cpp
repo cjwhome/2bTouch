@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
 
+    listFonts();
+
     QWidget *centralWidget = new QWidget();
     QVBoxLayout *verticalLayout = new QVBoxLayout();
     QHBoxLayout *topTimeLayout = new QHBoxLayout();
@@ -26,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     current_date = new QLabel();
     main_label = new QLabel();
     main_units_label = new QLabel();
-    main_lcd_display = new QLCDNumber();
+    //main_lcd_display = new QLCDNumber();
+    main_measurement_display = new QLabel();
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -44,11 +47,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.jpg");
+    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
+    homeButton->setStyleSheet("QPushButton { border: none;}");
 
     graph_button = new QPushButton();
     QPixmap chartPixmap(":/buttons/pics/chart.jpg");
@@ -66,21 +70,27 @@ MainWindow::MainWindow(QWidget *parent) :
     stats_button->setIcon(statsButtonIcon);
     stats_button->setIconSize(QSize(35,31));
     stats_button->setFixedSize(35,31);
-    QFont labelFont("Arial", 30, QFont::ForceIntegerMetrics);
-    QFont timeFont("Arial", 10, QFont::ForceIntegerMetrics);
+    QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
+    QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
+
+    QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
     main_label->setFont(labelFont);
-    main_units_label->setFont(labelFont);
+    main_label->setStyleSheet("QLabel { color : darkblue; }");
+    main_units_label->setFont(unitsLabelFont);
+    main_units_label->setStyleSheet("QLabel { color : darkblue; }");
+    main_measurement_display->setFont(labelFont);
 
-    topTimeLayout->addSpacing(190);
-    topTimeLayout->addWidget(current_date);
-    topTimeLayout->addSpacing(150);
+    topTimeLayout->addSpacing(400);
+    //topTimeLayout->addWidget(current_date);
+    //topTimeLayout->addSpacing(150);
     topTimeLayout->addWidget(current_time);
 
 
     mainDisplayLayout->addWidget(main_label);
-    mainDisplayLayout->addWidget(main_lcd_display);
+    //mainDisplayLayout->addWidget(main_lcd_display);
+    mainDisplayLayout->addWidget(main_measurement_display);
     mainDisplayLayout->addWidget(main_units_label);
     mainDisplayLayout->setAlignment(Qt::AlignCenter);
     mainDisplayLayout->setSpacing(5);
@@ -92,9 +102,9 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(topTimeLayout);
     verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
-    verticalLayout->addSpacing(20);
+    verticalLayout->addSpacing(45);
     verticalLayout->addWidget(horizontalFrame);
-    verticalLayout->addSpacing(10);
+    verticalLayout->addSpacing(5);
     buttonLayout->addWidget(homeButton);
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
@@ -103,12 +113,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //main_lcd_display->setFixedSize(50, 50);
-    main_lcd_display->setMinimumHeight(120);
-    main_lcd_display->setMinimumWidth(100);
+    //main_lcd_display->setMinimumHeight(120);
+    //main_lcd_display->setMinimumWidth(100);
 
     //main_lcd_display->setDigitCount(2);
 
-    main_lcd_display->setFrameStyle(QFrame::NoFrame);
+    //main_lcd_display->setFrameStyle(QFrame::NoFrame);
 
 	
     data_point = 0;
@@ -132,8 +142,8 @@ MainWindow::MainWindow(QWidget *parent) :
     xmlDeviceReader->read();
 
 
-    current_time->setText("8:30:45");
-    current_date->setText("02/17/2016");
+    //current_time->setText("8:30:45");
+    //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
 }
@@ -146,7 +156,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(2);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -291,13 +301,13 @@ void MainWindow::updateDisplay(void){
     SerialDataItem tempSerialDataItem;
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
     current_value = tempSerialDataItem.getDvalue();
-    main_label->setText(deviceProfile.getMain_display_name()+" =");
-    main_lcd_display->display(QString::number(current_value));
-    main_units_label->setText(deviceProfile.getMain_display_units());
+    main_label->setText(deviceProfile.getMain_display_name()+": ");
+    main_measurement_display->setText(QString::number(current_value));
+    main_units_label->setText(" "+deviceProfile.getMain_display_units());
 
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
 
-    current_time->setText(tempSerialDataItem.getDateTime().toString());
+    current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
 
     showStats->setData(&allParsedRecordsList, &deviceProfile);
     //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
@@ -375,3 +385,26 @@ void MainWindow::writeFile(void){
 }
 
 
+void MainWindow::listFonts(void){
+    QFontDatabase database;
+    QTreeWidget fontTree;
+    fontTree.setColumnCount(2);
+    fontTree.setHeaderLabels(QStringList() << "Font" << "Smooth Sizes");
+
+    foreach (const QString &family, database.families()) {
+        QTreeWidgetItem *familyItem = new QTreeWidgetItem(&fontTree);
+        familyItem->setText(0, family);
+        qDebug()<<"Family:"<<family;
+        foreach (const QString &style, database.styles(family)) {
+            QTreeWidgetItem *styleItem = new QTreeWidgetItem(familyItem);
+            styleItem->setText(0, style);
+
+
+            QString sizes;
+            foreach (int points, database.smoothSizes(family, style))
+                sizes += QString::number(points) + " ";
+
+            styleItem->setText(1, sizes.trimmed());
+        }
+    }
+}

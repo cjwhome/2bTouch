@@ -12,7 +12,7 @@
          <dataFormat>
           <dataItems>
             <dataItem name="Log Number" type="Integer" />
-            <dataItem name="Ozone" type="Decimal" />
+            <dataItem name="O3" type="Decimal" />
             <dataItem name="Cell Temp" type="Decimal" />
             <dataItem name="Cell Pressure" type="Decimal" />
             <dataItem name="PDV" type="Decimal"/>
@@ -31,11 +31,28 @@
               baudRate="9600">
         <dataFormat>
           <dataItems>
-            <dataItem name="Ozone" type="Decimal" priority="0"/>
-            <dataItem name="Cell Temp" type="Decimal" priority="1"/>
-            <dataItem name="Cell Pressure" type="Decimal" priority="2"/>
+            <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
+            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
+            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" priority="3"/>
             <dataItem name="PDV" type="Decimal" priority="4"/>
+            <dataItem name="Date" type="DateTime" priority="5"/>
+            <dataItem name="Time" type="DateTime" priority="6"/>
+          </dataItems>
+        </dataFormat>
+      </device>
+      <device name="IAQ-PC"
+              portName="ttyUSB0"
+              baudRate="2400">
+        <dataFormat>
+          <dataItems>
+            <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
+            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
+            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
+            <dataItem name="Flow Rate" type="Integer" priority="3"/>
+            <dataItem name="PDV" type="Decimal" priority="4"/>
+            <dataItem name="Tach1" type="Decimal" priority="4"/>
+            <dataItem name="Tach2" type="Decimal" priority="4"/>
             <dataItem name="Date" type="DateTime" priority="5"/>
             <dataItem name="Time" type="DateTime" priority="6"/>
           </dataItems>
