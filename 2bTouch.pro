@@ -45,8 +45,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     showstats.ui \
-    displaygraph.ui \
-    testform.ui
+    displaygraph.ui
 
 RESOURCES += \
     res.qrc

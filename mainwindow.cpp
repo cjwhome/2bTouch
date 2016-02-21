@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     listFonts();
 
     QWidget *centralWidget = new QWidget();
+    QWidget *buttonWidget = new QWidget();
     QVBoxLayout *verticalLayout = new QVBoxLayout();
     QHBoxLayout *topTimeLayout = new QHBoxLayout();
     QHBoxLayout *mainDisplayLayout = new QHBoxLayout();
@@ -34,8 +35,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //add the separator line:
     QFrame* myFrame = new QFrame();
     myFrame->setFrameShape(QFrame::VLine);
-    QFrame* horizontalFrame = new QFrame();
-    horizontalFrame->setFrameShape(QFrame::HLine);
+    //QFrame* horizontalFrame = new QFrame();
+    //horizontalFrame->setFrameShape(QFrame::HLine);
+    QFrame* buttonFrame = new QFrame();
+    buttonFrame->setFrameRect(QRectF(9.5, 9.5, 100, 50));
+    //buttonFra
+    this->setStyleSheet(" .QFrame { background-color : gray } ");
 
     QPixmap configPixmap(":/buttons/pics/Settings-icon.jpg");
     QIcon configButtonIcon(configPixmap);
@@ -109,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
+
     verticalLayout->addLayout(buttonLayout);
 
 
@@ -156,7 +162,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(2);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
