@@ -36,8 +36,10 @@
             <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" priority="3"/>
             <dataItem name="PDV" type="Decimal" priority="4"/>
-            <dataItem name="Date" type="DateTime" priority="5"/>
-            <dataItem name="Time" type="DateTime" priority="6"/>
+            <dataItem name="TACH1" type="Decimal" priority="5"/>
+            <dataItem name="TACH2" type="Decimal" priority="5"/>
+            <dataItem name="Date" type="DateTime" priority="6"/>
+            <dataItem name="Time" type="DateTime" priority="7"/>
           </dataItems>
         </dataFormat>
       </device>

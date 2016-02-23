@@ -16,10 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
 
-    listFonts();
+    //listFonts();
 
     QWidget *centralWidget = new QWidget();
-    QWidget *buttonWidget = new QWidget();
+
     QVBoxLayout *verticalLayout = new QVBoxLayout();
     QHBoxLayout *topTimeLayout = new QHBoxLayout();
     QHBoxLayout *mainDisplayLayout = new QHBoxLayout();
@@ -33,14 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     main_measurement_display = new QLabel();
 
     //add the separator line:
-    QFrame* myFrame = new QFrame();
-    myFrame->setFrameShape(QFrame::VLine);
-    //QFrame* horizontalFrame = new QFrame();
-    //horizontalFrame->setFrameShape(QFrame::HLine);
-    QFrame* buttonFrame = new QFrame();
-    buttonFrame->setFrameRect(QRectF(9.5, 9.5, 100, 50));
+    //QFrame* myFrame = new QFrame();
+   // myFrame->setFrameShape(QFrame::VLine);
+    QFrame* horizontalFrame = new QFrame();
+    horizontalFrame->setFrameShape(QFrame::HLine);
+    //QFrame* buttonFrame = new QFrame();
+    //buttonFrame->setFrameRect(QRectF(9.5, 9.5, 100, 50));
     //buttonFra
-    this->setStyleSheet(" .QFrame { background-color : gray } ");
+    //this->setStyleSheet(" .QFrame { background-color : gray } ");
 
     QPixmap configPixmap(":/buttons/pics/Settings-icon.jpg");
     QIcon configButtonIcon(configPixmap);
@@ -162,13 +162,13 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(2);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
     deviceProfile.setBaud_rate(twobTechDevice.getBaud_rate());
-    qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
-    qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
+    //qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
+    //qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
@@ -197,7 +197,7 @@ void MainWindow::createDevice(){
         //qDebug()<<"For "<<i<<" priority="<<serialDataItem.getPriority();
     }
     deviceProfile.setNumber_of_columns(i);
-    qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
+    //qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
 
 }
 
