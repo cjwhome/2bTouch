@@ -54,19 +54,24 @@ signals:
 
 public slots:
     void clearPlotData();
+
     
 private slots:
     void newDataLine(QString dLine);
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
     void displayStats(void);
+    void writeData(const QByteArray &data);
+    void readData();
+    void handleError(QSerialPort::SerialPortError error);
+    void closeSerialPort();
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     ShowStats *showStats;
-    QSerialPort *serialPort;
+    QSerialPort *serial;
     DisplayGraph *displayGraph;
     QLabel *main_output;
     QLabel *main_label;

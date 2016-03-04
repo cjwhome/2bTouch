@@ -8,41 +8,42 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setStyleSheet("background-color:white;");
+    this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
     centralWidget = new QWidget();
     verticalLayout = new QVBoxLayout();
     zoomHLayout = new QHBoxLayout();
     buttonLayout = new QHBoxLayout();
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.jpg");
+    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
 
     QPushButton *clearButton = new QPushButton();
-    QPixmap clearPixmap(":/buttons/pics/Clear-icon.jpg");
+    QPixmap clearPixmap(":/buttons/pics/clear-icon.gif");
     QIcon clearButtonIcon(clearPixmap);
     clearButton->setIcon(clearButtonIcon);
     clearButton->setIconSize(QSize(35,31));
     clearButton->setFixedSize(35,31);
 
     QPushButton *settingsButton = new QPushButton();
-    QPixmap settingsPixmap(":/buttons/pics/Settings-icon.jpg");
+    QPixmap settingsPixmap(":/buttons/pics/settings-icon.gif");
     QIcon settingsButtonIcon(settingsPixmap);
     settingsButton->setIcon(settingsButtonIcon);
     settingsButton->setIconSize(QSize(35,31));
     settingsButton->setFixedSize(35,31);
 
     QPushButton *zoomInButton = new QPushButton();
-    QPixmap zoomInPixmap(":/buttons/pics/Zoom-In-icon.jpg");
+    QPixmap zoomInPixmap(":/buttons/pics/zoom-in-icon.gif");
     QIcon zoomInButtonIcon(zoomInPixmap);
     zoomInButton->setIcon(zoomInButtonIcon);
     zoomInButton->setIconSize(QSize(35,31));
     zoomInButton->setFixedSize(35,31);
 
     QPushButton *zoomOutButton = new QPushButton();
-    QPixmap zoomOutPixmap(":/buttons/pics/Zoom-Out-icon.jpg");
+    QPixmap zoomOutPixmap(":/buttons/pics/zoom-out-icon.gif");
     QIcon zoomOutButtonIcon(zoomOutPixmap);
     zoomOutButton->setIcon(zoomOutButtonIcon);
     zoomOutButton->setIconSize(QSize(35,31));
