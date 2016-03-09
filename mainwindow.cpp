@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
-
+    ControlBacklight controlBacklight;
+    controlBacklight.setPercentage(100);
     //listFonts();
 
     QWidget *centralWidget = new QWidget();
@@ -155,7 +156,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(2);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -339,9 +340,9 @@ void MainWindow::updateDisplay(void){
     current_value = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
-        main_label->setText("O<sub>3</sub>:");
+        main_label->setText("O<sub>3</sub>: ");
     }else if(deviceProfile.getMain_display_name().contains("2")){
-         main_label->setText("NO<sub>2</sub>:");
+         main_label->setText("NO<sub>2</sub>: ");
     }
     main_measurement_display->setText(QString::number(current_value));
     main_units_label->setText(" "+deviceProfile.getMain_display_units());

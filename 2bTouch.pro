@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     serialdataitem.cpp \
     parseddata.cpp \
     deviceprofile.cpp \
-    filewriter.cpp
+    filewriter.cpp \
+    controlbacklight.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     serialdataitem.h \
     parseddata.h \
     deviceprofile.h \
-    filewriter.h
+    filewriter.h \
+    controlbacklight.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \

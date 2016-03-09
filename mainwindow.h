@@ -23,6 +23,7 @@
 #include "serialdataitem.h"
 #include "parseddata.h"
 #include "filewriter.h"
+#include "controlbacklight.h"
 
 namespace Ui {
 class MainWindow;
