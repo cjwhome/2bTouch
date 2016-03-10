@@ -13,6 +13,7 @@
         <file>pics/clear-icon.gif</file>
         <file>pics/zoom-in-icon.gif</file>
         <file>pics/zoom-out-icon.gif</file>
+        <file>pics/home-icon-selected.gif</file>
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>

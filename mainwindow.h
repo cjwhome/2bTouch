@@ -17,6 +17,7 @@
 #include "defines.h"
 #include "showstats.h"
 #include "displaygraph.h"
+#include "settingsview.h"
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
 #include "deviceprofile.h"
@@ -62,6 +63,7 @@ private slots:
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
     void displayStats(void);
+    void displaySettings(void);
     void writeData(const QByteArray &data);
     void readData();
     void handleError(QSerialPort::SerialPortError error);
@@ -72,6 +74,7 @@ private:
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     ShowStats *showStats;
+    SettingsView *settingsView;
     QSerialPort *serial;
     DisplayGraph *displayGraph;
     QLabel *main_output;

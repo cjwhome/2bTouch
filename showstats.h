@@ -53,6 +53,12 @@ private:
     QLabel *diagnosticC_output;
     QLabel *diagnosticC_label;
     QLabel *diagnosticC_units_label;
+    QLabel *diagnosticD_output;
+    QLabel *diagnosticD_label;
+    QLabel *diagnosticD_units_label;
+    QLabel *diagnosticE_output;
+    QLabel *diagnosticE_label;
+    QLabel *diagnosticE_units_label;
     QLabel *max_label;
     QLabel *max_output;
     QLabel *max_units;

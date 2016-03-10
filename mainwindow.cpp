@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
-    ControlBacklight controlBacklight;
-    controlBacklight.setPercentage(100);
+    //ControlBacklight controlBacklight;
+    //controlBacklight.setPercentage(100);
     //listFonts();
 
     QWidget *centralWidget = new QWidget();
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
+    QPixmap homePixmap(":/buttons/pics/home-icon-selected.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
@@ -138,6 +138,10 @@ MainWindow::MainWindow(QWidget *parent) :
     showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
+    settingsView = new SettingsView();
+    settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
+
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
@@ -156,7 +160,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(2);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -187,6 +191,14 @@ void MainWindow::createDevice(){
             deviceProfile.setDiagnosticC_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticC_name(serialDataItem.getName());
             deviceProfile.setDiagnosticC_position(i);
+        }else if(serialDataItem.getPriority()==4){
+            deviceProfile.setDiagnosticD_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticD_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticD_position(i);
+        }else if(serialDataItem.getPriority()==5){
+            deviceProfile.setDiagnosticE_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticE_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticE_position(i);
         }
         //qDebug()<<"For "<<i<<" priority="<<serialDataItem.getPriority();
     }
@@ -382,7 +394,9 @@ void MainWindow::displayStats(void){
     showStats->show();
 }
 
-
+void MainWindow::displaySettings(void){
+    settingsView->show();
+}
 
 void MainWindow::initFile(void){
     //determine file location - if there is a usb drive, use it.  Otherwise use local drive home directory

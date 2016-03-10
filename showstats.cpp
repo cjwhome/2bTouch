@@ -13,10 +13,13 @@ ShowStats::ShowStats(QWidget *parent) :
     ui->setupUi(this);
 
     QWidget *centralWidget = new QWidget();
-    QHBoxLayout *horizontalLayout = new QHBoxLayout();
-    QVBoxLayout *buttonLayout = new QVBoxLayout();
+    QVBoxLayout *verticalLayout = new QVBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
     QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
     QGridLayout *gridLayout = new QGridLayout();
+
+    this->setStyleSheet("background-color:white;");
+    this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
 
     non_avg_main_label = new QLabel();
     hour_avg_main_label = new QLabel();
@@ -42,16 +45,27 @@ ShowStats::ShowStats(QWidget *parent) :
     diagnosticC_output = new QLabel();
     diagnosticC_units_label = new QLabel();
 
+    diagnosticD_label = new QLabel();
+    diagnosticD_output = new QLabel();
+    diagnosticD_units_label = new QLabel();
+
+    diagnosticE_label = new QLabel();
+    diagnosticE_output = new QLabel();
+    diagnosticE_units_label = new QLabel();
+
     QFrame* myFrame = new QFrame();
-    myFrame->setFrameShape(QFrame::VLine);
+    myFrame->setFrameShape(QFrame::HLine);
 
-    QPushButton *home_button = new QPushButton("Home");
-    home_button->setFixedSize(70,62);
+    QPushButton *homeButton = new QPushButton();
+    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
+    QIcon homeButtonIcon(homePixmap);
+    homeButton->setIcon(homeButtonIcon);
+    homeButton->setIconSize(QSize(35,31));
+    homeButton->setFixedSize(35,31);
 
-    buttonLayout->addWidget(home_button);
+    buttonLayout->addWidget(homeButton);
 
-    horizontalLayout->addLayout(buttonLayout);
-    horizontalLayout->addWidget(myFrame);
+
 
     gridLayout->addWidget(non_avg_main_label,0,0,1,1,0);
     gridLayout->addWidget(non_avg_main_output,0,1,1,1,0);
@@ -77,12 +91,21 @@ ShowStats::ShowStats(QWidget *parent) :
     gridLayout->addWidget(diagnosticC_output,5,1,1,1,0);
     gridLayout->addWidget(diagnosticC_units_label,5,2,1,1,0);
 
-    connect(home_button, SIGNAL(clicked()), this, SLOT(home()));
+    gridLayout->addWidget(diagnosticD_label,6,0,1,1,0);
+    gridLayout->addWidget(diagnosticD_output,6,1,1,1,0);
+    gridLayout->addWidget(diagnosticD_units_label,6,2,1,1,0);
+
+    gridLayout->addWidget(diagnosticE_label,7,0,1,1,0);
+    gridLayout->addWidget(diagnosticE_output,7,1,1,1,0);
+    gridLayout->addWidget(diagnosticE_units_label,7,2,1,1,0);
+
+    connect(homeButton, SIGNAL(clicked()), this, SLOT(home()));
 
     //measurementDisplayLayoutArea->addWidget();
-    horizontalLayout->addLayout(gridLayout);
-
-    centralWidget->setLayout(horizontalLayout);
+    verticalLayout->addLayout(gridLayout);
+    verticalLayout->addWidget(myFrame);
+    verticalLayout->addLayout(buttonLayout);
+    centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
 }
@@ -179,7 +202,15 @@ void ShowStats::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *
     diagnosticC_output->setText(QString::number(tempSerialDataItem.getDvalue()));
     diagnosticC_units_label->setText(deviceProfile->getDiagnosticC_units());
 
+    tempSerialDataItem = records->at(records->size()-1).at(deviceProfile->getDiagnosticD_position());
+    diagnosticD_label->setText(deviceProfile->getDiagnosticD_name());
+    diagnosticD_output->setText(QString::number(tempSerialDataItem.getDvalue()));
+    diagnosticD_units_label->setText(deviceProfile->getDiagnosticD_units());
 
+    tempSerialDataItem = records->at(records->size()-1).at(deviceProfile->getDiagnosticE_position());
+    diagnosticE_label->setText(deviceProfile->getDiagnosticE_name());
+    diagnosticE_output->setText(QString::number(tempSerialDataItem.getDvalue()));
+    diagnosticE_units_label->setText(deviceProfile->getDiagnosticE_units());
 
 }
 

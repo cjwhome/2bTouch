@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     parseddata.cpp \
     deviceprofile.cpp \
     filewriter.cpp \
-    controlbacklight.cpp
+    controlbacklight.cpp \
+    settingsview.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -43,11 +44,13 @@ HEADERS  += mainwindow.h \
     parseddata.h \
     deviceprofile.h \
     filewriter.h \
-    controlbacklight.h
+    controlbacklight.h \
+    settingsview.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
-    displaygraph.ui
+    displaygraph.ui \
+    settingsview.ui
 
 RESOURCES += \
     res.qrc

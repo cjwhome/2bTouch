@@ -31,15 +31,15 @@
               baudRate="9600">
         <dataFormat>
           <dataItems>
-            <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
-            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
-            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="Flow Rate" type="Integer" priority="3"/>
-            <dataItem name="PDV" type="Decimal" priority="4"/>
-            <dataItem name="TACH1" type="Decimal" priority="5"/>
-            <dataItem name="TACH2" type="Decimal" priority="5"/>
-            <dataItem name="Date" type="DateTime" priority="6"/>
-            <dataItem name="Time" type="DateTime" priority="7"/>
+          <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
+          <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
+          <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
+          <dataItem name="PDV" type="Integer" priority="4"/>
+          <dataItem name="Tach1" type="Decimal" priority="5"/>
+          <dataItem name="Tach2" type="Decimal" priority="6"/>
+          <dataItem name="STemp" type="Decimal" priority="3"/>
+          <dataItem name="Date" type="DateTime" priority="7"/>
+          <dataItem name="Time" type="DateTime" priority="8"/>
           </dataItems>
         </dataFormat>
       </device>
@@ -51,12 +51,12 @@
             <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
             <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
             <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="Flow Rate" type="Integer" priority="3"/>
-            <dataItem name="PDV" type="Decimal" priority="4"/>
-            <dataItem name="Tach1" type="Decimal" priority="4"/>
-            <dataItem name="Tach2" type="Decimal" priority="4"/>
-            <dataItem name="Date" type="DateTime" priority="5"/>
-            <dataItem name="Time" type="DateTime" priority="6"/>
+            <dataItem name="PDV" type="Integer" priority="4"/>
+            <dataItem name="Tach1" type="Decimal" priority="5"/>
+            <dataItem name="Tach2" type="Decimal" priority="6"/>
+            <dataItem name="STemp" type="Decimal" priority="3"/>
+            <dataItem name="Date" type="DateTime" priority="7"/>
+            <dataItem name="Time" type="DateTime" priority="8"/>
           </dataItems>
         </dataFormat>
       </device>
