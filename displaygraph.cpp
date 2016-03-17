@@ -1,11 +1,20 @@
 #include "displaygraph.h"
 #include "ui_displaygraph.h"
+#include <QSettings>
+#include <QApplication>
+
+
 #define MAXIMUM_X_AXIS 10
 
 DisplayGraph::DisplayGraph(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DisplayGraph)
 {
+
+    //m_sSettingsFile = QApplication::applicationDirPath().left(1) + ":/2btouch_settings.ini";
+    loadSettings();
+    settingsdialog = new GraphSettingsDialog();
+
     ui->setupUi(this);
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
@@ -53,10 +62,11 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoomHLayout->addWidget(zoomInButton);
 
     buttonLayout->addWidget(homeButton);
+    buttonLayout->addWidget(settingsButton);
     buttonLayout->addLayout(zoomHLayout);
     buttonLayout->addWidget(clearButton);
 
-    buttonLayout->addWidget(settingsButton);
+    
 
     //add the separator line:
     QFrame* myFrame = new QFrame();
@@ -78,14 +88,15 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoomInButton->setAutoRepeat(true);
     zoomInButton->setAutoRepeatInterval(25);
     zoomInButton->setAutoRepeatDelay(500);
-    zoomInButton->setAutoRepeat(true);
-    zoomInButton->setAutoRepeatInterval(25);
-    zoomInButton->setAutoRepeatDelay(500);
+    zoomOutButton->setAutoRepeat(true);
+    zoomOutButton->setAutoRepeatInterval(25);
+    zoomOutButton->setAutoRepeatDelay(500);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
+    connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    connect(settingsButton,SIGNAL(clicked(bool)), settingsdialog, SLOT(show()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
@@ -97,6 +108,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
     customPlot->xAxis->setTickLabelFont(QFont("Cabin", 8));
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
+
 
 }
 
@@ -209,4 +221,15 @@ void DisplayGraph::zoomOut(){
     }
     customPlot->replot();
 }
+
+void DisplayGraph::loadSettings()
+{
+ QSettings settings("2btech", "touchscreen");
+
+ autoscalex = settings.value("xautoscale").toBool();
+ autoscaley = settings.value("yautoscale").toBool();
+ //qDebug()<<"Read X scale:"<<QString::number(autoscalex);
+ //qDebug()<<"Read Y scale:"<<QString::number(autoscaley);
+}
+
 

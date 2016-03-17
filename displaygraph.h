@@ -10,6 +10,7 @@
 #include <QVector>
 #include <QThread>
 #include "qcustomplot.h"
+#include "graphsettingsdialog.h"
 
 
 namespace Ui {
@@ -46,14 +47,20 @@ private slots:
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
+    GraphSettingsDialog *settingsdialog;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
     QHBoxLayout *buttonLayout;
 
-
     QCustomPlot *customPlot;
     QVector<double> x,y;
 
+    QString m_sSettingsFile;
+
+    void loadSettings();
+
+    bool autoscalex;
+    bool autoscaley;
 };
 
 #endif // DISPLAYGRAPH_H

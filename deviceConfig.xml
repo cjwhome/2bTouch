@@ -61,8 +61,8 @@
         </dataFormat>
       </device>
       <device name="106-L"
-              portName="ttyAMA0"
-              baudRate="9600">
+              portName="ttyUSB0"
+              baudRate="2400">
         <dataFormat>
           <dataItems>
             <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
