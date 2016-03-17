@@ -1,5 +1,6 @@
 #include "settingsview.h"
 #include "ui_settingsview.h"
+#include "networkview.h"
 
 SettingsView::SettingsView(QWidget *parent) :
     QWidget(parent),
@@ -15,19 +16,26 @@ SettingsView::SettingsView(QWidget *parent) :
     QGridLayout *settingsButtonsLayout = new QGridLayout();
 
     //settings buttons
-    QFont settingsButtonFont("Cabin", 30, QFont::ForceIntegerMetrics);
+    QFont settingsButtonFont("Cabin", 20, QFont::ForceIntegerMetrics);
     QPushButton *adminButton = new QPushButton("Admin");
     adminButton->setFont(settingsButtonFont);
     QPushButton *fileButton = new QPushButton("File");
+    fileButton->setFont(settingsButtonFont);
     QPushButton *avgButton = new QPushButton("Average");
+    avgButton->setFont(settingsButtonFont);
     QPushButton *outputButton = new QPushButton("Output");
+    outputButton->setFont(settingsButtonFont);
     QPushButton *relayButton = new QPushButton("Relays");
+    relayButton->setFont(settingsButtonFont);
+    QPushButton *networkButton = new QPushButton("Network");
+    networkButton->setFont(settingsButtonFont);
 
     settingsButtonsLayout->addWidget(adminButton,0,0,1,1,0);
     settingsButtonsLayout->addWidget(fileButton,0,1,1,1,0);
     settingsButtonsLayout->addWidget(avgButton,0,2,1,1,0);
     settingsButtonsLayout->addWidget(outputButton,1,0,1,1,0);
     settingsButtonsLayout->addWidget(relayButton,1,1,1,1,0);
+    settingsButtonsLayout->addWidget(networkButton,1,2,1,1,0);
 
     QFrame* horizontalFrame = new QFrame();
     horizontalFrame->setFrameShape(QFrame::HLine);
@@ -56,6 +64,7 @@ SettingsView::SettingsView(QWidget *parent) :
     this->setLayout(verticalLayout);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(home()));
+    connect(networkButton, SIGNAL(released()), this, SLOT(showNetworkView()));
 }
 
 SettingsView::~SettingsView()
@@ -67,3 +76,9 @@ void SettingsView::home()
 {
     close();
 }
+
+void SettingsView::showNetworkView(){
+    NetworkView *networkView = new NetworkView();
+    networkView->show();
+}
+

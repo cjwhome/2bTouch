@@ -100,8 +100,10 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
-    customPlot->xAxis->setRangeLower(0);
-    customPlot->xAxis->setRangeUpper(10);
+
+    //customPlot->xAxis->setRangeLower(0);
+    //customPlot->xAxis->setRangeUpper(10);
+
     customPlot->graph(0)->setData(x, y);
     customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
@@ -130,7 +132,18 @@ void DisplayGraph::setData(QVector<double> a, QVector<double> b){
 
 }
 void DisplayGraph::redrawPlot(){
-    //drawPlot();
+    QVector<double> u;
+    u = y;
+    loadSettings();
+    if(autoscalex){
+        customPlot->xAxis->setRange(0, x.size());
+    }
+
+    if(autoscaley){
+        std::sort(u.begin(),u.end());
+        customPlot->yAxis->setRange(u.first()-1, u.last()+1);
+    }
+
 
     customPlot->replot();
 
@@ -143,7 +156,7 @@ void DisplayGraph::clear(){
 void DisplayGraph::drawPlot(){
     QVector<double> u;
 
-
+    loadSettings();
     customPlot->graph(0)->setData(x, y);
     u = y;  //copy it so we can align them from lowest to highest to get the range
     // give the axes some labels:
@@ -154,10 +167,20 @@ void DisplayGraph::drawPlot(){
     //customPlot->yAxis->setLabel("Ozone (ppb)");
     // set axes ranges, so we see all data:
     //customPlot->xAxis->setRange(0, 100);
-    std::sort(u.begin(),u.end());
-    //int highest_value;
-    //qDebug()<<"Max value is:"<<u.last();
-    //customPlot->yAxis->setRange(getYRange().lower, getYRange().upper);
+
+    if(autoscalex){
+        customPlot->xAxis->setRange(0, x.size());
+    }else{
+        customPlot->xAxis->setRange(0, 10);
+    }
+
+    if(autoscaley){
+        std::sort(u.begin(),u.end());
+        customPlot->yAxis->setRange(u.first()-1, u.last()+1);
+    }else{
+        customPlot->yAxis->setRange(0, 10);
+    }
+
     customPlot->replot();
 
 }
@@ -195,7 +218,9 @@ void DisplayGraph::mouseWheel()
 void DisplayGraph::zoomIn(){
     QCPRange x_range = customPlot->xAxis->range();
     QCPRange y_range = customPlot->yAxis->range();
-
+    autoscaley = false;
+    autoscalex = false;
+    saveSettings();
     if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis)){
         customPlot->xAxis->setRange(x_range.lower + 1, x_range.upper - 1);
     }else if(customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis)){
@@ -210,6 +235,9 @@ void DisplayGraph::zoomIn(){
 void DisplayGraph::zoomOut(){
     QCPRange x_range = customPlot->xAxis->range();
     QCPRange y_range = customPlot->yAxis->range();
+    autoscaley = false;
+    autoscalex = false;
+    saveSettings();
 
     if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis)){
         customPlot->xAxis->setRange(x_range.lower - 1, x_range.upper + 1);
@@ -232,4 +260,12 @@ void DisplayGraph::loadSettings()
  //qDebug()<<"Read Y scale:"<<QString::number(autoscaley);
 }
 
+void DisplayGraph::saveSettings()
+{
+ QSettings settings("2btech", "touchscreen");
+ //qDebug()<<"Before writing,";
 
+ settings.setValue("xautoscale", autoscalex);
+ settings.setValue("yautoscale", autoscaley);
+
+}

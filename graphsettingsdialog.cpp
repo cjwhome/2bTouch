@@ -61,7 +61,7 @@ GraphSettingsDialog::GraphSettingsDialog(QWidget *parent) :
     ui->autoscaleYcheckbox->setChecked(autoscaley);
     connect(ui->applyButton, SIGNAL(pressed()),
             this, SLOT(apply()));
-
+    //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
     //saveSettings();
 }

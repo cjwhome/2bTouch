@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport printsupport
+QT       += core gui serialport printsupport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets 
 
@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     filewriter.cpp \
     controlbacklight.cpp \
     settingsview.cpp \
-    graphsettingsdialog.cpp
+    graphsettingsdialog.cpp \
+    networkview.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -47,13 +48,15 @@ HEADERS  += mainwindow.h \
     filewriter.h \
     controlbacklight.h \
     settingsview.h \
-    graphsettingsdialog.h
+    graphsettingsdialog.h \
+    networkview.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
     displaygraph.ui \
     settingsview.ui \
-    graphsettingsdialog.ui
+    graphsettingsdialog.ui \
+    networkview.ui
 
 RESOURCES += \
     res.qrc

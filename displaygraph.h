@@ -58,6 +58,7 @@ private:
     QString m_sSettingsFile;
 
     void loadSettings();
+    void saveSettings();
 
     bool autoscalex;
     bool autoscaley;
