@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     controlbacklight.cpp \
     settingsview.cpp \
     graphsettingsdialog.cpp \
-    networkview.cpp
+    networkview.cpp \
+    scannetworksview.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -49,14 +50,16 @@ HEADERS  += mainwindow.h \
     controlbacklight.h \
     settingsview.h \
     graphsettingsdialog.h \
-    networkview.h
+    networkview.h \
+    scannetworksview.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
     displaygraph.ui \
     settingsview.ui \
     graphsettingsdialog.ui \
-    networkview.ui
+    networkview.ui \
+    scannetworksview.ui
 
 RESOURCES += \
     res.qrc

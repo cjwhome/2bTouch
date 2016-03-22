@@ -18,12 +18,18 @@ public:
     explicit NetworkView(QWidget *parent = 0);
     ~NetworkView();
 
+private slots:
+    void showScanNetworkView();
+
 private:
     Ui::NetworkView *ui;
-    void getBashIPAddress(void);
+    //void getBashIPAddress(void);
     void getQtIPAddress(void);
     QLabel *qtIPaddress;
-    QLabel *bashIPaddress;
+    QStringList scanNetworks(void);
+    QString extractString(QString text);
+    QLabel *networkName;
+    //QLabel *bashIPaddress;
 };
 
 #endif // NETWORKVIEW_H

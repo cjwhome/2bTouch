@@ -7,6 +7,9 @@
 #include <QLabel>
 #include <QProcess>
 #include <QtNetwork>
+#include "scannetworksview.h"
+
+//using namespace std;
 
 NetworkView::NetworkView(QWidget *parent) :
     QWidget(parent),
@@ -18,8 +21,10 @@ NetworkView::NetworkView(QWidget *parent) :
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
 
     QVBoxLayout *verticalLayout = new QVBoxLayout();
-    bashIPaddress = new QLabel("BashIP");
-    qtIPaddress = new QLabel("QtIP");
+    //bashIPaddress = new QLabel("BashIP");
+    qtIPaddress = new QLabel("IP Address");
+    networkName = new QLabel("Network Name");
+    QPushButton *findNetworksButton = new QPushButton("Find New Network");
 
     QFrame* horizontalFrame = new QFrame();
     horizontalFrame->setFrameShape(QFrame::HLine);
@@ -31,17 +36,20 @@ NetworkView::NetworkView(QWidget *parent) :
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
 
-    verticalLayout->addWidget(bashIPaddress);
+    //verticalLayout->addWidget(bashIPaddress);
+    verticalLayout->addWidget(networkName);
     verticalLayout->addWidget(qtIPaddress);
+    verticalLayout->addWidget(findNetworksButton);
     verticalLayout->addWidget(horizontalFrame);
     verticalLayout->addWidget(homeButton);
 
     this->setLayout(verticalLayout);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(close()));
+    connect(findNetworksButton, SIGNAL(clicked()), this, SLOT(showScanNetworkView()));
 
-    //getBashIPAddress();
     getQtIPAddress();
+
 }
 
 NetworkView::~NetworkView()
@@ -49,21 +57,14 @@ NetworkView::~NetworkView()
     delete ui;
 }
 
-
-void NetworkView::getBashIPAddress(void){
-    QString prog = "/bin/bash";     //shell
-    QStringList arguments;
-    //arguments << "-c" << "ifconfig eth0 | grep 'inet ' | awk '{print $2}' | sed 's/addr://'";
-    arguments << "-c" << "ifconfig wlan0 | grep 'inet ' | awk '{print $2}' | sed 's/addr://'";
-    QProcess *process = new QProcess();
-    process->start(prog , arguments);
-    process->waitForFinished();
-    QString ipaddress = process->readAll();
-    qDebug() << "Bash Ipaddress: "<<ipaddress;
-    bashIPaddress->setText(ipaddress);
-    //return ipaddress;
-
+void NetworkView::showScanNetworkView()
+{
+    ScanNetworksView *scanNetworksView = new ScanNetworksView();
+    scanNetworksView->show();
 }
+
+
+
 
 void NetworkView::getQtIPAddress(void){
     QNetworkInterface wlan0Ip = QNetworkInterface::interfaceFromName("wlan0");
@@ -84,3 +85,4 @@ void NetworkView::getQtIPAddress(void){
         }
     }
 }
+
