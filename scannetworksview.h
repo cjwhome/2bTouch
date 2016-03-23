@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QStringListModel>
 #include <QListView>
-#include "keypad.h"
 
 namespace Ui {
 class ScanNetworksView;

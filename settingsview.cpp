@@ -1,6 +1,7 @@
 #include "settingsview.h"
 #include "ui_settingsview.h"
 #include "networkview.h"
+#include "usertypeview.h"
 
 SettingsView::SettingsView(QWidget *parent) :
     QWidget(parent),
@@ -65,6 +66,7 @@ SettingsView::SettingsView(QWidget *parent) :
 
     connect(homeButton, SIGNAL(released()), this, SLOT(home()));
     connect(networkButton, SIGNAL(released()), this, SLOT(showNetworkView()));
+    connect(adminButton, SIGNAL(released()), this, SLOT(showAdminView()));
 }
 
 SettingsView::~SettingsView()
@@ -82,3 +84,7 @@ void SettingsView::showNetworkView(){
     networkView->show();
 }
 
+void SettingsView::showAdminView(){
+    UserTypeView *userTypeView = new UserTypeView();
+    userTypeView->show();
+}

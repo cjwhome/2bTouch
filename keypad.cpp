@@ -134,7 +134,7 @@ void Keypad::setnumeric()
 
 {
 
-    setStyleSheet("background-image: url(800x600/Touch-Keyboard2.png);");
+    setStyleSheet("background-image: url(480x200/Touch-Keyboard2.png);");
 
     ui->abutton->setText("-");
 
@@ -335,7 +335,7 @@ void Keypad::setalphabet()
 
 {
 
-    setStyleSheet("background-image: url(800x600/Touch-Keyboard.png);");
+    setStyleSheet("background-image: url(480x200/Touch-Keyboard.png);");
 
     ui->abutton->setText("a");
 
@@ -410,7 +410,7 @@ void Keypad::setsymbol()
 
 {
 
-    setStyleSheet("background-image: url(800x600/Touch-Keyboard1.png);");
+    setStyleSheet("background-image: url(480x200/Touch-Keyboard1.png);");
 
     ui->abutton->setText("A");
 

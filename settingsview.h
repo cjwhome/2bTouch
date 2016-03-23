@@ -23,6 +23,7 @@ public:
 private slots:
     void home();
     void showNetworkView();
+    void showAdminView();
 private:
     Ui::SettingsView *ui;
 
