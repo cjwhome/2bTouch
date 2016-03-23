@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Keypad</class>
+ <widget class="QDialog" name="Keypad">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>14</pointsize>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-image: url(480x200/Touch-Keyboard.png);</string>
+  </property>
+  <widget class="QPushButton" name="vbutton">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>v</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="zbutton">
+   <property name="geometry">
+    <rect>
+     <x>44</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>z</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cbutton">
+   <property name="geometry">
+    <rect>
+     <x>124</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>c</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbutton">
+   <property name="geometry">
+    <rect>
+     <x>364</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>p</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ibutton">
+   <property name="geometry">
+    <rect>
+     <x>284</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>i</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="jbutton">
+   <property name="geometry">
+    <rect>
+     <x>254</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>j</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="spacebutton">
+   <property name="geometry">
+    <rect>
+     <x>124</x>
+     <y>154</y>
+     <width>233</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>SPACE</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="fbutton">
+   <property name="geometry">
+    <rect>
+     <x>134</x>
+     <y>56</y>
+     <width>35</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>f</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="sbutton">
+   <property name="geometry">
+    <rect>
+     <x>54</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>s</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="dbutton">
+   <property name="geometry">
+    <rect>
+     <x>94</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>d</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="obutton">
+   <property name="geometry">
+    <rect>
+     <x>324</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>o</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="kbutton">
+   <property name="geometry">
+    <rect>
+     <x>294</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>k</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="nbutton">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>n</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="wbutton">
+   <property name="geometry">
+    <rect>
+     <x>44</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>w</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="gbutton">
+   <property name="geometry">
+    <rect>
+     <x>174</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>g</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ebutton">
+   <property name="geometry">
+    <rect>
+     <x>84</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>e</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="rbutton">
+   <property name="geometry">
+    <rect>
+     <x>124</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>r</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="hbutton">
+   <property name="geometry">
+    <rect>
+     <x>214</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>h</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ybutton">
+   <property name="geometry">
+    <rect>
+     <x>204</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>y</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="tbutton">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>t</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="xbutton">
+   <property name="geometry">
+    <rect>
+     <x>184</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>x</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="donebutton">
+   <property name="geometry">
+    <rect>
+     <x>414</x>
+     <y>57</y>
+     <width>66</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>DONE</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bbutton">
+   <property name="geometry">
+    <rect>
+     <x>204</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>b</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="mbutton">
+   <property name="geometry">
+    <rect>
+     <x>284</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>m</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ubutton">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>u</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bpbutton">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>4</y>
+     <width>76</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>BACK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lbutton">
+   <property name="geometry">
+    <rect>
+     <x>334</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>l</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="abutton">
+   <property name="geometry">
+    <rect>
+     <x>15</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>a</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="numbutton">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>CAP</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qbutton">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>4</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>q</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="numbutton_2">
+   <property name="geometry">
+    <rect>
+     <x>444</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>CAP</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="donebutton_2">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>154</y>
+     <width>35</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>DONE</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="apostrophe">
+   <property name="geometry">
+    <rect>
+     <x>374</x>
+     <y>56</y>
+     <width>35</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>'</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="comma">
+   <property name="geometry">
+    <rect>
+     <x>324</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>,</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="fstop">
+   <property name="geometry">
+    <rect>
+     <x>364</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>.</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="question">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>104</y>
+     <width>35</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 0);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>?</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="numbutton_3">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>154</y>
+     <width>35</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 255);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>NUM</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="numbutton_4">
+   <property name="geometry">
+    <rect>
+     <x>402</x>
+     <y>154</y>
+     <width>35</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/empty.png);
+color: rgb(255, 255, 255);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string>NUM</string>
+   </property>
+  </widget>
+  <zorder>vbutton</zorder>
+  <zorder>zbutton</zorder>
+  <zorder>cbutton</zorder>
+  <zorder>pbutton</zorder>
+  <zorder>ibutton</zorder>
+  <zorder>jbutton</zorder>
+  <zorder>spacebutton</zorder>
+  <zorder>fbutton</zorder>
+  <zorder>sbutton</zorder>
+  <zorder>dbutton</zorder>
+  <zorder>obutton</zorder>
+  <zorder>kbutton</zorder>
+  <zorder>nbutton</zorder>
+  <zorder>wbutton</zorder>
+  <zorder>gbutton</zorder>
+  <zorder>ebutton</zorder>
+  <zorder>rbutton</zorder>
+  <zorder>hbutton</zorder>
+  <zorder>ybutton</zorder>
+  <zorder>tbutton</zorder>
+  <zorder>xbutton</zorder>
+  <zorder>donebutton</zorder>
+  <zorder>bbutton</zorder>
+  <zorder>mbutton</zorder>
+  <zorder>ubutton</zorder>
+  <zorder>bpbutton</zorder>
+  <zorder>lbutton</zorder>
+  <zorder>abutton</zorder>
+  <zorder>numbutton</zorder>
+  <zorder>numbutton_2</zorder>
+  <zorder>donebutton_2</zorder>
+  <zorder>apostrophe</zorder>
+  <zorder>comma</zorder>
+  <zorder>fstop</zorder>
+  <zorder>question</zorder>
+  <zorder>numbutton_3</zorder>
+  <zorder>numbutton_4</zorder>
+  <zorder>qbutton</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

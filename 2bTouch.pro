@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     settingsview.cpp \
     graphsettingsdialog.cpp \
     networkview.cpp \
-    scannetworksview.cpp
+    scannetworksview.cpp \
+    keypad.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     settingsview.h \
     graphsettingsdialog.h \
     networkview.h \
-    scannetworksview.h
+    scannetworksview.h \
+    keypad.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
@@ -59,7 +61,8 @@ FORMS    += mainwindow.ui \
     settingsview.ui \
     graphsettingsdialog.ui \
     networkview.ui \
-    scannetworksview.ui
+    scannetworksview.ui \
+    keypad.ui
 
 RESOURCES += \
     res.qrc
