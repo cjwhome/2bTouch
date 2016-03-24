@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     networkview.cpp \
     scannetworksview.cpp \
     keypad.cpp \
-    usertypeview.cpp
+    usertypeview.cpp \
+    adminview.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -55,7 +56,8 @@ HEADERS  += mainwindow.h \
     networkview.h \
     scannetworksview.h \
     keypad.h \
-    usertypeview.h
+    usertypeview.h \
+    adminview.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
@@ -65,7 +67,8 @@ FORMS    += mainwindow.ui \
     networkview.ui \
     scannetworksview.ui \
     keypad.ui \
-    usertypeview.ui
+    usertypeview.ui \
+    adminview.ui
 
 RESOURCES += \
     res.qrc

@@ -21,6 +21,8 @@ private slots:
     bool showKeyPad(QLineEdit *line);
     bool eventFilter(QObject *, QEvent *);
 
+signals:
+    void outputUserString(QString userString);
 
 private:
 

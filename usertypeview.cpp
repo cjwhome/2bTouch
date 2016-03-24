@@ -1,11 +1,13 @@
 #include "usertypeview.h"
 #include "ui_usertypeview.h"
+#include <QDebug>
 
 UserTypeView::UserTypeView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UserTypeView)
 {
     ui->setupUi(this);
+
     ui->lineEdit->installEventFilter(this);
 }
 
@@ -26,13 +28,16 @@ bool UserTypeView::showKeyPad(QLineEdit *line)
 
     k->move(0,60);
 
-    if(k->exec() == QDialog::Accepted)
-
+    if(k->exec() == QDialog::Accepted){
+        //qDebug()<<"Got the string:"<<line->text();
+        emit outputUserString(line->text());
         line->installEventFilter(this);
+    }
 
     return true;
 
 }
+
 bool UserTypeView::eventFilter(QObject *obj, QEvent *e)
 {
     /*
@@ -46,6 +51,7 @@ bool UserTypeView::eventFilter(QObject *obj, QEvent *e)
 
 
             showKeyPad(ui->lineEdit);
+            close();
 
         }
 

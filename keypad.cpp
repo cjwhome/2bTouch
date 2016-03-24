@@ -10,7 +10,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     //this->setAttribute(Qt::WA_DeleteOnClose,true);
 
-    toggle =true;
+    toggle = false;
 
     t1= false;
 
@@ -256,7 +256,8 @@ void Keypad::keypadHandler()
 
             if(pad_edit->text().isEmpty()){
 
-                pad_edit->insert(inputText.toUpper());
+                //pad_edit->insert(inputText.toUpper());
+                pad_edit->insert(inputText);
                 if(t1)
 
                     setnumeric();
@@ -284,6 +285,7 @@ void Keypad::keypadHandler()
 
                         pad_edit->insert(inputText.toUpper());
 
+
                         if(t1)
 
                             setnumeric();
@@ -309,7 +311,8 @@ void Keypad::keypadHandler()
 
                 {
 
-                    pad_edit->insert(inputText.toUpper());
+                    //pad_edit->insert(inputText.toUpper());
+                    pad_edit->insert(inputText);
 
                     if(t1)
 

@@ -1,7 +1,8 @@
 #include "settingsview.h"
 #include "ui_settingsview.h"
 #include "networkview.h"
-#include "usertypeview.h"
+#include "adminview.h"
+//#include "usertypeview.h"
 
 SettingsView::SettingsView(QWidget *parent) :
     QWidget(parent),
@@ -81,10 +82,12 @@ void SettingsView::home()
 
 void SettingsView::showNetworkView(){
     NetworkView *networkView = new NetworkView();
+    networkView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     networkView->show();
 }
 
 void SettingsView::showAdminView(){
-    UserTypeView *userTypeView = new UserTypeView();
-    userTypeView->show();
+    AdminView *adminView = new AdminView();
+    adminView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    adminView->show();
 }
