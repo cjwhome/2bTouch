@@ -10,7 +10,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     //this->setAttribute(Qt::WA_DeleteOnClose,true);
 
-    toggle = false;
+    toggle = false;     //change this to true if want to set all first characters to uppercase
 
     t1= false;
 
@@ -104,7 +104,8 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect( ui->numbutton_4,SIGNAL(clicked()),this,SLOT(boardchange()));
 
-    setStyleSheet("background-image: url(800x600/Touch-Keyboard1.png);");
+    //setStyleSheet("background-image: url(800x600/Touch-Keyboard1.png);");
+    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
 }
 
@@ -134,7 +135,8 @@ void Keypad::setnumeric()
 
 {
 
-    setStyleSheet("background-image: url(480x200/Touch-Keyboard2.png);");
+    //setStyleSheet("background-image: url(480x200/Touch-Keyboard2.png);");
+    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
     ui->abutton->setText("-");
 
@@ -338,7 +340,8 @@ void Keypad::setalphabet()
 
 {
 
-    setStyleSheet("background-image: url(480x200/Touch-Keyboard.png);");
+    //setStyleSheet("background-image: url(480x200/Touch-Keyboard.png);");
+    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
     ui->abutton->setText("a");
 
@@ -413,7 +416,8 @@ void Keypad::setsymbol()
 
 {
 
-    setStyleSheet("background-image: url(480x200/Touch-Keyboard1.png);");
+   // setStyleSheet("background-image: url(480x200/Touch-Keyboard1.png);");
+    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
     ui->abutton->setText("A");
 

@@ -19,4 +19,10 @@
         <file>deviceConfig.xml</file>
     </qresource>
     <qresource prefix="/icons"/>
+    <qresource prefix="/keyboard">
+        <file>keyboard/Touch-Keyboard.png</file>
+        <file>keyboard/Touch-Keyboard1.png</file>
+        <file>keyboard/Touch-Keyboard2.png</file>
+        <file>keyboard/Touch-Keyboard-white.png</file>
+    </qresource>
 </RCC>

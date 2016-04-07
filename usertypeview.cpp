@@ -2,13 +2,14 @@
 #include "ui_usertypeview.h"
 #include <QDebug>
 
-UserTypeView::UserTypeView(QWidget *parent) :
+UserTypeView::UserTypeView(QString label, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UserTypeView)
 {
     ui->setupUi(this);
-
+    ui->label->setText(label);
     ui->lineEdit->installEventFilter(this);
+    //this->raise();
 }
 
 bool UserTypeView::showKeyPad(QLineEdit *line)

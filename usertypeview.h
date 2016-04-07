@@ -13,7 +13,7 @@ class UserTypeView : public QWidget
     Q_OBJECT
 
 public:
-    explicit UserTypeView(QWidget *parent = 0);
+    explicit UserTypeView(QString label, QWidget *parent = 0);
     ~UserTypeView();
 
 private slots:

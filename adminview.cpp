@@ -1,6 +1,6 @@
 #include "adminview.h"
 #include "ui_adminview.h"
-#include "usertypeview.h"
+//#include "usertypeview.h"
 #include <QSettings>
 #include <QDebug>
 #include <QHBoxLayout>
@@ -17,6 +17,7 @@ AdminView::AdminView(QWidget *parent) :
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
 
     QVBoxLayout *verticalLayout = new QVBoxLayout();
+    QHBoxLayout *horizontalLayout = new QHBoxLayout();
     QHBoxLayout *buttonLayout = new QHBoxLayout();
 
     QPushButton *homeButton = new QPushButton();
@@ -25,9 +26,10 @@ AdminView::AdminView(QWidget *parent) :
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
-    verticalLayout->addWidget(homeButton);
+    horizontalLayout->addWidget(homeButton);
 
-    this->setLayout(verticalLayout);
+    this->setLayout(horizontalLayout);
+    connect(homeButton, SIGNAL(clicked()), this, SLOT(close()));
     loadSettings();
     getPassword();
 
@@ -35,11 +37,12 @@ AdminView::AdminView(QWidget *parent) :
 
 void AdminView::getPassword(void){
 
-    UserTypeView *userTypeView = new UserTypeView();
+    /*UserTypeView *userTypeView = new UserTypeView("Enter Admin Password:");
     userTypeView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(userTypeView, SIGNAL(outputUserString(QString)), this, SLOT(checkPassword(QString)));
-    userTypeView->setWindowState(Qt::WindowActive) ;
-    userTypeView->show();
+    //userTypeView->setWindowState(Qt::WindowActive);
+
+    userTypeView->show();*/
 }
 
 void AdminView::checkPassword(QString password){

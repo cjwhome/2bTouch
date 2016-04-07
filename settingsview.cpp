@@ -2,7 +2,8 @@
 #include "ui_settingsview.h"
 #include "networkview.h"
 #include "adminview.h"
-//#include "usertypeview.h"
+#include "usertypeview.h"
+#include <QDebug>
 
 SettingsView::SettingsView(QWidget *parent) :
     QWidget(parent),
@@ -87,7 +88,22 @@ void SettingsView::showNetworkView(){
 }
 
 void SettingsView::showAdminView(){
-    AdminView *adminView = new AdminView();
-    adminView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    adminView->show();
+    setPassword = "password";
+    UserTypeView *userTypeView = new UserTypeView("Enter Password");
+    connect(userTypeView, SIGNAL(outputUserString(QString)), this, SLOT(checkPassword(QString)));
+    userTypeView->show();
+}
+
+void SettingsView::checkPassword(QString password){
+    qDebug()<<"Got password:"<<password;
+    if(!QString::compare(password, setPassword, Qt::CaseInsensitive)){
+        qDebug()<<"Correct password";
+        AdminView *adminView = new AdminView();
+        adminView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+        adminView->show();
+    }else{
+        qDebug()<<"Wrong password";
+        close();
+    }
+
 }

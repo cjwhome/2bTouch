@@ -17,6 +17,8 @@ public:
 public slots:
 
     void checkPassword(QString password);
+private slots:
+    //void home();
 private:
     Ui::AdminView *ui;
     void getPassword(void);

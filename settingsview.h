@@ -24,8 +24,10 @@ private slots:
     void home();
     void showNetworkView();
     void showAdminView();
+    void checkPassword(QString password);
 private:
     Ui::SettingsView *ui;
+    QString setPassword;
 
 
 };

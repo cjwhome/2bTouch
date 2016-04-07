@@ -16,11 +16,24 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>200</x>
      <y>30</y>
-     <width>421</width>
+     <width>251</width>
      <height>27</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>171</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>default text</string>
    </property>
   </widget>
  </widget>
