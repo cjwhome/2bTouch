@@ -37,6 +37,9 @@ private:
     //Universal Layout
     QPushButton *homeButton;
     QVBoxLayout *mainLayout;
+    QFont titleFont;
+    QFont labelFont;
+
 
     //Landing Page
     QWidget *landingWidget;
@@ -86,6 +89,7 @@ private:
     QWidget *rTWidget;
     QVBoxLayout *rTVLayout;
     QLabel *rTTitle;
+    QPushButton *rTHelpButton;
     QHBoxLayout *rTModeHLayout;
     QLabel *rTModeLabel;
     QPushButton *rTOzoneButton;
@@ -132,14 +136,26 @@ private slots:
     void initializeViews();
     void homePressed();
 
+    //Landing
     void landingSubmit();
+    //Calibration
     void calSubmitReleased();
+    //Avergaing
     void changeAvg(int time);
+    //Relay One
     void rOLowPressed();
     void rOHighPressed();
+    void rOHelpPressed();
+    //Relay Two
     void rTOzonePresed();
     void rTDiagnosticsPressed();
-
+    void rTHelpPressed();
+    //Files
+    void copyAllPressed();
+    void copySelectedPressed();
+    void deleteAllPressed();
+    void deleteSelectedPressed();
+    //Change Password
     void changePassPressed();
 
     QWidget* widgetForLanding();

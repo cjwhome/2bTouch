@@ -21,13 +21,16 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
 
-    QWidget *landing = widgetForLanding();
-    mainLayout->addWidget(landing);
-
     homeButton = new QPushButton();
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
     homeButton->setGeometry(0, 0, 30, 30);
     connect(homeButton, SIGNAL(released()), this, SLOT(homePressed()));
+
+    titleFont = QFont("Times serif", 30, 4);
+    labelFont = QFont("Times serif", 15, 2);
+
+    QWidget *landing = widgetForLanding();
+    mainLayout->addWidget(landing);
 }
 
 QWidget* SettingsWidget::widgetForLanding() {
@@ -41,15 +44,19 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingPassSubmit = new QPushButton(landingWidget);
     landingPassSubmit->setText("GO");
     //TODO: ICON
+    //Landing Page - Style Layout
+    landingPassTitle->setFont(titleFont);
+    landingPassTitle->setAlignment(Qt::AlignHCenter);
+    landingPassPrompt->setFont(labelFont);
+    landingPassSubmit->setFixedHeight(30);
     //Landing Page - Fill Layout
     landingVLayout->addWidget(landingPassTitle);
     landingPassRow->addWidget(landingPassPrompt);
     landingPassRow->addWidget(landingPassField);
     landingVLayout->addLayout(landingPassRow);
     landingVLayout->addWidget(landingPassSubmit);
-    landingVLayout->setAlignment(Qt::AlignHCenter);
+    landingVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     landingWidget->setLayout(landingVLayout);
-
     //Landing Page - Connect Buttons
     connect(landingPassSubmit, SIGNAL(released()), this, SLOT(landingSubmit()));
 
@@ -70,6 +77,13 @@ QWidget* SettingsWidget::widgetForCal() {
     calOffsetLabel= new QLabel("Offset: ");
     calOffsetField = new QLineEdit(calWidget);
     calSubmit = new QPushButton("SAVE", calWidget);
+    //Styling
+    calTitle->setFont(titleFont);
+    calTitle->setAlignment(Qt::AlignHCenter);
+    calSlopeLabel->setFont(labelFont);
+    calOffsetLabel->setFont(labelFont);
+    calSubmit->setFixedHeight(30);
+    calVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Calibration - Fill Layout
     calVLayout->addWidget(calTitle);
     calSlopeRow->addWidget(calSlopeLabel);
@@ -100,6 +114,14 @@ QWidget* SettingsWidget::widgetForAvg() {
     avgOneMinButton = new QPushButton("1 m", avgWidget);
     avgOneHourButton = new QPushButton("1 hr", avgWidget);
     //TODO: ICON
+    //Styling
+    avgTitle->setFont(titleFont);
+    avgTitle->setAlignment(Qt::AlignHCenter);
+    avgTwoSecButton->setFixedSize(60, 60);
+    avgTenSecButton->setFixedSize(60, 60);
+    avgOneMinButton->setFixedSize(60, 60);
+    avgOneHourButton->setFixedSize(60, 60);
+    avgVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Aveaging - Fill Layout
     avgVLayout->addWidget(avgTitle);
     avgRowOne->addWidget(avgTwoSecButton);
@@ -136,19 +158,25 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rOHighButton = new QPushButton("HIGH↑", rOWidget);
     QPixmap pixmap(":/buttons/pics/stats-icon.gif");
     QIcon icon(pixmap);
-    rOHelpButton = new QPushButton("HELP", rOWidget);
+    rOHelpButton = new QPushButton(rOWidget);
     rOHelpButton->setIcon(icon);
-    rOHelpBox = QMessageBox::information(rOWidget, "HELP", "This is the text of the message box", QMessageBox::Ok);
+    //Styling
+    relayOneTitle->setFont(titleFont);
+    relayOneTitle->setAlignment(Qt::AlignHCenter);
+    rOLowButton->setFixedHeight(60);
+    rOHighButton->setFixedHeight(60);
+    rOVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Relay One - Fill Layout
     rOVLayout->addWidget(relayOneTitle);
     rORow->addWidget(rOLowButton);
     rORow->addWidget(rOHighButton);
     rOVLayout->addLayout(rORow);
-    rOHelpButton->setGeometry(this->size().width()- 30, this->size().height() - 30, 45, 45);
+    rOHelpButton->setGeometry(250, 15, 30, 30);
     rOWidget->setLayout(rOVLayout);
     //Relay One - Connect Buttons
     connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
     connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
+    connect(rOHelpButton, SIGNAL(released()), this, SLOT(rOHelpPressed()));
 
     homeButton->setParent(rOWidget);
 
@@ -160,12 +188,21 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     rTWidget = new QWidget(this);
     rTVLayout = new QVBoxLayout(rTWidget);
     rTTitle = new QLabel("RELAY TWO", rTWidget);
+    rTHelpButton = new QPushButton(rTWidget);
+    rTHelpButton->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     rTModeHLayout = new QHBoxLayout(rTWidget);
     rTModeLabel = new QLabel("Mode: ", rTWidget);
     rTOzoneButton = new QPushButton("Ozone", rTWidget);
     rTDiagnosticsButton = new QPushButton("Diagnostics", rTWidget);
     rTDiagnosticsLabel = new QLabel("Diagnostic Testing Components:");
     //TODO: Create Diagnostic Testing Buttons
+    //Styling
+    rTTitle->setFont(titleFont);
+    rTTitle->setAlignment(Qt::AlignHCenter);
+    rTHelpButton->setGeometry(250, 15, 30, 30);
+    rTModeLabel->setFont(labelFont);
+    rTDiagnosticsLabel->setFont(labelFont);
+    rTVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Relay Two - Fill Layout
     rTVLayout->addWidget(rTTitle);
     rTModeHLayout->addWidget(rTModeLabel);
@@ -178,6 +215,7 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     //Relay Two - Connect Buttons
     connect(rTOzoneButton, SIGNAL(released()), this, SLOT(rTOzonePresed()));
     connect(rTDiagnosticsButton, SIGNAL(released()), this, SLOT(rTDiagnosticsPressed()));
+    connect(rTHelpButton, SIGNAL(released()), this, SLOT(rTHelpPressed()));
 
     homeButton->setParent(rTWidget);
 
@@ -188,8 +226,13 @@ QWidget* SettingsWidget::widgetForVoltage() {
     //Voltage
     voltWidget = new QWidget(this);
     voltVLayout = new QVBoxLayout(voltWidget);
-    voltTitle = new QLabel("V AND I OUTPUT", voltWidget);
+    voltTitle = new QLabel("ANALOG OUTPUT", voltWidget);
     voltVoltLabel = new QLabel("2.5 V & 20 mA = xxx ppb", voltWidget);
+    //Styling
+    voltTitle->setFont(titleFont);
+    voltTitle->setAlignment(Qt::AlignHCenter);
+    voltVoltLabel->setFont(labelFont);
+    voltVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Voltage - Fill Layout
     voltVLayout->addWidget(voltTitle);
     voltVLayout->addWidget(voltVoltLabel);
@@ -237,6 +280,13 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesDeleteActionsMenu->addWidget(filesDeleteSelectedButton);
     filesVLayout->addLayout(filesDeleteActionsMenu);
 
+    filesTitle->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+
+    connect(filesCopyAllButton, SIGNAL(released()), this, SLOT(copyAllPressed()));
+    connect(filesCopySelectedButton, SIGNAL(released()), this, SLOT(copySelectedPressed()));
+    connect(filesDeleteAllButton, SIGNAL(released()), this, SLOT(deleteAllPressed()));
+    connect(filesDeleteSelectedButton, SIGNAL(released()), this, SLOT(deleteSelectedPressed()));
+
     homeButton->setParent(filesWidget);
 
     return filesWidget;
@@ -245,7 +295,7 @@ QWidget* SettingsWidget::widgetForFiles() {
 QWidget* SettingsWidget::widgetForPassChange() {
     cpWidget = new QWidget(this);
     cpVLayout = new QVBoxLayout(cpWidget);
-    cpTitle = new QLabel("CHANGE PASSWORD", cpWidget);
+    cpTitle = new QLabel("PASSWORD", cpWidget);
     cpPassRow = new QHBoxLayout(cpWidget);
     cpPassLabel = new QLabel("Password: ", cpWidget);
     cpPassText = new QLineEdit(cpWidget);
@@ -253,6 +303,12 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpConfirmLabel = new QLabel("Confirm: ", cpWidget);
     cpConfText = new QLineEdit(cpWidget);
     cpSaveButton = new QPushButton("SAVE", cpWidget);
+    //Styling
+    cpTitle->setFont(titleFont);
+    cpTitle->setAlignment(Qt::AlignHCenter);
+    cpPassLabel->setFont(labelFont);
+    cpConfirmLabel->setFont(labelFont);
+    cpVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
     cpVLayout->addWidget(cpTitle);
     cpPassRow->addWidget(cpPassLabel);
@@ -282,10 +338,12 @@ void SettingsWidget::showCal() {
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showAvg()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -294,6 +352,7 @@ void SettingsWidget::showCal() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -304,10 +363,12 @@ void SettingsWidget::showAvg() {
     QPushButton *left = new QPushButton(avg);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showCal()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(avg);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showRO()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -316,6 +377,7 @@ void SettingsWidget::showAvg() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -326,10 +388,12 @@ void SettingsWidget::showRO() {
     QPushButton *left = new QPushButton(ro);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showAvg()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(ro);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showRT()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -338,6 +402,7 @@ void SettingsWidget::showRO() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -348,10 +413,12 @@ void SettingsWidget::showRT() {
     QPushButton *left = new QPushButton(rt);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRO()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(rt);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showVolt()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -360,6 +427,7 @@ void SettingsWidget::showRT() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -370,10 +438,12 @@ void SettingsWidget::showVolt() {
     QPushButton *left = new QPushButton(volt);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRT()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(volt);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showFiles()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -382,6 +452,7 @@ void SettingsWidget::showVolt() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -392,10 +463,12 @@ void SettingsWidget::showFiles() {
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showVolt()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -404,6 +477,7 @@ void SettingsWidget::showFiles() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -414,10 +488,12 @@ void SettingsWidget::showPassChange() {
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showFiles()));
+    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showCal()));
+    right->setFixedWidth(30);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -426,6 +502,7 @@ void SettingsWidget::showPassChange() {
     QWidget *w = new QWidget();
     w->setLayout(layout);
 
+    homeButton->setParent(w);
     mainLayout->addWidget(w);
 }
 
@@ -463,11 +540,40 @@ void SettingsWidget::rOHighPressed() {
 
 }
 
-void SettingsWidget::rTOzonePresed()  {
+void SettingsWidget::rOHelpPressed() {
+    QMessageBox msg;
+    msg.setText("This is the text for the relay one help message");
+    msg.exec();
+}
 
+void SettingsWidget::rTOzonePresed()  {
+    sendMessage("Testing");
 }
 
 void SettingsWidget::rTDiagnosticsPressed() {
+
+}
+
+void SettingsWidget::rTHelpPressed() {
+    QMessageBox msg;
+    msg.setText("This is the text for the relay two help message");
+    msg.exec();
+}
+
+void SettingsWidget::copyAllPressed() {
+    QDir dir = new QDir("/mnt/");
+    dir.g
+}
+
+void SettingsWidget::copySelectedPressed() {
+
+}
+
+void SettingsWidget::deleteAllPressed() {
+
+}
+
+void SettingsWidget::deleteSelectedPressed() {
 
 }
 

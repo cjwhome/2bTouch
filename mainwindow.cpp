@@ -473,5 +473,6 @@ void MainWindow::listFonts(void){
 }
 
 void MainWindow::sendMsg(QString msg) {
-
+    serial->write(msg.toStdString().c_str(), msg.toStdString().length());
+    qDebug()<<"Sending Message: "<<msg;
 }
