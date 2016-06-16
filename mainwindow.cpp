@@ -17,7 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
+<<<<<<< HEAD
 
+=======
+    //ControlBacklight controlBacklight;
+    //controlBacklight.setPercentage(100);
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     //listFonts();
 
     QWidget *centralWidget = new QWidget();
@@ -51,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
+    QPixmap homePixmap(":/buttons/pics/home-icon-selected.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
@@ -136,12 +141,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
+<<<<<<< HEAD
     showStats = new ShowStats(this);
     showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
     settingsWidget = new SettingsWidget(this);
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+=======
+    showStats = new ShowStats();
+    showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+
+    settingsView = new SettingsView();
+    settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -162,7 +177,11 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
+<<<<<<< HEAD
     twobTechDevice = xmlDeviceReader->getADevice(4);
+=======
+    twobTechDevice = xmlDeviceReader->getADevice(5);
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -193,6 +212,14 @@ void MainWindow::createDevice(){
             deviceProfile.setDiagnosticC_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticC_name(serialDataItem.getName());
             deviceProfile.setDiagnosticC_position(i);
+        }else if(serialDataItem.getPriority()==4){
+            deviceProfile.setDiagnosticD_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticD_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticD_position(i);
+        }else if(serialDataItem.getPriority()==5){
+            deviceProfile.setDiagnosticE_units(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticE_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticE_position(i);
         }
         //qDebug()<<"For "<<i<<" priority="<<serialDataItem.getPriority();
     }
@@ -236,7 +263,38 @@ void MainWindow::setupSerial(){
     }
 
     connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);*/
+<<<<<<< HEAD
+=======
 
+}
+
+void MainWindow::closeSerialPort()
+{
+    serial->close();
+}
+void MainWindow::writeData(const QByteArray &data)
+{
+    serial->write(data);
+
+}
+
+
+void MainWindow::readData()
+{
+    if(serial->canReadLine()){
+        QByteArray data = serial->readAll();
+        newDataLine(data);
+    }
+}
+
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
+
+void MainWindow::handleError(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::ResourceError) {
+        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        closeSerialPort();
+    }
 }
 
 void MainWindow::closeSerialPort()
@@ -347,9 +405,15 @@ void MainWindow::updateDisplay(void){
     current_value = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
+<<<<<<< HEAD
         main_label->setText("O<sub>3</sub>:");
     }else if(deviceProfile.getMain_display_name().contains("2")){
          main_label->setText("NO<sub>2</sub>:");
+=======
+        main_label->setText("O<sub>3</sub>: ");
+    }else if(deviceProfile.getMain_display_name().contains("2")){
+         main_label->setText("NO<sub>2</sub>: ");
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     }
     main_measurement_display->setText(QString::number(current_value));
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
@@ -390,11 +454,17 @@ void MainWindow::displayStats(void){
     showStats->show();
 }
 
+<<<<<<< HEAD
 void MainWindow::displaySettings() {
     settingsWidget->show();
 }
 
 
+=======
+void MainWindow::displaySettings(void){
+    settingsView->show();
+}
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 void MainWindow::initFile(void){
     //determine file location - if there is a usb drive, use it.  Otherwise use local drive home directory

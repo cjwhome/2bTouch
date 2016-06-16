@@ -39,14 +39,18 @@ bool FileWriter::checkIfUsbMounted(){
 
     QString mount_status = process->readAll();
     qDebug()<<"mount command return: "<<mount_status;
-    if(mount_status.contains("usb")){
+    if(mount_status.contains("usb")||mount_status.contains("/dev/sd")){
             //separate string into sub strings by spaces and find string that has "media" in it
 
             QStringList stringList = mount_status.split(" ");
             for(int i=0;i<stringList.size();i++){
-                if(stringList[i].contains("usb0")){
+                if(stringList[i].contains("usb0")){     //if a usb stick is on a linux pc
                     this->setUsbPath(stringList[i]);
                     qDebug()<<"Found device located at: "<<getUsbPath()<<" after usbdevice string";
+                    return true;
+                }else if(stringList[i].contains("/media")){     //if a usb stick is in the armadillo
+                    this->setUsbPath((stringList[i]));
+                    qDebug()<<"Found device located at: "<<getUsbPath()<<" after /dev/ string";
                     return true;
                 }
             }

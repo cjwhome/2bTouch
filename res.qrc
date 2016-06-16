@@ -13,9 +13,19 @@
         <file>pics/clear-icon.gif</file>
         <file>pics/zoom-in-icon.gif</file>
         <file>pics/zoom-out-icon.gif</file>
+<<<<<<< HEAD
+=======
+        <file>pics/home-icon-selected.gif</file>
+>>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>
     </qresource>
     <qresource prefix="/icons"/>
+    <qresource prefix="/keyboard">
+        <file>keyboard/Touch-Keyboard.png</file>
+        <file>keyboard/Touch-Keyboard1.png</file>
+        <file>keyboard/Touch-Keyboard2.png</file>
+        <file>keyboard/Touch-Keyboard-white.png</file>
+    </qresource>
 </RCC>
