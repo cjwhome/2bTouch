@@ -17,12 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
-<<<<<<< HEAD
-
-=======
     //ControlBacklight controlBacklight;
     //controlBacklight.setPercentage(100);
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     //listFonts();
 
     QWidget *centralWidget = new QWidget();
@@ -51,8 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setIcon(configButtonIcon);
     configure_button->setIconSize(QSize(35,31));
     configure_button->setFixedSize(35,31);
-
-    connect(configure_button, SIGNAL(pressed()), this, SLOT(displaySettings()));
 
 
     QPushButton *homeButton = new QPushButton();
@@ -125,14 +119,13 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(buttonLayout);
 
 	
-    data_point = QDateTime::currentDateTime().toTime_t();
-    data_index = 0;
+    data_point = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
-    displayGraph = new DisplayGraph(this);
+    displayGraph = new DisplayGraph();
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
@@ -141,14 +134,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
-<<<<<<< HEAD
-    showStats = new ShowStats(this);
-    showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
-
-    settingsWidget = new SettingsWidget(this);
-    settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-=======
     showStats = new ShowStats();
     showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
@@ -156,7 +141,6 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsView = new SettingsView();
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -166,7 +150,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
-
 }
 
 MainWindow::~MainWindow()
@@ -177,17 +160,13 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-<<<<<<< HEAD
-    twobTechDevice = xmlDeviceReader->getADevice(4);
-=======
     twobTechDevice = xmlDeviceReader->getADevice(5);
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
     deviceProfile.setBaud_rate(twobTechDevice.getBaud_rate());
-    qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
-    qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
+    //qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
+    //qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
@@ -263,38 +242,7 @@ void MainWindow::setupSerial(){
     }
 
     connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);*/
-<<<<<<< HEAD
-=======
 
-}
-
-void MainWindow::closeSerialPort()
-{
-    serial->close();
-}
-void MainWindow::writeData(const QByteArray &data)
-{
-    serial->write(data);
-
-}
-
-
-void MainWindow::readData()
-{
-    if(serial->canReadLine()){
-        QByteArray data = serial->readAll();
-        newDataLine(data);
-    }
-}
-
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
-
-void MainWindow::handleError(QSerialPort::SerialPortError error)
-{
-    if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
-        closeSerialPort();
-    }
 }
 
 void MainWindow::closeSerialPort()
@@ -375,12 +323,11 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        x.insert(data_index,data_point);
-        y.insert(data_index,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        x.insert(data_point,data_point);
+        y.insert(data_point,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
-        data_point += 10;
-        data_index++;
+        data_point++;
 
         updateDisplay();
         return true;
@@ -405,15 +352,9 @@ void MainWindow::updateDisplay(void){
     current_value = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
-<<<<<<< HEAD
-        main_label->setText("O<sub>3</sub>:");
-    }else if(deviceProfile.getMain_display_name().contains("2")){
-         main_label->setText("NO<sub>2</sub>:");
-=======
         main_label->setText("O<sub>3</sub>: ");
     }else if(deviceProfile.getMain_display_name().contains("2")){
          main_label->setText("NO<sub>2</sub>: ");
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     }
     main_measurement_display->setText(QString::number(current_value));
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
@@ -438,12 +379,11 @@ void MainWindow::displayBigPlot(void){
         displayGraph->drawPlot();
         displayGraph->show();
 
-        //displayGraph->setParent(this);
 }
  
 void MainWindow::clearPlotData(void){
     //qDebug()<<"Clearing plot data, xcount:"<<x.count()<<", ycount:"<<y.count();
-    data_index = 0;
+    data_point = 0;
     x.clear();
     y.clear();
 }
@@ -454,17 +394,9 @@ void MainWindow::displayStats(void){
     showStats->show();
 }
 
-<<<<<<< HEAD
-void MainWindow::displaySettings() {
-    settingsWidget->show();
-}
-
-
-=======
 void MainWindow::displaySettings(void){
     settingsView->show();
 }
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 void MainWindow::initFile(void){
     //determine file location - if there is a usb drive, use it.  Otherwise use local drive home directory

@@ -16,8 +16,6 @@ public:
     QList<TwobTechDevice> getDeviceList() const;
     TwobTechDevice getADevice(int element_number);        //returns a device in the divice list at element_number
 
-    TwobTechDevice deviceByPort(QString name);
-
 
 private:
     void processDevices();

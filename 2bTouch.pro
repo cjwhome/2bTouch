@@ -28,10 +28,6 @@ SOURCES += main.cpp\
     parseddata.cpp \
     deviceprofile.cpp \
     filewriter.cpp \
-<<<<<<< HEAD
-    settingswidget.cpp \
-    devicemodel.cpp
-=======
     controlbacklight.cpp \
     settingsview.cpp \
     graphsettingsdialog.cpp \
@@ -40,7 +36,6 @@ SOURCES += main.cpp\
     keypad.cpp \
     usertypeview.cpp \
     adminview.cpp
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -55,10 +50,6 @@ HEADERS  += mainwindow.h \
     parseddata.h \
     deviceprofile.h \
     filewriter.h \
-<<<<<<< HEAD
-    settingswidget.h \
-    devicemodel.h
-=======
     controlbacklight.h \
     settingsview.h \
     graphsettingsdialog.h \
@@ -67,14 +58,10 @@ HEADERS  += mainwindow.h \
     keypad.h \
     usertypeview.h \
     adminview.h
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 FORMS    += mainwindow.ui \
     showstats.ui \
     displaygraph.ui \
-<<<<<<< HEAD
-    settingswidget.ui
-=======
     settingsview.ui \
     graphsettingsdialog.ui \
     networkview.ui \
@@ -82,7 +69,6 @@ FORMS    += mainwindow.ui \
     keypad.ui \
     usertypeview.ui \
     adminview.ui
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 RESOURCES += \
     res.qrc

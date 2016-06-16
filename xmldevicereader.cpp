@@ -149,14 +149,4 @@ TwobTechDevice XmlDeviceReader::getADevice(int element_number){
     return deviceList.at(element_number);
 }
 
-TwobTechDevice XmlDeviceReader::deviceByPort(QString name) {
-    foreach(TwobTechDevice device, deviceList) {
-        if(device.getCom_port() == name) {
-            return device;
-        }
-    }
-    TwobTechDevice null;
-    return null;
-}
-
 

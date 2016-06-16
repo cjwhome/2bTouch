@@ -24,11 +24,7 @@
 #include "serialdataitem.h"
 #include "parseddata.h"
 #include "filewriter.h"
-<<<<<<< HEAD
-#include "settingswidget.h"
-=======
 #include "controlbacklight.h"
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
 namespace Ui {
 class MainWindow;
@@ -67,11 +63,7 @@ private slots:
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
     void displayStats(void);
-<<<<<<< HEAD
-    void displaySettings();
-=======
     void displaySettings(void);
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     void writeData(const QByteArray &data);
     void readData();
     void handleError(QSerialPort::SerialPortError error);
@@ -82,14 +74,9 @@ private:
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     ShowStats *showStats;
-<<<<<<< HEAD
-=======
     SettingsView *settingsView;
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     QSerialPort *serial;
     DisplayGraph *displayGraph;
-    SettingsWidget *settingsWidget;
-
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;
@@ -102,8 +89,7 @@ private:
     QFile currentFile;
     QString tempDLine;
 
-    double data_point;
-    int data_index;
+    int data_point;
 	double start_time_seconds;
     double main_display_value;
     bool started_file;

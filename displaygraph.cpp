@@ -1,13 +1,9 @@
 #include "displaygraph.h"
 #include "ui_displaygraph.h"
-<<<<<<< HEAD
-#include <QDateTime>
-=======
 #include <QSettings>
 #include <QApplication>
 
 
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 #define MAXIMUM_X_AXIS 10
 
 DisplayGraph::DisplayGraph(QWidget *parent) :
@@ -26,7 +22,6 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     verticalLayout = new QVBoxLayout();
     zoomHLayout = new QHBoxLayout();
     buttonLayout = new QHBoxLayout();
-    menuWidget = new QWidget(this);
 
     QPushButton *homeButton = new QPushButton();
     QPixmap homePixmap(":/buttons/pics/home-icon.gif");
@@ -84,17 +79,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     verticalLayout->addWidget(customPlot);
     verticalLayout->addWidget(myFrame);
     verticalLayout->addLayout(buttonLayout);
-    //menuWidget->setLayout(buttonLayout);
-    //verticalLayout->addWidget(menuWidget);
 
-    //menuIsShowing = true;
-
-    //showMenuWidget = new ShowMenuWidget(this);
-    //connect(showMenuWidget, SIGNAL(pressed()), this, SLOT(showMenu()));
-
-    //timer = new QTimer(this);
-    //connect(timer, SIGNAL(timeout()), this, SLOT(timerFired()));
-    //timer->start(2000);
 
     this->setLayout(verticalLayout);
     //horizontalLayout->setSpacing(35);
@@ -109,44 +94,24 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-<<<<<<< HEAD
-    connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
-    connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(zoomOut()));
-=======
     connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
     connect(settingsButton,SIGNAL(clicked(bool)), settingsdialog, SLOT(show()));
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
-<<<<<<< HEAD
-    customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    customPlot->xAxis->setDateTimeFormat("MM/dd/yy hh:mm:ss");
-    double now = QDateTime::currentDateTime().toTime_t();
-    customPlot->xAxis->setRange(now, now+60);
-    customPlot->xAxis->setAutoTickStep(false);
-    customPlot->xAxis->setTickStep(10);
-    customPlot->xAxis->setSubTickCount(3);
-=======
     //customPlot->xAxis->setRangeLower(0);
     //customPlot->xAxis->setRangeUpper(10);
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 
     customPlot->graph(0)->setData(x, y);
-    //customPlot->xAxis->setLabel("Time");
+    customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
     customPlot->xAxis->setTickLabelFont(QFont("Cabin", 8));
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
-<<<<<<< HEAD
-    customPlot->xAxis->setTickLabelRotation(-30);
-    fixScale();
-=======
 
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
 }
 
 void DisplayGraph::goback(){
@@ -248,8 +213,6 @@ void DisplayGraph::mouseWheel()
     customPlot->axisRect()->setRangeZoom(customPlot->yAxis->orientation());
   else
     customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
-
-  fixScale();
 }
 
 void DisplayGraph::zoomIn(){
@@ -266,7 +229,6 @@ void DisplayGraph::zoomIn(){
         customPlot->xAxis->setRange(x_range.lower + 1, x_range.upper - 1);
         customPlot->yAxis->setRange(y_range.lower + 1, y_range.upper - 1);
     }
-    fixScale();
     customPlot->replot();
 }
 
@@ -285,54 +247,9 @@ void DisplayGraph::zoomOut(){
         customPlot->xAxis->setRange(x_range.lower - 1, x_range.upper + 1);
         customPlot->yAxis->setRange(y_range.lower - 1, y_range.upper + 1);
     }
-    fixScale();
     customPlot->replot();
 }
 
-<<<<<<< HEAD
-void DisplayGraph::fixScale() {
-    QCPRange plotRange = customPlot->xAxis->range();
-    double range = plotRange.upper - plotRange.lower;
-    if(range < 120) {
-        customPlot->xAxis->setDateTimeFormat("mm:ss");
-        customPlot->xAxis->setTickStep(10);
-    } else if((range > 120) && (range < 60*60)) {
-        customPlot->xAxis->setDateTimeFormat("hh:mm");
-        customPlot->xAxis->setTickStep(60);
-    } else if((range > 60*60) && (range < 24*60*60)) {
-        customPlot->xAxis->setDateTimeFormat("ddd hh");
-        customPlot->xAxis->setTickStep(60*60);
-    } else if(range > 24*60*60) {
-        customPlot->xAxis->setDateTimeFormat("mm-dd-yy");
-        customPlot->xAxis->setTickStep(24*60*60);
-    }
-}
-
-/*void DisplayGraph::timerFired() {
-    timer->stop();
-    if(menuIsShowing) {
-        menuIsShowing = false;
-        hideMenu();
-    } else {
-        menuIsShowing = true;
-        showMenu();
-    }
-}
-
-void DisplayGraph::hideMenu() {
-    menuIsShowing = false;
-    verticalLayout->removeWidget(menuWidget);
-    verticalLayout->addWidget(showMenuWidget);
-}
-
-
-void DisplayGraph::showMenu() {
-    menuIsShowing = true;
-    verticalLayout->removeWidget(showMenuWidget);
-    verticalLayout->addWidget(menuWidget);
-    timer->start(5000);
-}*/
-=======
 void DisplayGraph::loadSettings()
 {
  QSettings settings("2btech", "touchscreen");
@@ -352,4 +269,3 @@ void DisplayGraph::saveSettings()
  settings.setValue("yautoscale", autoscaley);
 
 }
->>>>>>> 53d69c6e0f6780facc0408cc9525eb5e30bd5129
