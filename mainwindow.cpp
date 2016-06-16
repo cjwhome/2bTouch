@@ -7,6 +7,7 @@ public:
         QThread::sleep(secs);
     }
 };
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     started_file = false;
     this->setStyleSheet("background-color:white;");
+    this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
 
     //listFonts();
 
@@ -29,26 +31,23 @@ MainWindow::MainWindow(QWidget *parent) :
     current_date = new QLabel();
     main_label = new QLabel();
     main_units_label = new QLabel();
-    //main_lcd_display = new QLCDNumber();
+
     main_measurement_display = new QLabel();
 
     //add the separator line:
-    //QFrame* myFrame = new QFrame();
-   // myFrame->setFrameShape(QFrame::VLine);
+
     QFrame* horizontalFrame = new QFrame();
     horizontalFrame->setFrameShape(QFrame::HLine);
-    //QFrame* buttonFrame = new QFrame();
-    //buttonFrame->setFrameRect(QRectF(9.5, 9.5, 100, 50));
-    //buttonFra
-    //this->setStyleSheet(" .QFrame { background-color : gray } ");
 
-    QPixmap configPixmap(":/buttons/pics/Settings-icon.jpg");
+    QPixmap configPixmap(":/buttons/pics/settings-icon.gif");
     QIcon configButtonIcon(configPixmap);
 
     QPushButton *configure_button = new QPushButton();
     configure_button->setIcon(configButtonIcon);
     configure_button->setIconSize(QSize(35,31));
     configure_button->setFixedSize(35,31);
+
+    connect(configure_button, SIGNAL(pressed()), this, SLOT(displaySettings()));
 
 
     QPushButton *homeButton = new QPushButton();
@@ -57,10 +56,10 @@ MainWindow::MainWindow(QWidget *parent) :
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
-    homeButton->setStyleSheet("QPushButton { border: none;}");
+
 
     graph_button = new QPushButton();
-    QPixmap chartPixmap(":/buttons/pics/chart.jpg");
+    QPixmap chartPixmap(":/buttons/pics/chart-icon.gif");
     QIcon chartButtonIcon(chartPixmap);
 
     graph_button->setIcon(chartButtonIcon);
@@ -70,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
     QPushButton *stats_button = new QPushButton();
-    QPixmap statsPixmap(":/buttons/pics/stats-icon.jpg");
+    QPixmap statsPixmap(":/buttons/pics/stats-icon.gif");
     QIcon statsButtonIcon(statsPixmap);
     stats_button->setIcon(statsButtonIcon);
     stats_button->setIconSize(QSize(35,31));
@@ -82,10 +81,12 @@ MainWindow::MainWindow(QWidget *parent) :
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
     main_label->setFont(labelFont);
-    main_label->setStyleSheet("QLabel { color : darkblue; }");
+    main_label->setStyleSheet("QLabel { color : black; }");
     main_units_label->setFont(unitsLabelFont);
-    main_units_label->setStyleSheet("QLabel { color : darkblue; }");
+    main_units_label->setStyleSheet("QLabel { color : black; }");
     main_measurement_display->setFont(labelFont);
+    main_measurement_display->setStyleSheet("QLabel { color : green; }");
+    //main_measurement_display->setFixedWidth(8);
 
     topTimeLayout->addSpacing(400);
     //topTimeLayout->addWidget(current_date);
@@ -93,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     topTimeLayout->addWidget(current_time);
 
 
+    //mainDisplayLayout->addSpacerItem(new QSpacerItem(20,1));
     mainDisplayLayout->addWidget(main_label);
     //mainDisplayLayout->addWidget(main_lcd_display);
     mainDisplayLayout->addWidget(main_measurement_display);
@@ -107,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(topTimeLayout);
     verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
-    verticalLayout->addSpacing(45);
+    verticalLayout->addSpacing(55);
     verticalLayout->addWidget(horizontalFrame);
     verticalLayout->addSpacing(5);
     buttonLayout->addWidget(homeButton);
@@ -117,32 +119,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
     verticalLayout->addLayout(buttonLayout);
 
-
-    //main_lcd_display->setFixedSize(50, 50);
-    //main_lcd_display->setMinimumHeight(120);
-    //main_lcd_display->setMinimumWidth(100);
-
-    //main_lcd_display->setDigitCount(2);
-
-    //main_lcd_display->setFrameStyle(QFrame::NoFrame);
-
 	
-    data_point = 0;
+    data_point = QDateTime::currentDateTime().toTime_t();
+    data_index = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
-    displayGraph = new DisplayGraph();
+    displayGraph = new DisplayGraph(this);
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
 
-    showStats = new ShowStats();
+
+    //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
+    showStats = new ShowStats(this);
     showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+
+    settingsWidget = new SettingsWidget(this);
+    settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -152,6 +151,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
+
 }
 
 MainWindow::~MainWindow()
@@ -162,13 +162,13 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(4);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
     deviceProfile.setBaud_rate(twobTechDevice.getBaud_rate());
-    //qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
-    //qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
+    qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
+    qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
     //determine the index of elements
     for(i=0;i<twobTechDevice.data_items.size();i++){
@@ -204,7 +204,7 @@ void MainWindow::createDevice(){
 void MainWindow::setupSerial(){
     // in here is where we determine which serial port to use -
     //TODO: check each port description for the ccs string and use that if it is the POM or 106
-	serialPort = new QSerialPort();
+    serial = new QSerialPort();
     /*foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         qDebug() << "Name        : " << info.portName();
         qDebug() << "Description : " << info.description();
@@ -214,10 +214,19 @@ void MainWindow::setupSerial(){
 		}
     }*/
 
-    serialPort->setPortName(deviceProfile.getCom_port());
+    serial->setPortName(deviceProfile.getCom_port());
 
-    serialPort->setBaudRate(deviceProfile.getBaud_rate(), QSerialPort::AllDirections);
-    s_serialThread = new SerialThread();
+    serial->setBaudRate(deviceProfile.getBaud_rate(), QSerialPort::AllDirections);
+    if (serial->open(QIODevice::ReadWrite)) {
+        qDebug()<<"Setup Serial Port successfully";
+        connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
+                SLOT(handleError(QSerialPort::SerialPortError)));
+        connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
+    }else{
+        qDebug()<<"Error setting up serial port";
+        QMessageBox::critical(this, tr("Error"), serial->errorString());
+    }
+    /*s_serialThread = new SerialThread();
 
     if(!s_serialThread->startSerial(serialPort))
         qDebug()<<"Unable to start serial thread";
@@ -226,8 +235,36 @@ void MainWindow::setupSerial(){
         return;
     }
 
-    connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);
+    connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);*/
 
+}
+
+void MainWindow::closeSerialPort()
+{
+    serial->close();
+}
+void MainWindow::writeData(const QByteArray &data)
+{
+    serial->write(data);
+
+}
+
+
+void MainWindow::readData()
+{
+    if(serial->canReadLine()){
+        QByteArray data = serial->readAll();
+        newDataLine(data);
+    }
+}
+
+
+void MainWindow::handleError(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::ResourceError) {
+        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        closeSerialPort();
+    }
 }
 
 void MainWindow::newDataLine(QString dLine){
@@ -280,11 +317,12 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        x.insert(data_point,data_point);
-        y.insert(data_point,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        x.insert(data_index,data_point);
+        y.insert(data_index,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
-        data_point++;
+        data_point += 10;
+        data_index++;
 
         updateDisplay();
         return true;
@@ -307,7 +345,12 @@ void MainWindow::updateDisplay(void){
     SerialDataItem tempSerialDataItem;
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
     current_value = tempSerialDataItem.getDvalue();
-    main_label->setText(deviceProfile.getMain_display_name()+": ");
+    //main_label->setText(deviceProfile.getMain_display_name()+": ");
+    if(deviceProfile.getMain_display_name().contains("3")){
+        main_label->setText("O<sub>3</sub>:");
+    }else if(deviceProfile.getMain_display_name().contains("2")){
+         main_label->setText("NO<sub>2</sub>:");
+    }
     main_measurement_display->setText(QString::number(current_value));
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
 
@@ -331,11 +374,12 @@ void MainWindow::displayBigPlot(void){
         displayGraph->drawPlot();
         displayGraph->show();
 
+        //displayGraph->setParent(this);
 }
  
 void MainWindow::clearPlotData(void){
     //qDebug()<<"Clearing plot data, xcount:"<<x.count()<<", ycount:"<<y.count();
-    data_point = 0;
+    data_index = 0;
     x.clear();
     y.clear();
 }
@@ -344,6 +388,10 @@ void MainWindow::displayStats(void){
 
 
     showStats->show();
+}
+
+void MainWindow::displaySettings() {
+    settingsWidget->show();
 }
 
 

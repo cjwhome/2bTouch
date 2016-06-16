@@ -1,5 +1,6 @@
 #include "displaygraph.h"
 #include "ui_displaygraph.h"
+#include <QDateTime>
 #define MAXIMUM_X_AXIS 10
 
 DisplayGraph::DisplayGraph(QWidget *parent) :
@@ -8,41 +9,43 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setStyleSheet("background-color:white;");
+    this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
     centralWidget = new QWidget();
     verticalLayout = new QVBoxLayout();
     zoomHLayout = new QHBoxLayout();
     buttonLayout = new QHBoxLayout();
+    menuWidget = new QWidget(this);
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.jpg");
+    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
     homeButton->setFixedSize(35,31);
 
     QPushButton *clearButton = new QPushButton();
-    QPixmap clearPixmap(":/buttons/pics/Clear-icon.jpg");
+    QPixmap clearPixmap(":/buttons/pics/clear-icon.gif");
     QIcon clearButtonIcon(clearPixmap);
     clearButton->setIcon(clearButtonIcon);
     clearButton->setIconSize(QSize(35,31));
     clearButton->setFixedSize(35,31);
 
     QPushButton *settingsButton = new QPushButton();
-    QPixmap settingsPixmap(":/buttons/pics/Settings-icon.jpg");
+    QPixmap settingsPixmap(":/buttons/pics/settings-icon.gif");
     QIcon settingsButtonIcon(settingsPixmap);
     settingsButton->setIcon(settingsButtonIcon);
     settingsButton->setIconSize(QSize(35,31));
     settingsButton->setFixedSize(35,31);
 
     QPushButton *zoomInButton = new QPushButton();
-    QPixmap zoomInPixmap(":/buttons/pics/Zoom-In-icon.jpg");
+    QPixmap zoomInPixmap(":/buttons/pics/zoom-in-icon.gif");
     QIcon zoomInButtonIcon(zoomInPixmap);
     zoomInButton->setIcon(zoomInButtonIcon);
     zoomInButton->setIconSize(QSize(35,31));
     zoomInButton->setFixedSize(35,31);
 
     QPushButton *zoomOutButton = new QPushButton();
-    QPixmap zoomOutPixmap(":/buttons/pics/Zoom-Out-icon.jpg");
+    QPixmap zoomOutPixmap(":/buttons/pics/zoom-out-icon.gif");
     QIcon zoomOutButtonIcon(zoomOutPixmap);
     zoomOutButton->setIcon(zoomOutButtonIcon);
     zoomOutButton->setIconSize(QSize(35,31));
@@ -68,7 +71,17 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     verticalLayout->addWidget(customPlot);
     verticalLayout->addWidget(myFrame);
     verticalLayout->addLayout(buttonLayout);
+    //menuWidget->setLayout(buttonLayout);
+    //verticalLayout->addWidget(menuWidget);
 
+    //menuIsShowing = true;
+
+    //showMenuWidget = new ShowMenuWidget(this);
+    //connect(showMenuWidget, SIGNAL(pressed()), this, SLOT(showMenu()));
+
+    //timer = new QTimer(this);
+    //connect(timer, SIGNAL(timeout()), this, SLOT(timerFired()));
+    //timer->start(2000);
 
     this->setLayout(verticalLayout);
     //horizontalLayout->setSpacing(35);
@@ -84,19 +97,28 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
-    connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(zoomOut()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
-    customPlot->xAxis->setRangeLower(0);
-    customPlot->xAxis->setRangeUpper(10);
+
+    customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+    customPlot->xAxis->setDateTimeFormat("MM/dd/yy hh:mm:ss");
+    double now = QDateTime::currentDateTime().toTime_t();
+    customPlot->xAxis->setRange(now, now+60);
+    customPlot->xAxis->setAutoTickStep(false);
+    customPlot->xAxis->setTickStep(10);
+    customPlot->xAxis->setSubTickCount(3);
+
     customPlot->graph(0)->setData(x, y);
-    customPlot->xAxis->setLabel("Time");
+    //customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
     customPlot->xAxis->setTickLabelFont(QFont("Cabin", 8));
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
+    customPlot->xAxis->setTickLabelRotation(-30);
+    fixScale();
 }
 
 void DisplayGraph::goback(){
@@ -177,6 +199,8 @@ void DisplayGraph::mouseWheel()
     customPlot->axisRect()->setRangeZoom(customPlot->yAxis->orientation());
   else
     customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+
+  fixScale();
 }
 
 void DisplayGraph::zoomIn(){
@@ -191,6 +215,7 @@ void DisplayGraph::zoomIn(){
         customPlot->xAxis->setRange(x_range.lower + 1, x_range.upper - 1);
         customPlot->yAxis->setRange(y_range.lower + 1, y_range.upper - 1);
     }
+    fixScale();
     customPlot->replot();
 }
 
@@ -206,6 +231,49 @@ void DisplayGraph::zoomOut(){
         customPlot->xAxis->setRange(x_range.lower - 1, x_range.upper + 1);
         customPlot->yAxis->setRange(y_range.lower - 1, y_range.upper + 1);
     }
+    fixScale();
     customPlot->replot();
 }
 
+void DisplayGraph::fixScale() {
+    QCPRange plotRange = customPlot->xAxis->range();
+    double range = plotRange.upper - plotRange.lower;
+    if(range < 120) {
+        customPlot->xAxis->setDateTimeFormat("mm:ss");
+        customPlot->xAxis->setTickStep(10);
+    } else if((range > 120) && (range < 60*60)) {
+        customPlot->xAxis->setDateTimeFormat("hh:mm");
+        customPlot->xAxis->setTickStep(60);
+    } else if((range > 60*60) && (range < 24*60*60)) {
+        customPlot->xAxis->setDateTimeFormat("ddd hh");
+        customPlot->xAxis->setTickStep(60*60);
+    } else if(range > 24*60*60) {
+        customPlot->xAxis->setDateTimeFormat("mm-dd-yy");
+        customPlot->xAxis->setTickStep(24*60*60);
+    }
+}
+
+/*void DisplayGraph::timerFired() {
+    timer->stop();
+    if(menuIsShowing) {
+        menuIsShowing = false;
+        hideMenu();
+    } else {
+        menuIsShowing = true;
+        showMenu();
+    }
+}
+
+void DisplayGraph::hideMenu() {
+    menuIsShowing = false;
+    verticalLayout->removeWidget(menuWidget);
+    verticalLayout->addWidget(showMenuWidget);
+}
+
+
+void DisplayGraph::showMenu() {
+    menuIsShowing = true;
+    verticalLayout->removeWidget(showMenuWidget);
+    verticalLayout->addWidget(menuWidget);
+    timer->start(5000);
+}*/

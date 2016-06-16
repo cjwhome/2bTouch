@@ -6,13 +6,13 @@
     </qresource>
     <qresource prefix="/buttons">
         <file>pics/config.jpg</file>
-        <file>pics/chart.jpg</file>
-        <file>pics/Settings-icon.jpg</file>
-        <file>pics/stats-icon.jpg</file>
-        <file>pics/Clear-icon.jpg</file>
-        <file>pics/Zoom-In-icon.jpg</file>
-        <file>pics/Zoom-Out-icon.jpg</file>
         <file>pics/home-icon.gif</file>
+        <file>pics/stats-icon.gif</file>
+        <file>pics/chart-icon.gif</file>
+        <file>pics/settings-icon.gif</file>
+        <file>pics/clear-icon.gif</file>
+        <file>pics/zoom-in-icon.gif</file>
+        <file>pics/zoom-out-icon.gif</file>
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>

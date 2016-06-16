@@ -30,7 +30,7 @@ void SerialThread::run()
 
     while (!s_stop) {
         while(!s_port->canReadLine()){
-            msleep(100);
+            msleep(10);
         }
         tmp = s_port->readAll();
 

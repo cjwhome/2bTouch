@@ -23,6 +23,7 @@
 #include "serialdataitem.h"
 #include "parseddata.h"
 #include "filewriter.h"
+#include "settingswidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -54,20 +55,28 @@ signals:
 
 public slots:
     void clearPlotData();
+
     
 private slots:
     void newDataLine(QString dLine);
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
     void displayStats(void);
+    void displaySettings();
+    void writeData(const QByteArray &data);
+    void readData();
+    void handleError(QSerialPort::SerialPortError error);
+    void closeSerialPort();
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     ShowStats *showStats;
-    QSerialPort *serialPort;
+    QSerialPort *serial;
     DisplayGraph *displayGraph;
+    SettingsWidget *settingsWidget;
+
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;
@@ -80,7 +89,8 @@ private:
     QFile currentFile;
     QString tempDLine;
 
-    int data_point;
+    double data_point;
+    int data_index;
 	double start_time_seconds;
     double main_display_value;
     bool started_file;

@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     serialdataitem.cpp \
     parseddata.cpp \
     deviceprofile.cpp \
-    filewriter.cpp
+    filewriter.cpp \
+    settingswidget.cpp \
+    devicemodel.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -41,11 +43,14 @@ HEADERS  += mainwindow.h \
     serialdataitem.h \
     parseddata.h \
     deviceprofile.h \
-    filewriter.h
+    filewriter.h \
+    settingswidget.h \
+    devicemodel.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
-    displaygraph.ui
+    displaygraph.ui \
+    settingswidget.ui
 
 RESOURCES += \
     res.qrc

@@ -43,13 +43,22 @@ private slots:
 
     void zoomIn();
     void zoomOut();
+
+    void fixScale();
+
+    //void timerFired();
+    //void showMenu();
+    //void hideMenu();
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
+    QWidget *menuWidget;
     QHBoxLayout *buttonLayout;
 
+    //QTimer *timer;
+    bool menuIsShowing;
 
     QCustomPlot *customPlot;
     QVector<double> x,y;

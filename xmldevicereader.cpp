@@ -42,14 +42,14 @@ void XmlDeviceReader::read() {
 }
 
 void XmlDeviceReader::processDevices() {
-    qDebug()<<"Processing devices";
+    //qDebug()<<"Processing devices";
 
     while (!xml.atEnd()) {
         if (xml.readNextStartElement()){
             if (xml.isStartElement() && xml.name() == "device")
                 processDevice();
             else{
-                qDebug()<<"Skipping element in process devices:"<<xml.name().toString();
+                //qDebug()<<"Skipping element in process devices:"<<xml.name().toString();
 
             }
         }
@@ -60,7 +60,7 @@ void XmlDeviceReader::processDevices() {
 
 
 void XmlDeviceReader::processDevice() {
-    qDebug()<<"Processing a Device";
+    //qDebug()<<"Processing a Device";
 
     //QList<TwobTechDevice> deviceList;
     TwobTechDevice twobTechDevice;
@@ -69,12 +69,12 @@ void XmlDeviceReader::processDevice() {
         if (attr.name().toString() == QLatin1String("name")) {
 
             twobTechDevice.device_name = attr.value().toString();
-            qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
+            //qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
         }else if(attr.name().toString() == QLatin1String("portName")){
-            qDebug()<<"Using port:"<<attr.value().toString();
+            //qDebug()<<"Using port:"<<attr.value().toString();
             twobTechDevice.setCom_port(attr.value().toString());
         }else if(attr.name().toString() == QLatin1String("baudRate")){
-            qDebug()<<"Baud Rate:"<<attr.value().toString();
+            //qDebug()<<"Baud Rate:"<<attr.value().toString();
             twobTechDevice.setBaud_rate(attr.value().toInt());
         }
     }
@@ -83,15 +83,15 @@ void XmlDeviceReader::processDevice() {
     //now find all dataItems
     processDataItems(&twobTechDevice);
     deviceList.append(twobTechDevice);
-    qDebug()<<"Done processing a device";
+    //qDebug()<<"Done processing a device";
 }
 
 void XmlDeviceReader::processDataItems(TwobTechDevice *device){
-    qDebug()<<"Processing data Items";
+    //qDebug()<<"Processing data Items";
     do{
         xml.readNextStartElement();
         if (xml.isStartElement() && xml.name() == "dataItem"){
-            qDebug()<<"Found dataItem";
+            //qDebug()<<"Found dataItem";
             processDataItem(device);
         }
     }while(xml.name()!="device");
@@ -101,13 +101,13 @@ void XmlDeviceReader::processDataItems(TwobTechDevice *device){
 }
 
 void XmlDeviceReader::processDataItem(TwobTechDevice *device){
-    qDebug()<<"Processing a data Items Attributes:";
+    //qDebug()<<"Processing a data Items Attributes:";
     SerialDataItem* serialDataItem = new SerialDataItem();
     foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
         if (attr.name().toString() == QLatin1String("name")) {
             serialDataItem->setName(attr.value().toString());
 
-            qDebug()<<"With the name:"<<serialDataItem->getName();
+            //qDebug()<<"With the name:"<<serialDataItem->getName();
         }else if(attr.name().toString() == QLatin1String("type")){
 
             QString typeString = attr.value().toString();
@@ -147,6 +147,16 @@ QList<TwobTechDevice> XmlDeviceReader::getDeviceList() const
 
 TwobTechDevice XmlDeviceReader::getADevice(int element_number){
     return deviceList.at(element_number);
+}
+
+TwobTechDevice XmlDeviceReader::deviceByPort(QString name) {
+    foreach(TwobTechDevice device, deviceList) {
+        if(device.getCom_port() == name) {
+            return device;
+        }
+    }
+    TwobTechDevice null;
+    return null;
 }
 
 
