@@ -101,8 +101,14 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
-    //customPlot->xAxis->setRangeLower(0);
-    //customPlot->xAxis->setRangeUpper(10);
+    customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+    customPlot->xAxis->setDateTimeFormat("MM/dd/yy hh:mm:ss");
+    double now = QDateTime::currentDateTime().toTime_t();
+    customPlot->xAxis->setRange(now, now+60);
+    customPlot->xAxis->setAutoTickStep(false);
+    customPlot->xAxis->setTickStep(10);
+    customPlot->xAxis->setSubTickCount(3);
+    customPlot->xAxis->setTickLabelRotation(-30);
 
     customPlot->graph(0)->setData(x, y);
     customPlot->xAxis->setLabel("Time");
@@ -213,6 +219,8 @@ void DisplayGraph::mouseWheel()
     customPlot->axisRect()->setRangeZoom(customPlot->yAxis->orientation());
   else
     customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+
+  fixScale();
 }
 
 void DisplayGraph::zoomIn(){
@@ -230,6 +238,8 @@ void DisplayGraph::zoomIn(){
         customPlot->yAxis->setRange(y_range.lower + 1, y_range.upper - 1);
     }
     customPlot->replot();
+
+    fixScale();
 }
 
 void DisplayGraph::zoomOut(){
@@ -248,6 +258,8 @@ void DisplayGraph::zoomOut(){
         customPlot->yAxis->setRange(y_range.lower - 1, y_range.upper + 1);
     }
     customPlot->replot();
+
+    fixScale();
 }
 
 void DisplayGraph::loadSettings()
@@ -268,4 +280,22 @@ void DisplayGraph::saveSettings()
  settings.setValue("xautoscale", autoscalex);
  settings.setValue("yautoscale", autoscaley);
 
+}
+
+void DisplayGraph::fixScale() {
+    QCPRange plotRange = customPlot->xAxis->range();
+    double range = plotRange.upper - plotRange.lower;
+    if(range < 120) {
+        customPlot->xAxis->setDateTimeFormat("mm:ss");
+        customPlot->xAxis->setTickStep(10);
+    } else if((range > 120) && (range < 60*60)) {
+        customPlot->xAxis->setDateTimeFormat("hh:mm");
+        customPlot->xAxis->setTickStep(60);
+    } else if((range > 60*60) && (range < 24*60*60)) {
+        customPlot->xAxis->setDateTimeFormat("ddd hh");
+        customPlot->xAxis->setTickStep(60*60);
+    } else if(range > 24*60*60) {
+        customPlot->xAxis->setDateTimeFormat("mm-dd-yy");
+        customPlot->xAxis->setTickStep(24*60*60);
+    }
 }

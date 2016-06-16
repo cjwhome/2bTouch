@@ -60,6 +60,8 @@ private:
     void loadSettings();
     void saveSettings();
 
+    void fixScale();
+
     bool autoscalex;
     bool autoscaley;
 };

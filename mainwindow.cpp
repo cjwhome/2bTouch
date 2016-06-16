@@ -119,7 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(buttonLayout);
 
 	
-    data_point = 0;
+    data_point = QDateTime::currentDateTime().toTime_t();
+    data_index = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     centralWidget->setLayout(verticalLayout);
@@ -141,6 +142,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsView = new SettingsView();
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
+
+    settingsWidget = new SettingsWidget();
+    settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -323,11 +327,12 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        x.insert(data_point,data_point);
-        y.insert(data_point,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        x.insert(data_index,data_point);
+        y.insert(data_index,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
-        data_point++;
+        data_point += 10;
+        data_index++;
 
         updateDisplay();
         return true;
@@ -395,7 +400,8 @@ void MainWindow::displayStats(void){
 }
 
 void MainWindow::displaySettings(void){
-    settingsView->show();
+    settingsWidget->show();
+    //settingsView->show();
 }
 
 void MainWindow::initFile(void){

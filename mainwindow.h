@@ -25,6 +25,7 @@
 #include "parseddata.h"
 #include "filewriter.h"
 #include "controlbacklight.h"
+#include "settingswidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -75,6 +76,7 @@ private:
     SerialThread *s_serialThread;
     ShowStats *showStats;
     SettingsView *settingsView;
+    SettingsWidget *settingsWidget;
     QSerialPort *serial;
     DisplayGraph *displayGraph;
     QLabel *main_output;
@@ -89,7 +91,8 @@ private:
     QFile currentFile;
     QString tempDLine;
 
-    int data_point;
+    double data_point;
+    int data_index;
 	double start_time_seconds;
     double main_display_value;
     bool started_file;
