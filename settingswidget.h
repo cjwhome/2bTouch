@@ -14,7 +14,6 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include "xmldevicereader.h"
-#include "mainwindow.h"
 #include "twobtechdevice.h"
 
 namespace Ui {
