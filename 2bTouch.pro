@@ -36,8 +36,7 @@ SOURCES += main.cpp\
     keypad.cpp \
     usertypeview.cpp \
     adminview.cpp \
-    settingswidget.cpp \
-    settings.cpp
+    settingswidget.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -60,8 +59,7 @@ HEADERS  += mainwindow.h \
     keypad.h \
     usertypeview.h \
     adminview.h \
-    settingswidget.h \
-    settings.h
+    settingswidget.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \
@@ -73,8 +71,7 @@ FORMS    += mainwindow.ui \
     keypad.ui \
     usertypeview.ui \
     adminview.ui \
-    settingswidget.ui \
-    settings.ui
+    settingswidget.ui
 
 RESOURCES += \
     res.qrc
