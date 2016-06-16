@@ -10,6 +10,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     initializeViews();
+    settings = new QSettings("2B Technologies", "2B Touch");
 }
 
 SettingsWidget::~SettingsWidget()
@@ -19,10 +20,14 @@ SettingsWidget::~SettingsWidget()
 
 void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
-    currentIndex = -1;
 
     QWidget *landing = widgetForLanding();
     mainLayout->addWidget(landing);
+
+    homeButton = new QPushButton();
+    homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
+    homeButton->setGeometry(0, 0, 30, 30);
+    connect(homeButton, SIGNAL(released()), this, SLOT(homePressed()));
 }
 
 QWidget* SettingsWidget::widgetForLanding() {
@@ -47,6 +52,8 @@ QWidget* SettingsWidget::widgetForLanding() {
 
     //Landing Page - Connect Buttons
     connect(landingPassSubmit, SIGNAL(released()), this, SLOT(landingSubmit()));
+
+    homeButton->setParent(landingWidget);
 
     return landingWidget;
 }
@@ -75,6 +82,8 @@ QWidget* SettingsWidget::widgetForCal() {
     calWidget->setLayout(calVLayout);
     //Calibration - Connect Buttons
     connect(calSubmit, SIGNAL(released()), this, SLOT(calSubmitReleased()));
+
+    homeButton->setParent(calWidget);
 
     return calWidget;
 }
@@ -112,7 +121,7 @@ QWidget* SettingsWidget::widgetForAvg() {
     signalMapper->setMapping(avgOneHourButton, 60*60);
     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeAvg(int)));
 
-
+    homeButton->setParent(avgWidget);
 
     return avgWidget;
 }
@@ -141,6 +150,8 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
     connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
 
+    homeButton->setParent(rOWidget);
+
     return rOWidget;
 }
 
@@ -168,6 +179,8 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     connect(rTOzoneButton, SIGNAL(released()), this, SLOT(rTOzonePresed()));
     connect(rTDiagnosticsButton, SIGNAL(released()), this, SLOT(rTDiagnosticsPressed()));
 
+    homeButton->setParent(rTWidget);
+
     return rTWidget;
 }
 
@@ -181,6 +194,8 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltVLayout->addWidget(voltTitle);
     voltVLayout->addWidget(voltVoltLabel);
     voltWidget->setLayout(voltVLayout);
+
+    homeButton->setParent(voltWidget);
 
     return voltWidget;
 }
@@ -222,11 +237,38 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesDeleteActionsMenu->addWidget(filesDeleteSelectedButton);
     filesVLayout->addLayout(filesDeleteActionsMenu);
 
+    homeButton->setParent(filesWidget);
+
     return filesWidget;
 }
 
 QWidget* SettingsWidget::widgetForPassChange() {
+    cpWidget = new QWidget(this);
+    cpVLayout = new QVBoxLayout(cpWidget);
+    cpTitle = new QLabel("CHANGE PASSWORD", cpWidget);
+    cpPassRow = new QHBoxLayout(cpWidget);
+    cpPassLabel = new QLabel("Password: ", cpWidget);
+    cpPassText = new QLineEdit(cpWidget);
+    cpConfRow = new QHBoxLayout(cpWidget);
+    cpConfirmLabel = new QLabel("Confirm: ", cpWidget);
+    cpConfText = new QLineEdit(cpWidget);
+    cpSaveButton = new QPushButton("SAVE", cpWidget);
 
+    cpVLayout->addWidget(cpTitle);
+    cpPassRow->addWidget(cpPassLabel);
+    cpPassRow->addWidget(cpPassText);
+    cpVLayout->addLayout(cpPassRow);
+    cpConfRow->addWidget(cpConfirmLabel);
+    cpConfRow->addWidget(cpConfText);
+    cpVLayout->addLayout(cpConfRow);
+    cpVLayout->addWidget(cpSaveButton);
+    cpWidget->setLayout(cpVLayout);
+
+    connect(cpSaveButton, SIGNAL(released()), this, SLOT(changePassPressed()));
+
+    homeButton->setParent(cpWidget);
+
+    return cpWidget;
 }
 
 void SettingsWidget::homePressed() {
@@ -239,7 +281,7 @@ void SettingsWidget::showCal() {
 
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showFiles()));
+    connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
@@ -353,7 +395,7 @@ void SettingsWidget::showFiles() {
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
-    connect(right, SIGNAL(released()), this, SLOT(showCal()));
+    connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -366,7 +408,25 @@ void SettingsWidget::showFiles() {
 }
 
 void SettingsWidget::showPassChange() {
+    clearView();
+    QWidget *files = widgetForPassChange();
 
+    QPushButton *left = new QPushButton(files);
+    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    connect(left, SIGNAL(released()), this, SLOT(showFiles()));
+
+    QPushButton *right = new QPushButton(files);
+    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    connect(right, SIGNAL(released()), this, SLOT(showCal()));
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(left);
+    layout->addWidget(files);
+    layout->addWidget(right);
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    mainLayout->addWidget(w);
 }
 
 void SettingsWidget::clearView() {
@@ -377,8 +437,13 @@ void SettingsWidget::clearView() {
 
 void SettingsWidget::landingSubmit() {
     QString passTest = landingPassField->text();
-    if(passTest == "password") {
+    QString password = settings->value("Password", "password").toString();
+    if(passTest == password) {
         showCal();
+    } else {
+        QMessageBox msg;
+        msg.setText("Incorrect Password");
+        msg.exec();
     }
 }
 
@@ -404,4 +469,23 @@ void SettingsWidget::rTOzonePresed()  {
 
 void SettingsWidget::rTDiagnosticsPressed() {
 
+}
+
+void SettingsWidget::sendMessage(QString msg) {
+    emit sendMsg(msg);
+}
+
+void SettingsWidget::changePassPressed() {
+    QString pass1 = cpPassText->text();
+    QString pass2 = cpPassText->text();
+    if(pass1 == pass2) {
+        settings->setValue("Password", pass1);
+        QMessageBox msg;
+        msg.setText("Password Changed");
+        msg.exec();
+    } else {
+        QMessageBox msg;
+        msg.setText("Passwords Do Not Match");
+        msg.exec();
+    }
 }

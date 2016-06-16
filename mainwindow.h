@@ -28,7 +28,7 @@
 #include "settingswidget.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -57,7 +57,7 @@ signals:
 
 public slots:
     void clearPlotData();
-
+    void sendMsg(QString msg);
     
 private slots:
     void newDataLine(QString dLine);

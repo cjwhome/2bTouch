@@ -145,6 +145,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     settingsWidget = new SettingsWidget();
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -469,4 +470,8 @@ void MainWindow::listFonts(void){
             styleItem->setText(1, sizes.trimmed());
         }
     }
+}
+
+void MainWindow::sendMsg(QString msg) {
+
 }

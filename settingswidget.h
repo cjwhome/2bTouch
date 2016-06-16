@@ -10,6 +10,12 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTableWidget>
+#include <QSettings>
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include "xmldevicereader.h"
+#include "mainwindow.h"
+#include "twobtechdevice.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -23,16 +29,15 @@ public:
     explicit SettingsWidget(QWidget *parent = 0);
     ~SettingsWidget();
 
+signals:
+    void sendMsg(QString msg);
+
 private:
     Ui::SettingsWidget *ui;
 
     //Universal Layout
     QPushButton *homeButton;
-    QPushButton *leftArrow;
-    QPushButton *rightArrow;
-    QWidget *widgets[5];
     QVBoxLayout *mainLayout;
-    int currentIndex;
 
     //Landing Page
     QWidget *landingWidget;
@@ -112,12 +117,17 @@ private:
 
     //Change Password
     QWidget *cpWidget;
+    QVBoxLayout *cpVLayout;
     QLabel *cpTitle;
+    QHBoxLayout *cpPassRow;
     QLabel *cpPassLabel;
     QLineEdit *cpPassText;
+    QHBoxLayout *cpConfRow;
     QLabel *cpConfirmLabel;
     QLineEdit *cpConfText;
     QPushButton *cpSaveButton;
+
+    QSettings *settings;
 
 private slots:
     void initializeViews();
@@ -130,6 +140,8 @@ private slots:
     void rOHighPressed();
     void rTOzonePresed();
     void rTDiagnosticsPressed();
+
+    void changePassPressed();
 
     QWidget* widgetForLanding();
     QWidget* widgetForCal();
@@ -149,6 +161,8 @@ private slots:
     void showPassChange();
 
     void clearView();
+
+    void sendMessage(QString msg);
 };
 
 #endif // SETTINGSWIDGET_H
