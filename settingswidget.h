@@ -15,6 +15,7 @@
 #include <QSerialPortInfo>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
+#include "filewriter.h"
 
 namespace Ui {
 class SettingsWidget;

@@ -3,6 +3,7 @@
 #include <QSignalMapper>
 #include <QDir>
 #include <QException>
+#include <QDebug>
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -48,6 +49,7 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingPassTitle->setFont(titleFont);
     landingPassTitle->setAlignment(Qt::AlignHCenter);
     landingPassPrompt->setFont(labelFont);
+    landingPassField->setEchoMode(QLineEdit::Password);
     landingPassSubmit->setFixedHeight(30);
     //Landing Page - Fill Layout
     landingVLayout->addWidget(landingPassTitle);
@@ -259,14 +261,17 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
-    QDir dir = QDir("/");
-    QStringList files = dir.entryList(QStringList("*"), QDir::Files | QDir::NoSymLinks);
-    for(int i = 0; i < files.size(); i++) {
-        QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
+
+    QStringList extFilter("*.csv");
+    QDir currentDir = QDir::current();
+    QStringList list = currentDir.entryList(extFilter);
+    for(int i = 0; i < list.length(); i++) {
+        QTableWidgetItem *fileNameItem = new QTableWidgetItem(list.at(i));
         int row = filesTable->rowCount();
         filesTable->insertRow(row);
         filesTable->setItem(row, 0, fileNameItem);
     }
+
     filesDeleteActionsMenu = new QHBoxLayout(filesWidget);
     filesDeleteAllButton = new QPushButton("Delete All", filesWidget);
     filesDeleteSelectedButton = new QPushButton("Delete Selected", filesWidget);
@@ -307,7 +312,9 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpTitle->setFont(titleFont);
     cpTitle->setAlignment(Qt::AlignHCenter);
     cpPassLabel->setFont(labelFont);
+    cpPassText->setEchoMode(QLineEdit::Password);
     cpConfirmLabel->setFont(labelFont);
+    cpConfText->setEchoMode(QLineEdit::Password);
     cpVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
     cpVLayout->addWidget(cpTitle);
@@ -561,19 +568,89 @@ void SettingsWidget::rTHelpPressed() {
 }
 
 void SettingsWidget::copyAllPressed() {
-    QDir dir = new QDir("/mnt/");
-    dir.g
+    QStringList extFilter("*.csv");
+    QDir currentDir = QDir::current();
+    QStringList list = currentDir.entryList(extFilter);
+    FileWriter fileWriter;
+    bool test = fileWriter.createDataFolder("2B_Tech");
+    QString filePath = fileWriter.getFull_data_path();
+    qDebug()<<filePath;
+    for(int i = 0; i < list.length(); i++) {
+        QString src = QDir::currentPath()+"/"+list.at(i);
+        QString dest = filePath+"/"+list.at(i);
+        qDebug()<<src;
+        qDebug()<<dest;
+        if (QFile::copy(src, dest)) {
+            qDebug()<<"Data copied successfully";
+        } else {
+            qDebug()<<"Could not copy data";
+        }
+    }
 }
 
 void SettingsWidget::copySelectedPressed() {
+    FileWriter fileWriter;
+    bool test = fileWriter.createDataFolder("2B_Tech");
+    QString filePath = fileWriter.getFull_data_path();
 
+    for(int i = 0; i < filesTable->selectedItems().length(); i++) {
+        QString src = QDir::currentPath() + "/" + filesTable->selectedItems().at(i)->text();
+        QString dest = filePath+"/"+filesTable->selectedItems().at(i)->text();
+        if (QFile::copy(src, dest)) {
+            qDebug()<<"Data copied successfully";
+        } else {
+            qDebug()<<"Could not copy data";
+        }
+    }
 }
 
 void SettingsWidget::deleteAllPressed() {
+    QMessageBox msg;
+    msg.setText("Do you want to delete all of the files?");
+    msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    int ret = msg.exec();
+
+    switch(ret) {
+        case QMessageBox::Cancel:
+            return;
+        case QMessageBox::Ok:
+            QStringList extFilter("*.csv");
+            QDir currentDir = QDir::current();
+            QStringList list = currentDir.entryList(extFilter);
+
+            for(int i = 0; i < list.length(); i++) {
+                QString src = QDir::currentPath() + "/" + list.at(i);
+                QFile file(src);
+                file.remove();
+            }
+            break;
+        default:
+            break;
+    }
+
 
 }
 
 void SettingsWidget::deleteSelectedPressed() {
+    QMessageBox msg;
+    msg.setText("Do you want to delete these files?");
+    msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    int ret = msg.exec();
+
+    switch(ret) {
+        case QMessageBox::Cancel:
+            return;
+        case QMessageBox::Ok:
+            for(int i = 0; i < filesTable->selectedItems().length(); i++) {
+                QString src = QDir::currentPath() + "/" + filesTable->selectedItems().at(i)->text();
+                QFile file(src);
+                file.remove();
+            }
+            break;
+        default:
+            break;
+    }
+
 
 }
 
@@ -583,7 +660,7 @@ void SettingsWidget::sendMessage(QString msg) {
 
 void SettingsWidget::changePassPressed() {
     QString pass1 = cpPassText->text();
-    QString pass2 = cpPassText->text();
+    QString pass2 = cpConfText->text();
     if(pass1 == pass2) {
         settings->setValue("Password", pass1);
         QMessageBox msg;
