@@ -16,6 +16,7 @@
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
 #include "filewriter.h"
+#include "keypad.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -51,6 +52,7 @@ private:
     QLineEdit *landingPassField;
     QPushButton *landingPassSubmit;
     QIcon *landingSettingsIcon;
+    Keypad *landingPad;
 
     //Calibration
     QWidget *calWidget;
@@ -63,6 +65,8 @@ private:
     QLabel *calOffsetLabel;
     QLineEdit *calOffsetField;
     QPushButton *calSubmit;
+    Keypad *calSlopePad;
+    Keypad *calOffPad;
 
     //Averaging
     QWidget *avgWidget;
@@ -130,6 +134,8 @@ private:
     QLabel *cpConfirmLabel;
     QLineEdit *cpConfText;
     QPushButton *cpSaveButton;
+    Keypad *cpPassPad;
+    Keypad *cpConfPad;
 
     QSettings *settings;
 

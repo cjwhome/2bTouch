@@ -24,6 +24,10 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
         setalphabet();
 
+    connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(show()));
+    connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(setalphabet()));
+    //connect(this, SIGNAL(accepted()), this, SLOT(seta));
+
 
     connect ( ui->abutton, SIGNAL( clicked() ), this, SLOT( keypadHandler() ) );
 
@@ -104,8 +108,9 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect( ui->numbutton_4,SIGNAL(clicked()),this,SLOT(boardchange()));
 
-    //setStyleSheet("background-image: url(800x600/Touch-Keyboard1.png);");
-    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1.png);");
+    //setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
+
 
 }
 
@@ -136,7 +141,7 @@ void Keypad::setnumeric()
 {
 
     //setStyleSheet("background-image: url(480x200/Touch-Keyboard2.png);");
-    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
+    setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard2-Line.png);");
 
     ui->abutton->setText("-");
 
@@ -333,6 +338,7 @@ void Keypad::keypadHandler()
         }
 
     }
+    ui->lineEdit->setText(pad_edit->text());
 
 }
 
@@ -341,7 +347,7 @@ void Keypad::setalphabet()
 {
 
     //setStyleSheet("background-image: url(480x200/Touch-Keyboard.png);");
-    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
+    this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-Line.png);");
 
     ui->abutton->setText("a");
 
@@ -417,7 +423,7 @@ void Keypad::setsymbol()
 {
 
    // setStyleSheet("background-image: url(480x200/Touch-Keyboard1.png);");
-    setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1-Line.png);");
 
     ui->abutton->setText("A");
 

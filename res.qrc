@@ -24,5 +24,9 @@
         <file>keyboard/Touch-Keyboard1.png</file>
         <file>keyboard/Touch-Keyboard2.png</file>
         <file>keyboard/Touch-Keyboard-white.png</file>
+        <file>keyboard/Touch-Keyboard-white-Line.png</file>
+        <file>keyboard/Touch-Keyboard1-Line.png</file>
+        <file>keyboard/Touch-Keyboard2-Line.png</file>
+        <file>keyboard/Touch-Keyboard-Line.png</file>
     </qresource>
 </RCC>

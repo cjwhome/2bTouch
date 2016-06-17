@@ -64,6 +64,8 @@ QWidget* SettingsWidget::widgetForLanding() {
 
     homeButton->setParent(landingWidget);
 
+    landingPad = new Keypad(landingPassField, false, landingWidget);
+
     return landingWidget;
 }
 
@@ -100,6 +102,11 @@ QWidget* SettingsWidget::widgetForCal() {
     connect(calSubmit, SIGNAL(released()), this, SLOT(calSubmitReleased()));
 
     homeButton->setParent(calWidget);
+
+    calSlopePad = new Keypad(calSlopeField, false, calWidget);
+    calOffPad = new Keypad(calOffsetField, false, calWidget);
+    //connect(calSlopeField, SIGNAL(cursorPositionChanged(int,int)), keypad, SLOT(show()));
+
 
     return calWidget;
 }
@@ -330,6 +337,9 @@ QWidget* SettingsWidget::widgetForPassChange() {
     connect(cpSaveButton, SIGNAL(released()), this, SLOT(changePassPressed()));
 
     homeButton->setParent(cpWidget);
+
+    cpPassPad = new Keypad(cpPassText, false, cpWidget);
+    cpConfPad = new Keypad(cpConfText, false, cpWidget);
 
     return cpWidget;
 }
@@ -623,8 +633,6 @@ void SettingsWidget::deleteAllPressed() {
                 QFile file(src);
                 file.remove();
             }
-            break;
-        default:
             break;
     }
 

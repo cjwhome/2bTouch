@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     started_file = false;
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
+    //this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-white.png);");
     //ControlBacklight controlBacklight;
     //controlBacklight.setPercentage(100);
     //listFonts();
@@ -440,7 +441,7 @@ void MainWindow::writeFile(void){
 
     if(currentFile.open(QIODevice::Append))
     {
-        qDebug()<<"Writing file";
+        qDebug()<<"Writing file: "<<currentFile.fileName();
         QTextStream stream(&currentFile);
         stream<<tempDLine;
         currentFile.close();

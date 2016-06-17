@@ -15,6 +15,9 @@ public:
     explicit Keypad(QLineEdit *line,bool tgl,QWidget *parent = 0);
     ~Keypad();
 
+public slots:
+    void setalphabet();
+
 private slots:
     void keypadHandler();
     void symbolChange();
@@ -25,7 +28,7 @@ private:
     Ui::Keypad *ui;
     QLineEdit *pad_edit;
     bool toggle,t1;
-    void setalphabet();
+    //void setalphabet();
     void setsymbol();
     void setnumeric();
 
