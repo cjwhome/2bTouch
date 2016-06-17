@@ -426,6 +426,12 @@ void MainWindow::createFileName(void){
     if(fileWriter.createDataFolder(deviceProfile.getDevice_name())){
         //qDebug()<<"found usb mounted at path:"<<fileWriter.getUsbPath();
         dataPath = fileWriter.getFull_data_path();
+    } else {
+        dataPath = "/"+deviceProfile.getDevice_name() + "/";
+        QDir dir(dataPath);
+        if(!dir.exists()) {
+            QDir().mkdir(dataPath);
+        }
     }
     SerialDataItem tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size()-1).at(deviceProfile.getDate_position());
     QDateTime tempDateTime = tempSerialDataItem.getDateTime();

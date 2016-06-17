@@ -12,6 +12,10 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     initializeViews();
     settings = new QSettings("2B Technologies", "2B Touch");
+
+    XmlDeviceReader *reader = new XmlDeviceReader(":/deviceConfig.xml");
+    reader->read();
+    device = reader->getADevice(4);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -142,15 +146,10 @@ QWidget* SettingsWidget::widgetForAvg() {
     avgWidget->setLayout(avgVLayout);
     //AVeraging - Connect Buttons
     QSignalMapper *signalMapper = new QSignalMapper(this);
-    connect(avgTwoSecButton, SIGNAL(released()),this, SLOT(map()));
-    connect(avgTenSecButton, SIGNAL(released()),this, SLOT(map()));
-    connect(avgOneMinButton, SIGNAL(released()),this, SLOT(map()));
-    connect(avgOneHourButton, SIGNAL(released()),this, SLOT(map()));
-    signalMapper->setMapping(avgTwoSecButton, 2);
-    signalMapper->setMapping(avgTenSecButton, 10);
-    signalMapper->setMapping(avgOneMinButton, 60);
-    signalMapper->setMapping(avgOneHourButton, 60*60);
-    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeAvg(int)));
+    connect(avgTwoSecButton, SIGNAL(released()),this, SLOT(twoSecPressed()));
+    connect(avgTenSecButton, SIGNAL(released()),this, SLOT(tenSecPressed()));
+    connect(avgOneMinButton, SIGNAL(released()),this, SLOT(oneMinPressed()));
+    connect(avgOneHourButton, SIGNAL(released()),this, SLOT(oneHourPressed()));
 
     homeButton->setParent(avgWidget);
 
@@ -270,7 +269,7 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesTable->setShowGrid(false);
 
     QStringList extFilter("*.csv");
-    QDir currentDir = QDir::current();
+    QDir currentDir = QDir("/"+device.device_name);
     QStringList list = currentDir.entryList(extFilter);
     for(int i = 0; i < list.length(); i++) {
         QTableWidgetItem *fileNameItem = new QTableWidgetItem(list.at(i));
@@ -545,7 +544,19 @@ void SettingsWidget::calSubmitReleased() {
 
 }
 
-void SettingsWidget::changeAvg(int time) {
+void SettingsWidget::twoSecPressed() {
+
+}
+
+void SettingsWidget::tenSecPressed() {
+
+}
+
+void SettingsWidget::oneMinPressed() {
+
+}
+
+void SettingsWidget::oneHourPressed() {
 
 }
 
@@ -579,10 +590,10 @@ void SettingsWidget::rTHelpPressed() {
 
 void SettingsWidget::copyAllPressed() {
     QStringList extFilter("*.csv");
-    QDir currentDir = QDir::current();
+    QDir currentDir = QDir("/"+device.device_name);
     QStringList list = currentDir.entryList(extFilter);
     FileWriter fileWriter;
-    bool test = fileWriter.createDataFolder("2B_Tech");
+    bool test = fileWriter.createDataFolder(device.device_name);
     QString filePath = fileWriter.getFull_data_path();
     qDebug()<<filePath;
     for(int i = 0; i < list.length(); i++) {
@@ -600,11 +611,11 @@ void SettingsWidget::copyAllPressed() {
 
 void SettingsWidget::copySelectedPressed() {
     FileWriter fileWriter;
-    bool test = fileWriter.createDataFolder("2B_Tech");
+    bool test = fileWriter.createDataFolder(device.device_name);
     QString filePath = fileWriter.getFull_data_path();
 
     for(int i = 0; i < filesTable->selectedItems().length(); i++) {
-        QString src = QDir::currentPath() + "/" + filesTable->selectedItems().at(i)->text();
+        QString src = "/"+ device.device_name + "/" + filesTable->selectedItems().at(i)->text();
         QString dest = filePath+"/"+filesTable->selectedItems().at(i)->text();
         if (QFile::copy(src, dest)) {
             qDebug()<<"Data copied successfully";
@@ -625,11 +636,11 @@ void SettingsWidget::deleteAllPressed() {
             return;
         case QMessageBox::Ok:
             QStringList extFilter("*.csv");
-            QDir currentDir = QDir::current();
+            QDir currentDir = QDir("/"+device.device_name);
             QStringList list = currentDir.entryList(extFilter);
 
             for(int i = 0; i < list.length(); i++) {
-                QString src = QDir::currentPath() + "/" + list.at(i);
+                QString src = "/" + device.device_name + "/" + list.at(i);
                 QFile file(src);
                 file.remove();
             }
@@ -650,7 +661,7 @@ void SettingsWidget::deleteSelectedPressed() {
             return;
         case QMessageBox::Ok:
             for(int i = 0; i < filesTable->selectedItems().length(); i++) {
-                QString src = QDir::currentPath() + "/" + filesTable->selectedItems().at(i)->text();
+                QString src = "/" + device.device_name + "/" + filesTable->selectedItems().at(i)->text();
                 QFile file(src);
                 file.remove();
             }

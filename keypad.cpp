@@ -15,6 +15,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
     t1= false;
 
     pad_edit=line;
+    //ui->lineEdit = pad_edit;
 
     if(toggle)
 
@@ -85,6 +86,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
     //connect ( ui->clrbutton, SIGNAL( clicked() ), this, SLOT( keypadHandler() ) );
 
     connect ( ui->bpbutton, SIGNAL( clicked() ), this, SLOT( keypadHandler() ) );
+    ui->bpbutton->setText("BACK");
 
     connect ( ui->numbutton, SIGNAL( clicked() ), this, SLOT(symbolChange()) );
 
@@ -235,7 +237,7 @@ void Keypad::keypadHandler()
 
         {
 
-            pad_edit->insert(" ");
+            ui->lineEdit->insert(" ");
 
             setsymbol();
 
@@ -245,7 +247,7 @@ void Keypad::keypadHandler()
 
         {
 
-            pad_edit->backspace();
+            ui->lineEdit->backspace();
 
         }
 
@@ -253,7 +255,7 @@ void Keypad::keypadHandler()
 
         {
 
-            pad_edit->clear();
+            ui->lineEdit->clear();
 
         }
 
@@ -261,10 +263,10 @@ void Keypad::keypadHandler()
 
         {
 
-            if(pad_edit->text().isEmpty()){
+            if(ui->lineEdit->text().isEmpty()){
 
                 //pad_edit->insert(inputText.toUpper());
-                pad_edit->insert(inputText);
+                ui->lineEdit->insert(inputText);
                 if(t1)
 
                     setnumeric();
@@ -276,9 +278,9 @@ void Keypad::keypadHandler()
 
             else if(!pad_edit->text().isEmpty()){
 
-                int currentPos = pad_edit->cursorPosition();
+                int currentPos = ui->lineEdit->cursorPosition();
 
-                QString currentText = pad_edit->text();
+                QString currentText = ui->lineEdit->text();
 
                 QChar currentChar;
 
@@ -290,7 +292,7 @@ void Keypad::keypadHandler()
 
                     {
 
-                        pad_edit->insert(inputText.toUpper());
+                        ui->lineEdit->insert(inputText.toUpper());
 
 
                         if(t1)
@@ -305,7 +307,7 @@ void Keypad::keypadHandler()
                     else
 
                     {
-                        pad_edit->insert(inputText);
+                        ui->lineEdit->insert(inputText);
 
                         if(t1)
 
@@ -319,7 +321,7 @@ void Keypad::keypadHandler()
                 {
 
                     //pad_edit->insert(inputText.toUpper());
-                    pad_edit->insert(inputText);
+                    ui->lineEdit->insert(inputText);
 
                     if(t1)
 
@@ -338,7 +340,8 @@ void Keypad::keypadHandler()
         }
 
     }
-    ui->lineEdit->setText(pad_edit->text());
+    pad_edit->setText(ui->lineEdit->text());
+    //ui->lineEdit->setText(pad_edit->text());
 
 }
 

@@ -139,6 +139,8 @@ private:
 
     QSettings *settings;
 
+    TwobTechDevice device;
+
 private slots:
     void initializeViews();
     void homePressed();
@@ -148,7 +150,10 @@ private slots:
     //Calibration
     void calSubmitReleased();
     //Avergaing
-    void changeAvg(int time);
+    void twoSecPressed();
+    void tenSecPressed();
+    void oneMinPressed();
+    void oneHourPressed();
     //Relay One
     void rOLowPressed();
     void rOHighPressed();
