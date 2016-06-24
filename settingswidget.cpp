@@ -169,7 +169,7 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rORow = new QHBoxLayout(rOWidget);
     rOLowButton = new QPushButton("↓LOW", rOWidget);
     rOHighButton = new QPushButton("HIGH↑", rOWidget);
-    QPixmap pixmap(":/buttons/pics/stats-icon.gif");
+    QPixmap pixmap(":/buttons/pics/help-icon.png");
     QIcon icon(pixmap);
     rOHelpButton = new QPushButton(rOWidget);
     rOHelpButton->setIcon(icon);
@@ -204,7 +204,7 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     rTVLayout = new QVBoxLayout(rTWidget);
     rTTitle = new QLabel("RELAY TWO", rTWidget);
     rTHelpButton = new QPushButton(rTWidget);
-    rTHelpButton->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    rTHelpButton->setIcon(QIcon(":/buttons/pics/help-icon.png"));
     rTHelpButton->setFixedSize(buttonSize);
     rTHelpButton->setIconSize(buttonSize);
     rTModeHLayout = new QHBoxLayout(rTWidget);
@@ -361,11 +361,11 @@ void SettingsWidget::showCal() {
     QWidget *cal = widgetForCal();
 
     QPushButton *left = new QPushButton(cal);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
 
     QPushButton *right = new QPushButton(cal);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showAvg()));
 
     right->setFixedSize(buttonSize);
@@ -389,11 +389,11 @@ void SettingsWidget::showAvg() {
     QWidget *avg = widgetForAvg();
 
     QPushButton *left = new QPushButton(avg);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showCal()));
 
     QPushButton *right = new QPushButton(avg);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showRO()));
 
     right->setFixedSize(buttonSize);
@@ -417,11 +417,11 @@ void SettingsWidget::showRO() {
     QWidget *ro = widgetForRelayOne();
 
     QPushButton *left = new QPushButton(ro);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showAvg()));
 
     QPushButton *right = new QPushButton(ro);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showRT()));
 
     right->setFixedSize(buttonSize);
@@ -445,11 +445,11 @@ void SettingsWidget::showRT() {
     QWidget *rt = widgetForRelayTwo();
 
     QPushButton *left = new QPushButton(rt);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRO()));
 
     QPushButton *right = new QPushButton(rt);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showVolt()));
 
     right->setFixedSize(buttonSize);
@@ -473,11 +473,11 @@ void SettingsWidget::showVolt() {
     QWidget *volt = widgetForVoltage();
 
     QPushButton *left = new QPushButton(volt);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRT()));
 
     QPushButton *right = new QPushButton(volt);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showFiles()));
 
     right->setFixedSize(buttonSize);
@@ -501,11 +501,11 @@ void SettingsWidget::showFiles() {
     QWidget *files = widgetForFiles();
 
     QPushButton *left = new QPushButton(files);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showVolt()));
 
     QPushButton *right = new QPushButton(files);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
 
     right->setFixedSize(buttonSize);
@@ -529,11 +529,11 @@ void SettingsWidget::showPassChange() {
     QWidget *files = widgetForPassChange();
 
     QPushButton *left = new QPushButton(files);
-    left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showFiles()));
 
     QPushButton *right = new QPushButton(files);
-    right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showCal()));
 
     right->setFixedSize(buttonSize);

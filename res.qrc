@@ -14,7 +14,9 @@
         <file>pics/zoom-in-icon.gif</file>
         <file>pics/zoom-out-icon.gif</file>
         <file>pics/home-icon-selected.gif</file>
-        <file>../../../Downloads/right-arrow-icon.png</file>
+        <file>pics/right-arrow-icon.png</file>
+        <file>pics/left-arrow-icon.gif</file>
+        <file>pics/help-icon.png</file>
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>

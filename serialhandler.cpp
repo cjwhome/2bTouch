@@ -35,23 +35,13 @@ void SerialHandler::configSerialPort() {
     serialPort->setPortName(portName);
     serialPort->setBaudRate(baudRate);
 
-    /*if(serialPort->open(QIODevice::ReadWrite)) {
-        qDebug()<<"Serial Port Opened Successfully";
-    } else {
-        qDebug()<<"Could not open serial port";
-    }*/
     if (serialPort->open(QIODevice::ReadWrite)) {
         qDebug()<<"Setup Serial Port successfully";
-        /*connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
-                SLOT(handleError(QSerialPort::SerialPortError)));*/
         connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
     }else{
         qDebug()<<"Error setting up serial port";
-
-        //QMessageBox::critical(this, tr("Error"), serial->errorString());
     }
 
-    //connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
 }
 
 void SerialHandler::dataReady() {
