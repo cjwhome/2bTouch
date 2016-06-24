@@ -26,6 +26,7 @@
 #include "filewriter.h"
 #include "controlbacklight.h"
 #include "settingswidget.h"
+#include "serialhandler.h"
 
 namespace Ui {
     class MainWindow;
@@ -104,8 +105,7 @@ private:
 
     QList< QList<SerialDataItem> > allParsedRecordsList;
     FileWriter fileWriter;
-
-
+    SerialHandler *serialHandler;
 };
 
 #endif // MAINWINDOW_H

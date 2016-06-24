@@ -26,10 +26,15 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
 
+    buttonSize = QSize(35, 31);
+    this->setStyleSheet("QPushButton { border: none;}");
+
     homeButton = new QPushButton();
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
-    homeButton->setGeometry(0, 0, 30, 30);
+    homeButton->setFixedSize(buttonSize);
+    homeButton->setIconSize(buttonSize);
     connect(homeButton, SIGNAL(released()), this, SLOT(homePressed()));
+    //homeButton->set
 
     titleFont = QFont("Times serif", 30, 4);
     labelFont = QFont("Times serif", 15, 2);
@@ -168,6 +173,8 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     QIcon icon(pixmap);
     rOHelpButton = new QPushButton(rOWidget);
     rOHelpButton->setIcon(icon);
+    rOHelpButton->setFixedSize(buttonSize);
+    rOHelpButton->setIconSize(buttonSize);
     //Styling
     relayOneTitle->setFont(titleFont);
     relayOneTitle->setAlignment(Qt::AlignHCenter);
@@ -179,7 +186,7 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rORow->addWidget(rOLowButton);
     rORow->addWidget(rOHighButton);
     rOVLayout->addLayout(rORow);
-    rOHelpButton->setGeometry(250, 15, 30, 30);
+    rOHelpButton->setGeometry(320, 15, 30, 30);
     rOWidget->setLayout(rOVLayout);
     //Relay One - Connect Buttons
     connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
@@ -198,6 +205,8 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     rTTitle = new QLabel("RELAY TWO", rTWidget);
     rTHelpButton = new QPushButton(rTWidget);
     rTHelpButton->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
+    rTHelpButton->setFixedSize(buttonSize);
+    rTHelpButton->setIconSize(buttonSize);
     rTModeHLayout = new QHBoxLayout(rTWidget);
     rTModeLabel = new QLabel("Mode: ", rTWidget);
     rTOzoneButton = new QPushButton("Ozone", rTWidget);
@@ -207,7 +216,7 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     //Styling
     rTTitle->setFont(titleFont);
     rTTitle->setAlignment(Qt::AlignHCenter);
-    rTHelpButton->setGeometry(250, 15, 30, 30);
+    rTHelpButton->setGeometry(320, 15, 31, 30);
     rTModeLabel->setFont(labelFont);
     rTDiagnosticsLabel->setFont(labelFont);
     rTVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
@@ -354,12 +363,15 @@ void SettingsWidget::showCal() {
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showAvg()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -379,12 +391,15 @@ void SettingsWidget::showAvg() {
     QPushButton *left = new QPushButton(avg);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showCal()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(avg);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showRO()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -404,12 +419,15 @@ void SettingsWidget::showRO() {
     QPushButton *left = new QPushButton(ro);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showAvg()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(ro);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showRT()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -429,12 +447,15 @@ void SettingsWidget::showRT() {
     QPushButton *left = new QPushButton(rt);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRO()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(rt);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showVolt()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -454,12 +475,15 @@ void SettingsWidget::showVolt() {
     QPushButton *left = new QPushButton(volt);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showRT()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(volt);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showFiles()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -479,12 +503,15 @@ void SettingsWidget::showFiles() {
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showVolt()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -504,12 +531,15 @@ void SettingsWidget::showPassChange() {
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showFiles()));
-    left->setFixedWidth(30);
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/stats-icon.gif"));
     connect(right, SIGNAL(released()), this, SLOT(showCal()));
-    right->setFixedWidth(30);
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(left);
@@ -561,7 +591,7 @@ void SettingsWidget::oneHourPressed() {
 }
 
 void SettingsWidget::rOLowPressed() {
-
+    sendMessage("<test>");
 }
 
 void SettingsWidget::rOHighPressed() {
@@ -575,7 +605,7 @@ void SettingsWidget::rOHelpPressed() {
 }
 
 void SettingsWidget::rTOzonePresed()  {
-    sendMessage("Testing");
+    //sendMessage("Testing");
 }
 
 void SettingsWidget::rTDiagnosticsPressed() {

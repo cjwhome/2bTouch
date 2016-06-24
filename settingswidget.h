@@ -41,7 +41,7 @@ private:
     QVBoxLayout *mainLayout;
     QFont titleFont;
     QFont labelFont;
-
+    QSize buttonSize;
 
     //Landing Page
     QWidget *landingWidget;

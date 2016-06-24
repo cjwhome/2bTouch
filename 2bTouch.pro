@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     keypad.cpp \
     usertypeview.cpp \
     adminview.cpp \
-    settingswidget.cpp
+    settingswidget.cpp \
+    serialhandler.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     keypad.h \
     usertypeview.h \
     adminview.h \
-    settingswidget.h
+    settingswidget.h \
+    serialhandler.h
 
 FORMS    += mainwindow.ui \
     showstats.ui \

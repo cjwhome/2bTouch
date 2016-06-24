@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QThread>
+
 class I : public QThread
 {
 public:
@@ -214,9 +216,13 @@ void MainWindow::createDevice(){
 }
 
 void MainWindow::setupSerial(){
+    QThread *thread = new QThread(this);
+    serialHandler = new SerialHandler(thread);
+    serialHandler->writeSync(new QString("test"));
+    connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     // in here is where we determine which serial port to use -
     //TODO: check each port description for the ccs string and use that if it is the POM or 106
-    serial = new QSerialPort();
+    //serial = new QSerialPort();
     /*foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         qDebug() << "Name        : " << info.portName();
         qDebug() << "Description : " << info.description();
@@ -226,7 +232,7 @@ void MainWindow::setupSerial(){
 		}
     }*/
 
-    serial->setPortName(deviceProfile.getCom_port());
+    /*serial->setPortName(deviceProfile.getCom_port());
 
     serial->setBaudRate(deviceProfile.getBaud_rate(), QSerialPort::AllDirections);
     if (serial->open(QIODevice::ReadWrite)) {
@@ -236,6 +242,7 @@ void MainWindow::setupSerial(){
         connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
     }else{
         qDebug()<<"Error setting up serial port";
+
         QMessageBox::critical(this, tr("Error"), serial->errorString());
     }
     /*s_serialThread = new SerialThread();
@@ -480,6 +487,15 @@ void MainWindow::listFonts(void){
 }
 
 void MainWindow::sendMsg(QString msg) {
-    serial->write(msg.toStdString().c_str(), msg.toStdString().length());
+    for(int i = 0; i < msg.length(); i++) {
+        serial->write(QString(msg.at(i)).toStdString().c_str(), 1);
+        bool pass;// = serial->waitForBytesWritten(500);
+        if(!pass) {
+            qDebug()<<"Could not write data";
+        }
+        //serial->writeData(msg.at(i), 1);
+        //QThread:sleep(5);
+    }
+    //serial->write(msg.toStdString().c_str(), msg.toStdString().length());
     qDebug()<<"Sending Message: "<<msg;
 }
