@@ -149,6 +149,7 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsWidget = new SettingsWidget();
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
+    //connect(settingsWidget, SIGNAL(sendAMsg(QString*)), serialHandler, SLOT(writeAsync(QString*)));
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -158,6 +159,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
+
+    serialHandler->writeChar('v');
+    //serialHandler->writeAsync(new QString("v"));
 }
 
 MainWindow::~MainWindow()
@@ -218,7 +222,7 @@ void MainWindow::createDevice(){
 void MainWindow::setupSerial(){
     QThread *thread = new QThread(this);
     serialHandler = new SerialHandler(thread);
-    serialHandler->writeSync(new QString("test"));
+    //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     // in here is where we determine which serial port to use -
     //TODO: check each port description for the ccs string and use that if it is the POM or 106
@@ -487,7 +491,9 @@ void MainWindow::listFonts(void){
 }
 
 void MainWindow::sendMsg(QString msg) {
-    for(int i = 0; i < msg.length(); i++) {
+    //QString *str = msg;
+    serialHandler->writeSync(new QString(msg));
+    /*for(int i = 0; i < msg.length(); i++) {
         serial->write(QString(msg.at(i)).toStdString().c_str(), 1);
         bool pass;// = serial->waitForBytesWritten(500);
         if(!pass) {
@@ -497,5 +503,5 @@ void MainWindow::sendMsg(QString msg) {
         //QThread:sleep(5);
     }
     //serial->write(msg.toStdString().c_str(), msg.toStdString().length());
-    qDebug()<<"Sending Message: "<<msg;
+    qDebug()<<"Sending Message: "<<msg;*/
 }

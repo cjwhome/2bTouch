@@ -537,6 +537,7 @@ void Keypad::symbolChange()
 void Keypad::keyclose()
 
 {
+    pad_edit->setText(ui->lineEdit->text());
 
     this->done(QDialog::Accepted);
 

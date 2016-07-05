@@ -10,6 +10,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
+
     initializeViews();
     settings = new QSettings("2B Technologies", "2B Touch");
 
@@ -34,7 +35,9 @@ void SettingsWidget::initializeViews() {
     homeButton->setFixedSize(buttonSize);
     homeButton->setIconSize(buttonSize);
     connect(homeButton, SIGNAL(released()), this, SLOT(homePressed()));
-    //homeButton->set
+
+    regButtonStyle = "background-color: rgba(255, 255, 255, 0); color: #000000";
+    selButtonStyle = "background-color: #002266; color: #ffffff";
 
     titleFont = QFont("Times serif", 30, 4);
     labelFont = QFont("Times serif", 15, 2);
@@ -112,10 +115,11 @@ QWidget* SettingsWidget::widgetForCal() {
 
     homeButton->setParent(calWidget);
 
+    calOffsetField->setText(settings->value("Zero").toString());
+    calSlopeField->setText(settings->value("Slope").toString());
+
     calSlopePad = new Keypad(calSlopeField, false, calWidget);
     calOffPad = new Keypad(calOffsetField, false, calWidget);
-    //connect(calSlopeField, SIGNAL(cursorPositionChanged(int,int)), keypad, SLOT(show()));
-
 
     return calWidget;
 }
@@ -155,6 +159,17 @@ QWidget* SettingsWidget::widgetForAvg() {
     connect(avgTenSecButton, SIGNAL(released()),this, SLOT(tenSecPressed()));
     connect(avgOneMinButton, SIGNAL(released()),this, SLOT(oneMinPressed()));
     connect(avgOneHourButton, SIGNAL(released()),this, SLOT(oneHourPressed()));
+
+    int selButton = settings->value("Avg").toInt();
+    if (selButton == 0) {
+        avgTwoSecButton->setStyleSheet(selButtonStyle);
+    } else if (selButton == 1) {
+        avgTenSecButton->setStyleSheet(selButtonStyle);
+    } else if (selButton == 2) {
+        avgOneMinButton->setStyleSheet(selButtonStyle);
+    } else if (selButton == 4) {
+        avgOneHourButton->setStyleSheet(selButtonStyle);
+    }
 
     homeButton->setParent(avgWidget);
 
@@ -571,31 +586,57 @@ void SettingsWidget::landingSubmit() {
 }
 
 void SettingsWidget::calSubmitReleased() {
+    QString calMsg = "c:"+calOffsetField->text();
+    sendMessage(calMsg);
+    settings->setValue("Zero", calOffsetField->text());
 
+    QString slopeMsg = "s:"+calSlopeField->text();
+    sendMessage(slopeMsg);
+    settings->setValue("Slope", calSlopeField->text());
 }
 
 void SettingsWidget::twoSecPressed() {
-
+    sendMessage("a:0");
+    settings->setValue("Avg", "0");
+    avgTwoSecButton->setStyleSheet(selButtonStyle);
+    avgTenSecButton->setStyleSheet(regButtonStyle);
+    avgOneMinButton->setStyleSheet(regButtonStyle);
+    avgOneHourButton->setStyleSheet(regButtonStyle);
 }
 
 void SettingsWidget::tenSecPressed() {
-
+    sendMessage("a:1");
+    settings->setValue("Avg", "1");
+    avgTwoSecButton->setStyleSheet(regButtonStyle);
+    avgTenSecButton->setStyleSheet(selButtonStyle);
+    avgOneMinButton->setStyleSheet(regButtonStyle);
+    avgOneHourButton->setStyleSheet(regButtonStyle);
 }
 
 void SettingsWidget::oneMinPressed() {
-
+    sendMessage("a:2");
+    settings->setValue("Avg", "2");
+    avgTwoSecButton->setStyleSheet(regButtonStyle);
+    avgTenSecButton->setStyleSheet(regButtonStyle);
+    avgOneMinButton->setStyleSheet(selButtonStyle);
+    avgOneHourButton->setStyleSheet(regButtonStyle);
 }
 
 void SettingsWidget::oneHourPressed() {
-
+    sendMessage("a:4");
+    settings->setValue("Avg", "4");
+    avgTwoSecButton->setStyleSheet(regButtonStyle);
+    avgTenSecButton->setStyleSheet(regButtonStyle);
+    avgOneMinButton->setStyleSheet(regButtonStyle);
+    avgOneHourButton->setStyleSheet(selButtonStyle);
 }
 
 void SettingsWidget::rOLowPressed() {
-    sendMessage("<test>");
+    sendMessage("o:a");
 }
 
 void SettingsWidget::rOHighPressed() {
-
+    sendMessage("o:b");
 }
 
 void SettingsWidget::rOHelpPressed() {
@@ -605,11 +646,11 @@ void SettingsWidget::rOHelpPressed() {
 }
 
 void SettingsWidget::rTOzonePresed()  {
-    //sendMessage("Testing");
+    sendMessage("t:a");
 }
 
 void SettingsWidget::rTDiagnosticsPressed() {
-
+    sendMessage("t:b");
 }
 
 void SettingsWidget::rTHelpPressed() {

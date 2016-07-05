@@ -7,6 +7,7 @@
 #include <QSerialPort>
 #include <QMessageBox>
 #include <QDebug>
+#include <QSettings>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
 
@@ -34,6 +35,7 @@ signals:
 public slots:
     void writeSync(QString *dat);
     void writeAsync(QString *dat);
+    void writeChar(char c);
 
     void dataReady();
 
@@ -49,10 +51,15 @@ private:
     XmlDeviceReader *reader;
 
     QString *data;
+    QList<QString*> dataList;
+    void checkQueue();
 
     //void dataReady();
     void handleSyncData(QString retData);
     int syncIndex;
+
+    QSettings *settings;
+    bool gettingSettings;
 };
 
 #endif // SERIALHANDLER_H

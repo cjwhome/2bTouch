@@ -32,6 +32,8 @@ public:
 
 signals:
     void sendMsg(QString msg);
+    void sendAMsg(QString *msg);
+
 
 private:
     Ui::SettingsWidget *ui;
@@ -42,6 +44,8 @@ private:
     QFont titleFont;
     QFont labelFont;
     QSize buttonSize;
+    QString regButtonStyle;
+    QString selButtonStyle;
 
     //Landing Page
     QWidget *landingWidget;
