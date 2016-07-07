@@ -19,14 +19,15 @@ void SerialHandler::writeSync(QString *dat) {
         currentConnectionType = SerialHandler::Synchronously;
         data = dat;
         syncIndex = 0;
-        serialPort->write(QString("<").toLatin1().toStdString().c_str(), 1);
+        serialPort->write(QString('<').toLocal8Bit().constData());
+        //serialPort->write(QString("<").toLatin1().toStdString().c_str(), 1);
     }
 }
 
 void SerialHandler::writeAsync(QString *dat) {
     currentConnectionType = SerialHandler::Asynchronously;
     data = dat;
-    serialPort->write(dat->toLatin1().toStdString().c_str(), dat->length());
+    serialPort->write(dat->toLocal8Bit().constData(), dat->length());
     currentConnectionType = (SerialHandler::Finished);
 }
 
@@ -68,14 +69,17 @@ void SerialHandler::dataReady() {
                 handleSyncData(QString(line));
             } else if(line == "Settings") {
                 gettingSettings = true;
-            } else if(gettingSettings) {
+            } else if((gettingSettings) && (line.length() > 1)) {
                 qDebug()<<"Getting Settigns";
                 gettingSettings = false;
                 QStringList settingsList = line.split(",");
                 settings->setValue("Raw Settings String", line);
                 settings->setValue("Zero", settingsList.at(0));
                 settings->setValue("Avg", settingsList.at(1));
-                settings->setValue("Slope", settingsList.at(2));
+                settings->setValue("VOut", settingsList.at(2));
+                settings->setValue("Rel1On", settingsList.at(3));
+                settings->setValue("Rel1Off", settingsList.at(4));
+                settings->setValue("Slope", settingsList.at(5));
             } else {
                 emit dataAvailable(line);
             }
@@ -86,10 +90,10 @@ void SerialHandler::dataReady() {
 void SerialHandler::handleSyncData(QString retData) {
     if((retData == "n") || (retData == "Starting string")) {
         if(syncIndex < (data->size())) {
-            serialPort->write(QString(data->at(syncIndex)).toLatin1().toStdString().c_str(), 1);
+            serialPort->write(QString(data->at(syncIndex)).toLocal8Bit().constData(), 1);
             syncIndex++;
         } else {
-            serialPort->write(QString(">").toLatin1().toStdString().c_str(), 1);
+            serialPort->write(QString(">").toLocal8Bit().constData(), 1);
             currentConnectionType = SerialHandler::Finished;
             qDebug()<<"Finished Sync Write";
             checkQueue();
@@ -103,7 +107,10 @@ void SerialHandler::handleSyncData(QString retData) {
         settings->setValue("Raw Settings String", retData);
         settings->setValue("Zero", settingsList.at(0));
         settings->setValue("Avg", settingsList.at(1));
-        settings->setValue("Slope", settingsList.at(2));
+        settings->setValue("VOut", settingsList.at(2));
+        settings->setValue("Rel1On", settingsList.at(3));
+        settings->setValue("Rel1Off", settingsList.at(4));
+        settings->setValue("Slope", settingsList.at(5));
     } else {
         emit dataAvailable(retData);
     }
@@ -115,6 +122,6 @@ void SerialHandler::checkQueue() {
         currentConnectionType = SerialHandler::Synchronously;
         data = dataList.at(index+1);
         syncIndex = 0;
-        serialPort->write(QString("<").toLatin1().toStdString().c_str(), 1);
+        serialPort->write(QString("<").toLocal8Bit().constData(), 1);
     }
 }

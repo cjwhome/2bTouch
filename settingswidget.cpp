@@ -28,7 +28,7 @@ void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
 
     buttonSize = QSize(35, 31);
-    this->setStyleSheet("QPushButton { border: none;}");
+    this->setStyleSheet("QPushButton { border: none; }");
 
     homeButton = new QPushButton();
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
@@ -181,9 +181,16 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rOWidget = new QWidget(this);
     rOVLayout = new QVBoxLayout(rOWidget);
     relayOneTitle = new QLabel("RELAY ONE", rOWidget);
-    rORow = new QHBoxLayout(rOWidget);
-    rOLowButton = new QPushButton("↓LOW", rOWidget);
-    rOHighButton = new QPushButton("HIGH↑", rOWidget);
+    rOLowRow = new QHBoxLayout(rOWidget);
+    rOLowLabel = new QLabel("↓LOW", rOWidget);
+    rOLowField = new QLineEdit(rOWidget);
+    rOHighRow = new QHBoxLayout(rOWidget);
+    rOHighLabel = new QLabel("HIGH↑", rOWidget);
+    rOHighField = new QLineEdit(rOWidget);
+    rOSubmitButton = new QPushButton("SAVE", rOWidget);
+    //rORow = new QHBoxLayout(rOWidget);
+    //rOLowButton = new QPushButton("↓LOW", rOWidget);
+    //rOHighButton = new QPushButton("HIGH↑", rOWidget);
     QPixmap pixmap(":/buttons/pics/help-icon.png");
     QIcon icon(pixmap);
     rOHelpButton = new QPushButton(rOWidget);
@@ -193,20 +200,39 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     //Styling
     relayOneTitle->setFont(titleFont);
     relayOneTitle->setAlignment(Qt::AlignHCenter);
-    rOLowButton->setFixedHeight(60);
-    rOHighButton->setFixedHeight(60);
+    //rOLowButton->setFixedHeight(60);
+    //rOHighButton->setFixedHeight(60);
     rOVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Relay One - Fill Layout
     rOVLayout->addWidget(relayOneTitle);
-    rORow->addWidget(rOLowButton);
-    rORow->addWidget(rOHighButton);
-    rOVLayout->addLayout(rORow);
+    rOLowRow->addWidget(rOLowLabel);
+    rOLowRow->addWidget(rOLowField);
+    rOVLayout->addLayout(rOLowRow);
+    rOHighRow->addWidget(rOHighLabel);
+    rOHighRow->addWidget(rOHighField);
+    rOVLayout->addLayout(rOHighRow);
+    rOVLayout->addWidget(rOSubmitButton);
+    //rORow->addWidget(rOLowButton);
+    //rORow->addWidget(rOHighButton);
+    //rOVLayout->addLayout(rORow);
     rOHelpButton->setGeometry(320, 15, 30, 30);
     rOWidget->setLayout(rOVLayout);
     //Relay One - Connect Buttons
-    connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
-    connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
+    //connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
+    //connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
+    connect(rOSubmitButton, SIGNAL(released()), this, SLOT(rOSubmitPressed()));
     connect(rOHelpButton, SIGNAL(released()), this, SLOT(rOHelpPressed()));
+
+    float low = settings->value("Rel1On").toFloat();
+    low = low / 10;
+    rOLowField->setText(QString::number(low));
+
+    float high = settings->value("Rel1Off").toFloat();
+    high = high / 10;
+    rOHighField->setText(QString::number(high));
+
+    rOLowPad = new Keypad(rOLowField, false, rOWidget);
+    rOHighPad = new Keypad(rOHighField,false, rOWidget);
 
     homeButton->setParent(rOWidget);
 
@@ -259,7 +285,11 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltWidget = new QWidget(this);
     voltVLayout = new QVBoxLayout(voltWidget);
     voltTitle = new QLabel("ANALOG OUTPUT", voltWidget);
-    voltVoltLabel = new QLabel("2.5 V & 20 mA = xxx ppb", voltWidget);
+    voltVoltLabel = new QLabel("2.5 V & 20 mA", voltWidget);
+    voltPPBRow = new QHBoxLayout(voltWidget);
+    voltPPBField = new QLineEdit(voltWidget);
+    voltPPBLabel = new QLabel("ppb", voltWidget);
+    voltSubmitButton = new QPushButton("SAVE", voltWidget);
     //Styling
     voltTitle->setFont(titleFont);
     voltTitle->setAlignment(Qt::AlignHCenter);
@@ -268,7 +298,17 @@ QWidget* SettingsWidget::widgetForVoltage() {
     //Voltage - Fill Layout
     voltVLayout->addWidget(voltTitle);
     voltVLayout->addWidget(voltVoltLabel);
+    voltPPBRow->addWidget(voltPPBField);
+    voltPPBRow->addWidget(voltPPBLabel);
+    voltVLayout->addLayout(voltPPBRow);
+    voltVLayout->addWidget(voltSubmitButton);
     voltWidget->setLayout(voltVLayout);
+
+    QString v = settings->value("VOut").toString();
+    voltPPBField->setText(v);
+    voltPad = new Keypad(voltPPBField, false, voltWidget);
+
+    connect(voltSubmitButton, SIGNAL(pressed()), this, SLOT(voltSubmitPressed()));
 
     homeButton->setParent(voltWidget);
 
@@ -631,12 +671,24 @@ void SettingsWidget::oneHourPressed() {
     avgOneHourButton->setStyleSheet(selButtonStyle);
 }
 
-void SettingsWidget::rOLowPressed() {
+/*void SettingsWidget::rOLowPressed() {
     sendMessage("o:a");
 }
 
 void SettingsWidget::rOHighPressed() {
     sendMessage("o:b");
+}*/
+
+void SettingsWidget::rOSubmitPressed() {
+    float lowf = rOLowField->text().toFloat();
+    QString low = QString::number(lowf * 10);
+    settings->setValue("Rel1On", low);
+    sendMessage("l:"+low);
+
+    float highf = rOHighField->text().toFloat();
+    QString high = QString::number(highf * 10);
+    settings->setValue("Rel1Off", high);
+    sendMessage("h:"+high);
 }
 
 void SettingsWidget::rOHelpPressed() {
@@ -657,6 +709,11 @@ void SettingsWidget::rTHelpPressed() {
     QMessageBox msg;
     msg.setText("This is the text for the relay two help message");
     msg.exec();
+}
+
+void SettingsWidget::voltSubmitPressed() {
+    QString msg = "v:"+voltPPBField->text();
+    sendMessage(msg);
 }
 
 void SettingsWidget::copyAllPressed() {

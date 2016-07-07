@@ -88,9 +88,18 @@ private:
     QWidget *rOWidget;
     QVBoxLayout *rOVLayout;
     QLabel *relayOneTitle;
-    QHBoxLayout *rORow;
-    QPushButton *rOLowButton;
-    QPushButton *rOHighButton;
+    QHBoxLayout *rOLowRow;
+    QLabel *rOLowLabel;
+    QLineEdit *rOLowField;
+    Keypad *rOLowPad;
+    QHBoxLayout *rOHighRow;
+    QLabel *rOHighLabel;
+    QLineEdit *rOHighField;
+    Keypad *rOHighPad;
+    QPushButton *rOSubmitButton;
+    //QHBoxLayout *rORow;
+    //QPushButton *rOLowButton;
+    //QPushButton *rOHighButton;
     QPushButton *rOHelpButton;
     QMessageBox::StandardButton rOHelpBox;
 
@@ -113,7 +122,12 @@ private:
     QVBoxLayout *voltVLayout;
     QLabel *voltTitle;
     QLabel *voltVoltLabel;
+    QHBoxLayout *voltPPBRow;
+    QLineEdit *voltPPBField;
+    QLabel *voltPPBLabel;
+    QPushButton *voltSubmitButton;
     QIcon *voltIcon;
+    Keypad *voltPad;
 
     //Files
     QWidget *filesWidget;
@@ -159,13 +173,16 @@ private slots:
     void oneMinPressed();
     void oneHourPressed();
     //Relay One
-    void rOLowPressed();
-    void rOHighPressed();
+    //void rOLowPressed();
+    //void rOHighPressed();
+    void rOSubmitPressed();
     void rOHelpPressed();
     //Relay Two
     void rTOzonePresed();
     void rTDiagnosticsPressed();
     void rTHelpPressed();
+    //Volt
+    void voltSubmitPressed();
     //Files
     void copyAllPressed();
     void copySelectedPressed();

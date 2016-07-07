@@ -7,6 +7,9 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
+#include <QHostAddress>
+#include <QNetworkInterface>
+
 
 AdminView::AdminView(QWidget *parent) :
     QWidget(parent),
@@ -33,6 +36,12 @@ AdminView::AdminView(QWidget *parent) :
     loadSettings();
     getPassword();
 
+
+    foreach(const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if(address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost)) {
+            qDebug()<<address.toString();
+        }
+    }
 }
 
 void AdminView::getPassword(void){
