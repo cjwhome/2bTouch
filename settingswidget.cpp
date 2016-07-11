@@ -16,7 +16,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     XmlDeviceReader *reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
-    device = reader->getADevice(4);
+    device = reader->getADevice(1);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -367,6 +367,43 @@ QWidget* SettingsWidget::widgetForFiles() {
     return filesWidget;
 }
 
+QWidget* SettingsWidget::widgetForDate() {
+    dateWidget = new QWidget(this);
+    dateVLayout = new QVBoxLayout(dateWidget);
+    dateTitle = new QLabel("DATE & TIME", dateWidget);
+    dateDateRow = new QHBoxLayout(dateWidget);
+    dateDateLabel = new QLabel("Date (DDMMYY): ", dateWidget);
+    dateDateField = new QLineEdit(dateWidget);
+    dateTimeRow = new QHBoxLayout(dateWidget);
+    dateTimeLabel = new QLabel("Time (HHMMSS): ", dateWidget);
+    dateTimeField = new QLineEdit(dateWidget);
+    dateSubmitButton = new QPushButton("SAVE", dateWidget);
+
+    dateTitle->setFont(titleFont);
+    dateTitle->setAlignment(Qt::AlignHCenter);
+    dateDateLabel->setFont(labelFont);
+    dateTimeLabel->setFont(labelFont);
+    dateVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    dateVLayout->addWidget(dateTitle);
+    dateDateRow->addWidget(dateDateLabel);
+    dateDateRow->addWidget(dateDateField);
+    dateVLayout->addLayout(dateDateRow);
+    dateTimeRow->addWidget(dateTimeLabel);
+    dateTimeRow->addWidget(dateTimeField);
+    dateVLayout->addLayout(dateTimeRow);
+    dateVLayout->addWidget(dateSubmitButton);
+
+    dateDateField->setText(settings->value("Date").toString());
+    dateDatePad = new Keypad(dateDateField, false, dateWidget);
+    dateTimeField->setText(settings->value("Time").toString());
+    dateTimePad = new Keypad(dateTimeField, false, dateWidget);
+
+    connect(dateSubmitButton, SIGNAL(released()), this, SLOT(dateSubmitPressed()));
+
+    return dateWidget;
+}
+
 QWidget* SettingsWidget::widgetForPassChange() {
     cpWidget = new QWidget(this);
     cpVLayout = new QVBoxLayout(cpWidget);
@@ -382,9 +419,9 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpTitle->setFont(titleFont);
     cpTitle->setAlignment(Qt::AlignHCenter);
     cpPassLabel->setFont(labelFont);
-    cpPassText->setEchoMode(QLineEdit::Password);
+    //cpPassText->setEchoMode(QLineEdit::Password);
     cpConfirmLabel->setFont(labelFont);
-    cpConfText->setEchoMode(QLineEdit::Password);
+    //cpConfText->setEchoMode(QLineEdit::Password);
     cpVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
     cpVLayout->addWidget(cpTitle);
@@ -561,6 +598,34 @@ void SettingsWidget::showFiles() {
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
+    connect(right, SIGNAL(released()), this, SLOT(showDate()));
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(left);
+    layout->addWidget(files);
+    layout->addWidget(right);
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    homeButton->setParent(w);
+    mainLayout->addWidget(w);
+}
+
+void SettingsWidget::showDate() {
+    clearView();
+    QWidget *files = widgetForDate();
+
+    QPushButton *left = new QPushButton(files);
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
+    connect(left, SIGNAL(released()), this, SLOT(showFiles()));
+
+    QPushButton *right = new QPushButton(files);
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
 
     right->setFixedSize(buttonSize);
@@ -585,7 +650,7 @@ void SettingsWidget::showPassChange() {
 
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showFiles()));
+    connect(left, SIGNAL(released()), this, SLOT(showDate()));
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -797,8 +862,14 @@ void SettingsWidget::deleteSelectedPressed() {
         default:
             break;
     }
+}
 
+void SettingsWidget::dateSubmitPressed() {
+    QString dateMsg = "d:" + dateDateField->text();
+    sendMessage(dateMsg);
 
+    QString timeMsg = "t:" + dateTimeField->text();
+    sendMessage(timeMsg);
 }
 
 void SettingsWidget::sendMessage(QString msg) {

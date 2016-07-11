@@ -1,6 +1,8 @@
 #include "keypad.h"
 #include "ui_keypad.h"
 
+
+
 Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
         QDialog(parent,Qt::FramelessWindowHint),
     ui(new Ui::Keypad)

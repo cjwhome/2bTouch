@@ -39,6 +39,8 @@ public slots:
 
     void dataReady();
 
+    void updateSettings();
+
 private:
     QThread *thread;
 

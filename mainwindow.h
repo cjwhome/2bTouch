@@ -106,6 +106,8 @@ private:
     QList< QList<SerialDataItem> > allParsedRecordsList;
     FileWriter fileWriter;
     SerialHandler *serialHandler;
+
+    QSettings *settings;
 };
 
 #endif // MAINWINDOW_H

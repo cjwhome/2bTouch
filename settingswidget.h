@@ -141,6 +141,20 @@ private:
     QPushButton *filesDeleteSelectedButton;
     QTableWidget *filesTable;
 
+    //Date and Time
+    QWidget *dateWidget;
+    QVBoxLayout *dateVLayout;
+    QLabel *dateTitle;
+    QHBoxLayout *dateDateRow;
+    QLabel *dateDateLabel;
+    QLineEdit *dateDateField;
+    Keypad *dateDatePad;
+    QHBoxLayout *dateTimeRow;
+    QLabel *dateTimeLabel;
+    QLineEdit *dateTimeField;
+    Keypad *dateTimePad;
+    QPushButton *dateSubmitButton;
+
     //Change Password
     QWidget *cpWidget;
     QVBoxLayout *cpVLayout;
@@ -188,6 +202,8 @@ private slots:
     void copySelectedPressed();
     void deleteAllPressed();
     void deleteSelectedPressed();
+    //Date and Time
+    void dateSubmitPressed();
     //Change Password
     void changePassPressed();
 
@@ -198,6 +214,7 @@ private slots:
     QWidget* widgetForRelayTwo();
     QWidget* widgetForVoltage();
     QWidget* widgetForFiles();
+    QWidget* widgetForDate();
     QWidget* widgetForPassChange();
 
     void showCal();
@@ -206,6 +223,7 @@ private slots:
     void showRT();
     void showVolt();
     void showFiles();
+    void showDate();
     void showPassChange();
 
     void clearView();

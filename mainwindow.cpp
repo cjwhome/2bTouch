@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //controlBacklight.setPercentage(100);
     //listFonts();
 
+    settings = new QSettings("2B Technologies", "2B Touch");
+
     QWidget *centralWidget = new QWidget();
 
     QVBoxLayout *verticalLayout = new QVBoxLayout();
@@ -159,9 +161,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
-
-    serialHandler->writeChar('v');
-    //serialHandler->writeAsync(new QString("v"));
 }
 
 MainWindow::~MainWindow()
@@ -172,7 +171,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(4);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -224,6 +223,7 @@ void MainWindow::setupSerial(){
     serialHandler = new SerialHandler(thread);
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
+    QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
     // in here is where we determine which serial port to use -
     //TODO: check each port description for the ccs string and use that if it is the POM or 106
     //serial = new QSerialPort();
@@ -309,7 +309,7 @@ bool MainWindow::parseDataLine(QString dLine){
     tempDLine = dLine;
 
     dLine.remove(QRegExp("[\\n\\t\\r]"));
-    qDebug()<<dLine;
+    //qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==deviceProfile.getNumber_of_columns()){
 
@@ -380,6 +380,8 @@ void MainWindow::updateDisplay(void){
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
 
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
+    settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
+    settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
 
     showStats->setData(&allParsedRecordsList, &deviceProfile);
     //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
@@ -458,7 +460,7 @@ void MainWindow::writeFile(void){
 
     if(currentFile.open(QIODevice::Append))
     {
-        qDebug()<<"Writing file: "<<currentFile.fileName();
+        //qDebug()<<"Writing file: "<<currentFile.fileName();
         QTextStream stream(&currentFile);
         stream<<tempDLine;
         currentFile.close();
