@@ -1,16 +1,12 @@
 #include "keypad.h"
 #include "ui_keypad.h"
 
-
-
 Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
         QDialog(parent,Qt::FramelessWindowHint),
     ui(new Ui::Keypad)
 {
 
     ui->setupUi(this);
-
-    this->setStyleSheet("QPushButton {font: 0px; color: rgba(255, 255, 255, 0); }");
 
     //this->setAttribute(Qt::WA_DeleteOnClose,true);
 
@@ -31,7 +27,6 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(show()));
     connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(setalphabet()));
-    ui->lineEdit->setText(pad_edit->text());
     //connect(this, SIGNAL(accepted()), this, SLOT(seta));
 
 
@@ -115,7 +110,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect( ui->numbutton_4,SIGNAL(clicked()),this,SLOT(boardchange()));
 
-    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1.png);  QPushButton {font: 0px; color: rgba(255, 255, 255, 0); }");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1.png);");
     //setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
 
@@ -148,7 +143,7 @@ void Keypad::setnumeric()
 {
 
     //setStyleSheet("background-image: url(480x200/Touch-Keyboard2.png);");
-    setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard2-Line.png);  QPushButton {font: 0px; color: rgba(255, 255, 255, 0); }");
+    setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard2-Line.png);");
 
     ui->abutton->setText("-");
 
@@ -355,9 +350,7 @@ void Keypad::setalphabet()
 {
 
     //setStyleSheet("background-image: url(480x200/Touch-Keyboard.png);");
-    this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-Line.png);  QPushButton {font: 0px; color: rgba(255, 255, 255, 0); }");
-    ui->lineEdit->setText(pad_edit->text());
-
+    this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-Line.png);");
 
     ui->abutton->setText("a");
 
@@ -433,7 +426,7 @@ void Keypad::setsymbol()
 {
 
    // setStyleSheet("background-image: url(480x200/Touch-Keyboard1.png);");
-    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1-Line.png);  QPushButton {font: 0px; color: rgba(255, 255, 255, 0); }");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1-Line.png);");
 
     ui->abutton->setText("A");
 
@@ -549,6 +542,3 @@ void Keypad::keyclose()
     this->done(QDialog::Accepted);
 
 }
-
-
-
