@@ -70,6 +70,9 @@ private slots:
     void readData();
     void handleError(QSerialPort::SerialPortError error);
     void closeSerialPort();
+    void updateAverage(double value);
+
+    void usbTimerTick();
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
@@ -92,6 +95,8 @@ private:
     QFile currentFile;
     QString tempDLine;
 
+    QPushButton *usbIcon;
+
     double data_point;
     int data_index;
 	double start_time_seconds;
@@ -103,11 +108,15 @@ private:
     DeviceProfile deviceProfile;
     ParsedData parsedData;
 
+    QList<double> avgList;
+    double avg;
     QList< QList<SerialDataItem> > allParsedRecordsList;
     FileWriter fileWriter;
     SerialHandler *serialHandler;
 
     QSettings *settings;
+    bool usbMounted;
+    QTimer *usbTimer;
 };
 
 #endif // MAINWINDOW_H

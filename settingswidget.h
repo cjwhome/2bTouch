@@ -198,7 +198,6 @@ private slots:
     //Volt
     void voltSubmitPressed();
     //Files
-    void copyAllPressed();
     void copySelectedPressed();
     void deleteAllPressed();
     void deleteSelectedPressed();
@@ -229,6 +228,9 @@ private slots:
     void clearView();
 
     void sendMessage(QString msg);
+
+public slots:
+    void copyAllPressed();
 };
 
 #endif // SETTINGSWIDGET_H

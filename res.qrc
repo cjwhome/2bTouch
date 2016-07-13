@@ -21,7 +21,9 @@
     <qresource prefix="/">
         <file>deviceConfig.xml</file>
     </qresource>
-    <qresource prefix="/icons"/>
+    <qresource prefix="/icons">
+        <file>pics/usb-icon.png</file>
+    </qresource>
     <qresource prefix="/keyboard">
         <file>keyboard/Touch-Keyboard.png</file>
         <file>keyboard/Touch-Keyboard1.png</file>

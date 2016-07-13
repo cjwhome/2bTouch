@@ -26,7 +26,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
         setalphabet();
 
     connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(show()));
-    connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(setalphabet()));
+    //connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(setalphabet()));
     //connect(this, SIGNAL(accepted()), this, SLOT(seta));
 
 
@@ -110,7 +110,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect( ui->numbutton_4,SIGNAL(clicked()),this,SLOT(boardchange()));
 
-    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard1.png);");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard-Line.png);");
     //setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
 
@@ -270,9 +270,9 @@ void Keypad::keypadHandler()
                 if(t1)
 
                     setnumeric();
-                else
+                //else
 
-                    setalphabet();
+                    //setalphabet();
 
             }
 
@@ -298,9 +298,9 @@ void Keypad::keypadHandler()
                         if(t1)
 
                             setnumeric();
-                        else
+                        //else
 
-                            setalphabet();
+                            //setalphabet();
 
                     }
 
@@ -312,13 +312,11 @@ void Keypad::keypadHandler()
                         if(t1)
 
                             setnumeric();
-                        else
+                        //else
 
-                            setalphabet();
+                            //setalphabet();
                     }
-                }else
-
-                {
+                } else {
 
                     //pad_edit->insert(inputText.toUpper());
                     ui->lineEdit->insert(inputText);
@@ -326,9 +324,9 @@ void Keypad::keypadHandler()
                     if(t1)
 
                         setnumeric();
-                    else
+                    //else
 
-                        setalphabet();
+                        //setalphabet();
 
 
 

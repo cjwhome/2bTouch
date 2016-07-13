@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //listFonts();
 
     settings = new QSettings("2B Technologies", "2B Touch");
+    usbMounted = false;
 
     QWidget *centralWidget = new QWidget();
 
@@ -161,6 +162,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_date->setText("02/17/2016");
     createDevice();
     setupSerial();
+
+    QPixmap pixmap(":/icons/pics/usb-icon.png");
+    QIcon icon(pixmap);
+    usbIcon = new QPushButton(this);
+    usbIcon->setIcon(icon);
+    usbIcon->setGeometry(15, 15, 20, 20);
+    usbIcon->setIconSize(QSize(20, 20));
+
+    usbTimer = new QTimer(this);
+    connect(usbTimer, SIGNAL(timeout()), this, SLOT(usbTimerTick()));
+    usbTimer->start(2000);
 }
 
 MainWindow::~MainWindow()
@@ -224,42 +236,6 @@ void MainWindow::setupSerial(){
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
-    // in here is where we determine which serial port to use -
-    //TODO: check each port description for the ccs string and use that if it is the POM or 106
-    //serial = new QSerialPort();
-    /*foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        qDebug() << "Name        : " << info.portName();
-        qDebug() << "Description : " << info.description();
-        qDebug() << "Manufacturer: " << info.manufacturer();
-		if(!QString::compare(info.manufacturer(), "Microchip Technology, Inc.", Qt::CaseInsensitive)){  // if strings are equal x should return 0
-			serialPort = new QSerialPort(info.portName());
-		}
-    }*/
-
-    /*serial->setPortName(deviceProfile.getCom_port());
-
-    serial->setBaudRate(deviceProfile.getBaud_rate(), QSerialPort::AllDirections);
-    if (serial->open(QIODevice::ReadWrite)) {
-        qDebug()<<"Setup Serial Port successfully";
-        connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
-                SLOT(handleError(QSerialPort::SerialPortError)));
-        connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
-    }else{
-        qDebug()<<"Error setting up serial port";
-
-        QMessageBox::critical(this, tr("Error"), serial->errorString());
-    }
-    /*s_serialThread = new SerialThread();
-
-    if(!s_serialThread->startSerial(serialPort))
-        qDebug()<<"Unable to start serial thread";
-    if (!s_serialThread) {
-        QMessageBox::warning(this, "2BTouch", "Error allocating serial thread", QMessageBox::Ok);
-        return;
-    }
-
-    connect(s_serialThread, SIGNAL(newDataLine(QString)), this, SLOT(newDataLine(QString)), Qt::DirectConnection);*/
-
 }
 
 void MainWindow::closeSerialPort()
@@ -347,6 +323,8 @@ bool MainWindow::parseDataLine(QString dLine){
         data_point += 10;
         data_index++;
 
+        updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+
         updateDisplay();
         return true;
 
@@ -355,6 +333,61 @@ bool MainWindow::parseDataLine(QString dLine){
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
         return false;
     }
+}
+
+void MainWindow::updateAverage(double value) {
+    int avgIndex = settings->value("Avg").toInt();
+    //qDebug()<<"Avg Index: "<<avgIndex;
+    int avgDur;
+    if (avgIndex == 0) {
+        avgDur = 2;
+    } else if (avgIndex == 1) {
+        avgDur = 10;
+    } else if (avgIndex == 2) {
+        avgDur = 60;
+    } else if (avgIndex == 3) {
+        avgDur = 60 * 15;
+    } else if (avgIndex == 4) {
+        avgDur = 60 * 60;
+    }
+    int avgCount = avgDur / 5;
+    if(avgCount < 1) {
+        avgCount = 1;
+    }
+    //qDebug()<<"Avg Count: "<<avgCount;
+
+    int curLength = avgList.length();
+    if(curLength > avgCount) {
+        //Average The List By Pairs Until It is Less Than The New Value
+        while(avgList.length() > avgCount) {
+            //qDebug()<<"Consolidating Avg List";
+            QList<double> temp;
+            for(int i = 0; i < (avgList.length() / 2); i++) {
+                double a = avgList.at(i);
+                i++;
+                double b = avgList.at(i);
+
+                double tAvg = (a + b) / 2;
+                temp << tAvg;
+            }
+            //qDebug()<<"Temp List: "<<temp;
+            avgList = temp;
+        }
+    } else if(curLength == avgCount) {
+        QList<double> tempList;
+        for(int i = 0; i < (avgList.length() - 1); i++) {
+            tempList<<avgList.at(i+1);
+        }
+        avgList = tempList;
+    }
+    avgList<<value;
+    //qDebug()<<"Avg List: "<<avgList;
+
+    double sum = 0;
+    for(int i = 0; i < avgList.length(); i++) {
+        sum += avgList.at(i);
+    }
+    avg = sum / avgList.length();
 }
 
 void MainWindow::updateDisplay(void){
@@ -367,14 +400,26 @@ void MainWindow::updateDisplay(void){
     }
     SerialDataItem tempSerialDataItem;
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
-    current_value = tempSerialDataItem.getDvalue();
+    current_value = avg;//tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
         main_label->setText("O<sub>3</sub>: ");
     }else if(deviceProfile.getMain_display_name().contains("2")){
          main_label->setText("NO<sub>2</sub>: ");
     }
-    main_measurement_display->setText(QString::number(current_value));
+    QString mesStr = QString::number(current_value);
+    if(mesStr.length() == 1) {
+        mesStr.append(".");
+    }
+    if(mesStr.length() < 4) {
+        while(mesStr.length() < 4) {
+            mesStr.append("0");
+        }
+    } else {
+        mesStr = mesStr.mid(0, 4);
+    }
+
+    main_measurement_display->setText(mesStr);
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
 
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
@@ -493,17 +538,28 @@ void MainWindow::listFonts(void){
 }
 
 void MainWindow::sendMsg(QString msg) {
-    //QString *str = msg;
     serialHandler->writeSync(new QString(msg));
-    /*for(int i = 0; i < msg.length(); i++) {
-        serial->write(QString(msg.at(i)).toStdString().c_str(), 1);
-        bool pass;// = serial->waitForBytesWritten(500);
-        if(!pass) {
-            qDebug()<<"Could not write data";
+}
+
+void MainWindow::usbTimerTick() {
+    if(usbMounted) {
+        usbMounted = fileWriter.checkIfUsbMounted();
+        usbIcon->show();
+        if(!usbMounted) {
+            //USB Lost
+            createFileName();
         }
-        //serial->writeData(msg.at(i), 1);
-        //QThread:sleep(5);
+    } else {
+        usbMounted = fileWriter.checkIfUsbMounted();
+        usbIcon->hide();
+        if(usbMounted) {
+            //USB Found
+            createFileName();
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "USB Found", "Would you like to copy all files to the usb drive?", QMessageBox::Yes|QMessageBox::No);
+            if(reply == QMessageBox::Yes) {
+                settingsWidget->copyAllPressed();
+            }
+        }
     }
-    //serial->write(msg.toStdString().c_str(), msg.toStdString().length());
-    qDebug()<<"Sending Message: "<<msg;*/
 }

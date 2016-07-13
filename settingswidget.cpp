@@ -61,7 +61,7 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingPassTitle->setFont(titleFont);
     landingPassTitle->setAlignment(Qt::AlignHCenter);
     landingPassPrompt->setFont(labelFont);
-    landingPassField->setEchoMode(QLineEdit::Password);
+    //landingPassField->setEchoMode(QLineEdit::Password);
     landingPassSubmit->setFixedHeight(30);
     //Landing Page - Fill Layout
     landingVLayout->addWidget(landingPassTitle);
@@ -514,7 +514,7 @@ void SettingsWidget::showRO() {
 
     QPushButton *right = new QPushButton(ro);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showRT()));
+    connect(right, SIGNAL(released()), this, SLOT(showVolt()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -566,7 +566,7 @@ void SettingsWidget::showVolt() {
 
     QPushButton *left = new QPushButton(volt);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showRT()));
+    connect(left, SIGNAL(released()), this, SLOT(showRO()));
 
     QPushButton *right = new QPushButton(volt);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -790,8 +790,8 @@ void SettingsWidget::copyAllPressed() {
     QString filePath = fileWriter.getFull_data_path();
     qDebug()<<filePath;
     for(int i = 0; i < list.length(); i++) {
-        QString src = QDir::currentPath()+"/"+list.at(i);
-        QString dest = filePath+"/"+list.at(i);
+        QString src = "/"+device.device_name+"/"+list.at(i);
+        QString dest = filePath+list.at(i);
         qDebug()<<src;
         qDebug()<<dest;
         if (QFile::copy(src, dest)) {
