@@ -79,6 +79,8 @@ public:
     int getBaud_rate() const;
     void setBaud_rate(int value);
 
+    void load();
+
 private:
     QString device_name;
     QString main_display_name;

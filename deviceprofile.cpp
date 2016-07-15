@@ -245,5 +245,7 @@ void DeviceProfile::setBaud_rate(int value)
     baud_rate = value;
 }
 
+void DeviceProfile::load() {
 
+}
 

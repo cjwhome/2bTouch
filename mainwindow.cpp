@@ -141,8 +141,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
-    showStats = new ShowStats();
-    showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    //showStats = new ShowStats();
+    //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    statsWidget = new StatsWidget(this);
+    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
     settingsView = new SettingsView();
@@ -172,7 +174,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     usbTimer = new QTimer(this);
     connect(usbTimer, SIGNAL(timeout()), this, SLOT(usbTimerTick()));
-    usbTimer->start(2000);
+    usbTimer->start(5000);
+
+    QPixmap errorPix(":/icons/pics/error-icon.png");
+    QIcon eIc(errorPix);
+    errorIcon = new QPushButton(this);
+    errorIcon->setIcon(eIc);
+    usbIcon->setGeometry(35, 15, 20, 20);
+    usbIcon->setIconSize(QSize(20, 20));
+
+    errorTimer= new QTimer(this);
+    connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
+    errorTimer->start(2000);
 }
 
 MainWindow::~MainWindow()
@@ -316,11 +329,11 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
+        data_point = QDateTime::currentDateTime().toTime_t();
         x.insert(data_index,data_point);
-        y.insert(data_index,parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
         t=x;                    //copy the vectors to order them to get high and low for range
         u=y;
-        data_point += 10;
         data_index++;
 
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
@@ -408,15 +421,12 @@ void MainWindow::updateDisplay(void){
          main_label->setText("NO<sub>2</sub>: ");
     }
     QString mesStr = QString::number(current_value);
-    if(mesStr.length() == 1) {
-        mesStr.append(".");
-    }
-    if(mesStr.length() < 4) {
-        while(mesStr.length() < 4) {
-            mesStr.append("0");
+    if(mesStr.contains(".")) {
+        while(mesStr.at(mesStr.length() - 2) != '.') {
+            mesStr = mesStr.mid(0, mesStr.length() - 1);
         }
     } else {
-        mesStr = mesStr.mid(0, 4);
+       mesStr.append(".0");
     }
 
     main_measurement_display->setText(mesStr);
@@ -428,8 +438,8 @@ void MainWindow::updateDisplay(void){
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
 
-    showStats->setData(&allParsedRecordsList, &deviceProfile);
-    //showStats->calculateMaxMinMedian(allParsedRecordsList, 0);
+    statsWidget->setData(&allParsedRecordsList, &deviceProfile);
+    statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
     this->writeFile();
     /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
@@ -454,9 +464,8 @@ void MainWindow::clearPlotData(void){
 }
 
 void MainWindow::displayStats(void){
-
-
-    showStats->show();
+    statsWidget->show();
+    //showStats->show();
 }
 
 void MainWindow::displaySettings(void){
@@ -560,6 +569,19 @@ void MainWindow::usbTimerTick() {
             if(reply == QMessageBox::Yes) {
                 settingsWidget->copyAllPressed();
             }
+        }
+    }
+}
+
+void MainWindow::errorTimerTick() {
+    //Check STemp
+    if(allParsedRecordsList.length() != 0) {
+        SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
+        double val = item.getDvalue();
+        if(val < 80) {
+            errorIcon->show();
+        } else {
+            errorIcon->hide();
         }
     }
 }

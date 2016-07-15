@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QVector>
 #include <QThread>
+#include <QSettings>
 #include "qcustomplot.h"
 #include "graphsettingsdialog.h"
 
@@ -44,6 +45,7 @@ private slots:
 
     void zoomIn();
     void zoomOut();
+
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
@@ -59,6 +61,7 @@ private:
 
     void loadSettings();
     void saveSettings();
+    QSettings *settings;
 
     void fixScale();
 

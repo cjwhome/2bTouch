@@ -59,8 +59,7 @@ GraphSettingsDialog::GraphSettingsDialog(QWidget *parent) :
 
     ui->autoscaleXcheckbox->setChecked(autoscalex);
     ui->autoscaleYcheckbox->setChecked(autoscaley);
-    connect(ui->applyButton, SIGNAL(pressed()),
-            this, SLOT(apply()));
+    connect(ui->applyButton, SIGNAL(pressed()), this, SLOT(apply()));
     //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
     //saveSettings();
@@ -83,30 +82,31 @@ void GraphSettingsDialog::apply()
 
 void GraphSettingsDialog::loadSettings()
 {
- QSettings settings("2btech", "touchscreen");
+     QSettings settings("2B Technologies", "2B Touch");
 
- autoscalex = settings.value("xautoscale").toBool();
- autoscaley = settings.value("yautoscale").toBool();
+     autoscalex = settings.value("xautoscale", true).toBool();
+     autoscaley = settings.value("yautoscale", true).toBool();
 
- //qDebug()<<"X scale:"<<QString::number(autoscalex);
- //qDebug()<<"Y scale:"<<QString::number(autoscaley);
+     //qDebug()<<"X scale:"<<QString::number(autoscalex);
+     //qDebug()<<"Y scale:"<<QString::number(autoscaley);
 }
 
 void GraphSettingsDialog::saveSettings()
 {
- QSettings settings("2btech", "touchscreen");
- //qDebug()<<"Before writing,";
- if(ui->autoscaleXcheckbox->isChecked())
-     autoscalex = true;
- else
-     autoscalex = false;
- if(ui->autoscaleYcheckbox->isChecked())
-     autoscaley = true;
- else
-     autoscaley = false;
- //qDebug()<<"X scale:"<<autoscalex;
- //qDebug()<<"Y scale:"<<autoscaley;
- settings.setValue("xautoscale", autoscalex);
- settings.setValue("yautoscale", autoscaley);
+     QSettings settings("2B Technologies", "2B Touch");
+     if(ui->autoscaleXcheckbox->isChecked()) {
+         autoscalex = true;
+     } else {
+         autoscalex = false;
+     }
+     if(ui->autoscaleYcheckbox->isChecked()) {
+         autoscaley = true;
+     } else {
+         autoscaley = false;
+     }
+     //qDebug()<<"X scale:"<<autoscalex;
+     //qDebug()<<"Y scale:"<<autoscaley;
+     settings.setValue("xautoscale", autoscalex);
+     settings.setValue("yautoscale", autoscaley);
 
 }

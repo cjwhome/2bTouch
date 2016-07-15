@@ -20,7 +20,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     serialthread.cpp \
     qcustomplot.cpp \
-    showstats.cpp \
     displaygraph.cpp \
     xmldevicereader.cpp \
     twobtechdevice.cpp \
@@ -38,13 +37,14 @@ SOURCES += main.cpp\
     adminview.cpp \
     settingswidget.cpp \
     serialhandler.cpp \
-    keylineedit.cpp
+    keylineedit.cpp \
+    diagnosticobject.cpp \
+    statswidget.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
     defines.h \
     qcustomplot.h \
-    showstats.h \
     displaygraph.h \
     model_106l.h \
     xmldevicereader.h \
@@ -63,10 +63,11 @@ HEADERS  += mainwindow.h \
     adminview.h \
     settingswidget.h \
     serialhandler.h \
-    keylineedit.h
+    keylineedit.h \
+    diagnosticobject.h \
+    statswidget.h
 
 FORMS    += mainwindow.ui \
-    showstats.ui \
     displaygraph.ui \
     settingsview.ui \
     graphsettingsdialog.ui \
@@ -75,7 +76,8 @@ FORMS    += mainwindow.ui \
     keypad.ui \
     usertypeview.ui \
     adminview.ui \
-    settingswidget.ui
+    settingswidget.ui \
+    statswidget.ui
 
 RESOURCES += \
     res.qrc

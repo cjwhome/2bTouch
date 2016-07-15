@@ -15,7 +15,7 @@
 #include <QList>
 #include <QFile>
 #include "defines.h"
-#include "showstats.h"
+#include "statswidget.h"
 #include "displaygraph.h"
 #include "settingsview.h"
 #include "xmldevicereader.h"
@@ -73,12 +73,13 @@ private slots:
     void updateAverage(double value);
 
     void usbTimerTick();
+    void errorTimerTick();
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
-    ShowStats *showStats;
+    StatsWidget *statsWidget;
     SettingsView *settingsView;
     SettingsWidget *settingsWidget;
     QSerialPort *serial;
@@ -96,6 +97,7 @@ private:
     QString tempDLine;
 
     QPushButton *usbIcon;
+    QPushButton *errorIcon;
 
     double data_point;
     int data_index;
@@ -117,6 +119,8 @@ private:
     QSettings *settings;
     bool usbMounted;
     QTimer *usbTimer;
+
+    QTimer *errorTimer;
 };
 
 #endif // MAINWINDOW_H

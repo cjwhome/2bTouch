@@ -15,6 +15,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoomHLayout = new QHBoxLayout();
     buttonLayout = new QHBoxLayout();
 
+    settings = new QSettings("2B Technologies", "2B Touch");
+
     QPushButton *homeButton = new QPushButton();
     QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
@@ -35,6 +37,9 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     settingsButton->setIcon(settingsButtonIcon);
     settingsButton->setIconSize(QSize(35,31));
     settingsButton->setFixedSize(35,31);
+
+    settingsdialog = new GraphSettingsDialog(this);
+
 
     QPushButton *zoomInButton = new QPushButton();
     QPixmap zoomInPixmap(":/buttons/pics/zoom-in-icon.gif");
@@ -97,6 +102,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(zoomOut()));
+    connect(settingsButton, SIGNAL(clicked(bool)), settingsdialog, SLOT(show()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
@@ -138,10 +144,36 @@ void DisplayGraph::setData(QVector<double> a, QVector<double> b){
 
 }
 void DisplayGraph::redrawPlot(){
-    //drawPlot();
+    QVector<double> u;
+    u = y;
+    loadSettings();
+
+    if(autoscalex) {
+        customPlot->xAxis->setRange(x.first(), x.last());
+    }
+
+    if(autoscaley) {
+        double min, max;
+        for(int i = 0; i < u.length(); i++) {
+            double val = u.at(i);
+            if(val < min) {
+                min = val;
+            } else if(val > max) {
+                max = val;
+            }
+        }
+        customPlot->yAxis->setRange(min - 1, max + 1);
+    }
+
+    fixScale();
 
     customPlot->replot();
 
+}
+
+void DisplayGraph::loadSettings() {
+    autoscalex = settings->value("xautoscale", true).toBool();
+    autoscaley = settings->value("yautoscale", true).toBool();
 }
 
 void DisplayGraph::clear(){
