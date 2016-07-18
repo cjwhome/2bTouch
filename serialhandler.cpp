@@ -82,16 +82,9 @@ void SerialHandler::dataReady() {
             QString line = QString(list.at(i));
 
             if((line.length() == 0) || (line == "\r")) {
-               //qDebug()<<"Empty Line";
-                /*qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";
-                qDebug()<<"Empty Line";*/
+
             } else {
-                if(line.length() < 20) {
+                if(line.length() < 10) {
                     qDebug()<<"Received new line from serial: "<<line;
                 }
                 if((line == "Settings") || (line == "\rSettings")) {
@@ -128,6 +121,7 @@ void SerialHandler::dataReady() {
 void SerialHandler::handleSyncData(QString retData) {
     if((retData == "n") || (retData == "Starting string")) {
         if(syncIndex < (data->size())) {
+            qDebug()<<"Writing Next Char: "<<data->at(syncIndex);
             serialPort->write(QString(data->at(syncIndex)).toLocal8Bit().constData(), 1);
             syncIndex++;
         } else {
@@ -160,12 +154,12 @@ void SerialHandler::updateSettings() {
         writeAsync(new QString("v"));
         settings->setValue("InitSettings", 1);
     } else {
-        writeSync(new QString("c:" + settings->value("Zero").toString()));
+        /*writeSync(new QString("c:" + settings->value("Zero").toString()));
         writeSync(new QString("a:" + settings->value("Avg").toString()));
         writeSync(new QString("v:" + settings->value("VOut").toString()));
         writeSync(new QString("l:" + settings->value("Rel1On").toString()));
         writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
-        writeSync(new QString("s:" + settings->value("Slope").toString()));
+        writeSync(new QString("s:" + settings->value("Slope").toString()));*/
     }
 
 }

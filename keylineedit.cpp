@@ -3,14 +3,11 @@
 
 KeyLineEdit::KeyLineEdit(QWidget *parent)
 {
-    keypad = new Keypad(this, false, this);
-    this->setAttribute(Qt::WA_AcceptTouchEvents);
+    keypad = new Keypad(this, false, parent);
+
+    trigger = new QPushButton(this);
+    this->setStyleSheet("QPushButton { background-color: rgba(10, 0, 0, 0); }");
+    trigger->setGeometry(0, 0, this->width(), this->height());
+    connect(trigger, SIGNAL(released()), keypad, SLOT(show()));
 }
 
-/*bool KeyLineEdit::event(QEvent *event) {
-    if(event->type() == QEvent::TouchEnd) {
-        keypad->show();
-    }
-
-    return true;
-}*/

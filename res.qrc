@@ -23,6 +23,7 @@
     </qresource>
     <qresource prefix="/icons">
         <file>pics/usb-icon.png</file>
+        <file>pics/error-icon.png</file>
     </qresource>
     <qresource prefix="/keyboard">
         <file>keyboard/Touch-Keyboard.png</file>

@@ -98,6 +98,8 @@ private:
 
     QPushButton *usbIcon;
     QPushButton *errorIcon;
+    QPushButton *warningIcon;
+    QLabel *warningLabel;
 
     double data_point;
     int data_index;

@@ -25,7 +25,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
         setalphabet();
 
-    connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(show()));
+    //connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(show()));
     //connect(pad_edit, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(setalphabet()));
     //connect(this, SIGNAL(accepted()), this, SLOT(seta));
 

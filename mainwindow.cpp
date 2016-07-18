@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon-selected.gif");
+    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
@@ -180,8 +180,19 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon eIc(errorPix);
     errorIcon = new QPushButton(this);
     errorIcon->setIcon(eIc);
-    usbIcon->setGeometry(35, 15, 20, 20);
-    usbIcon->setIconSize(QSize(20, 20));
+    errorIcon->setGeometry(35, 15, 20, 20);
+    errorIcon->setIconSize(QSize(20, 20));
+
+    warningIcon = new QPushButton(this);
+    warningIcon->setIcon(eIc);
+    warningIcon->setGeometry(15, 190, 20, 20);
+    warningIcon->setIconSize(QSize(20, 20));
+
+    warningLabel = new QLabel("Default Text", this);
+    warningLabel->setGeometry(35, 190, 400, 20);
+
+    //warningIcon->hide();
+    //warningLabel->hide();
 
     errorTimer= new QTimer(this);
     connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
@@ -578,10 +589,15 @@ void MainWindow::errorTimerTick() {
     if(allParsedRecordsList.length() != 0) {
         SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
         double val = item.getDvalue();
-        if(val < 80) {
+        if(true) {
             errorIcon->show();
+            warningIcon->show();
+            warningLabel->setText("Waiting For The Heater To Warm Up");
+            warningLabel->show();
         } else {
             errorIcon->hide();
+            warningIcon->hide();
+            warningLabel->hide();
         }
     }
 }

@@ -51,8 +51,10 @@ StatsWidget::StatsWidget(QWidget *parent) :
     widgets<<widgetForThree();
     widgets.at(currentIndex)->show();
 
-    goodStylesheet = "QLabel { font-size: 16px; color: green; }";
-    badStylesheet = "QLabel { font-size: 16px; color: red; }";
+    goodStylesheet = "QLabel { font-size: 25px; color: green; }";
+    badStylesheet = "QLabel { font-size: 25px; color: red; }";
+
+    titleFont = QFont("Times serif", 20, 2);
 
     this->setStyleSheet(goodStylesheet);
 }
@@ -91,18 +93,36 @@ QWidget* StatsWidget::widgetForAvg() {
     if(!avgWidget) {
         avgWidget = new QWidget(this);
         avgVLayout = new QVBoxLayout(avgWidget);
+        avgNonRow = new QHBoxLayout(avgWidget);
+        avgNonTitle = new QLabel("O3", avgWidget);;
         avgNonLabel = new QLabel("Non Label", avgWidget);
+        avgHourRow = new QHBoxLayout(avgWidget);
+        avgHourTitle = new QLabel("Hour Avg", avgWidget);
         avgHourLabel = new QLabel("Hour Label", avgWidget);
+        avgEightRow = new QHBoxLayout(avgWidget);
+        avgEightTitle = new QLabel("Eight Avg", avgWidget);
         avgEightLabel = new QLabel("Eight Label", avgWidget);
 
-        avgVLayout->addWidget(avgNonLabel);
-        avgVLayout->addWidget(avgHourLabel);
-        avgVLayout->addWidget(avgEightLabel);
+        avgNonRow->addWidget(avgNonTitle);
+        avgNonRow->addWidget(avgNonLabel);
+        avgVLayout->addLayout(avgNonRow);
+        avgHourRow->addWidget(avgHourTitle);
+        avgHourRow->addWidget(avgHourLabel);
+        avgVLayout->addLayout(avgHourRow);
+        avgEightRow->addWidget(avgEightTitle);
+        avgEightRow->addWidget(avgEightLabel);
+        avgVLayout->addLayout(avgEightRow);
         avgWidget->setLayout(avgVLayout);
 
         avgWidget->setFixedSize(widgetSize);
         avgWidget->setGeometry(widgetGeo);
         avgVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        avgNonTitle->setFont(titleFont);
+        avgNonLabel->setFont(titleFont);
+        avgHourTitle->setFont(titleFont);
+        avgHourLabel->setFont(titleFont);
+        avgEightTitle->setFont(titleFont);
+        avgEightLabel->setFont(titleFont);
         avgWidget->hide();
     }
     return avgWidget;
@@ -112,16 +132,28 @@ QWidget* StatsWidget::widgetForOne() {
     if(!oneWidget) {
         oneWidget = new QWidget(this);
         oneVLayout = new QVBoxLayout(oneWidget);
+        oneARow = new QHBoxLayout(oneWidget);
+        oneATitle = new QLabel("One A ", oneWidget);
         oneALabel = new QLabel("One A Label", oneWidget);
+        oneBRow = new QHBoxLayout(oneWidget);
+        oneBTitle = new QLabel("One B", oneWidget);
         oneBLabel = new QLabel("One B Label", oneWidget);
 
-        oneVLayout->addWidget(oneALabel);
-        oneVLayout->addWidget(oneBLabel);
+        oneARow->addWidget(oneATitle);
+        oneARow->addWidget(oneALabel);
+        oneVLayout->addLayout(oneARow);
+        oneBRow->addWidget(oneBTitle);
+        oneBRow->addWidget(oneBLabel);
+        oneVLayout->addLayout(oneBRow);
         oneWidget->setLayout(oneVLayout);
 
         oneWidget->setFixedSize(widgetSize);
         oneWidget->setGeometry(widgetGeo);
         oneVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        oneATitle->setFont(titleFont);
+        oneALabel->setFont(titleFont);
+        oneBTitle->setFont(titleFont);
+        oneBLabel->setFont(titleFont);
         oneWidget->hide();
     }
     return oneWidget;
@@ -131,16 +163,28 @@ QWidget* StatsWidget::widgetForTwo() {
     if(!twoWidget) {
         twoWidget = new QWidget(this);
         twoVLayout = new QVBoxLayout(twoWidget);
+        twoARow = new QHBoxLayout(twoWidget);
+        twoATitle = new QLabel("Two A", twoWidget);
         twoALabel = new QLabel("Two A Label", twoWidget);
+        twoBRow = new QHBoxLayout(twoWidget);
+        twoBTitle = new QLabel("Two B", twoWidget);
         twoBLabel = new QLabel("Two B Label", twoWidget);
 
-        twoVLayout->addWidget(twoALabel);
-        twoVLayout->addWidget(twoBLabel);
+        twoARow->addWidget(twoATitle);
+        twoARow->addWidget(twoALabel);
+        twoVLayout->addLayout(twoARow);
+        twoBRow->addWidget(twoBTitle);
+        twoBRow->addWidget(twoBLabel);
+        twoVLayout->addLayout(twoBRow);
         twoWidget->setLayout(twoVLayout);
 
         twoWidget->setFixedSize(widgetSize);
         twoWidget->setGeometry(widgetGeo);
         twoVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        twoATitle->setFont(titleFont);
+        twoALabel->setFont(titleFont);
+        twoBTitle->setFont(titleFont);
+        twoBLabel->setFont(titleFont);
         twoWidget->hide();
     }
     return twoWidget;
@@ -150,14 +194,20 @@ QWidget* StatsWidget::widgetForThree() {
     if(!threeWidget) {
         threeWidget = new QWidget(this);
         threeVLayout = new QVBoxLayout(threeWidget);
+        threeARow = new QHBoxLayout(threeWidget);
+        threeATitle = new QLabel("Three A", threeWidget);
         threeALabel = new QLabel("Three A Label", threeWidget);
 
-        threeVLayout->addWidget(threeALabel);
+        threeARow->addWidget(threeATitle);
+        threeARow->addWidget(threeALabel);
+        threeVLayout->addLayout(threeARow);
         threeWidget->setLayout(threeVLayout);
 
         threeWidget->setFixedSize(widgetSize);
         threeWidget->setGeometry(widgetGeo);
         threeVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        threeATitle->setFont(titleFont);
+        threeALabel->setFont(titleFont);
         threeWidget->hide();
     }
     return threeWidget;
@@ -169,7 +219,8 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     //Non Avg
     temp = records->last().at(profile->getMain_display_position());
-    avgNonLabel->setText(profile->getMain_display_name()+": "+QString::number(temp.getDvalue())+" "+profile->getMain_display_units());
+    avgNonTitle->setText(profile->getMain_display_name()+": ");
+    avgNonLabel->setText(QString::number(temp.getDvalue())+" "+profile->getMain_display_units());
 
     //One Hour
     QDateTime currentTimeStamp = records->last().at(profile->getDate_position()).getDateTime();
@@ -188,7 +239,8 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         hourAvg += records->at(i).at(profile->getMain_display_position()).getDvalue();
     }
     hourAvg /= ((records->length() - 1) - pos);
-    avgHourLabel->setText("Hour Avg "+profile->getMain_display_name()+": "+QString::number(hourAvg)+" "+profile->getMain_display_units());
+    avgHourTitle->setText("Hour Avg "+profile->getMain_display_name()+" ");
+    avgHourLabel->setText(QString::number(hourAvg)+" "+profile->getMain_display_units());
 
     //Eight Hours
     found = false;
@@ -206,18 +258,26 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         eightAvg += records->at(i).at(profile->getMain_display_position()).getDvalue();
     }
     eightAvg /= ((records->length() - 1) - pos);
-    avgEightLabel->setText("Eight Hour Avg "+profile->getMain_display_name()+": "+QString::number(eightAvg)+" "+profile->getMain_display_units());
+    avgEightTitle->setText("Eight Hour Avg "+profile->getMain_display_name()+": ");
+    avgEightLabel->setText(QString::number(eightAvg)+" "+profile->getMain_display_units());
 
     QString strVal;
     double val;
 
+    //Diagnostic A - A
     val = curr.at(profile->getDiagnosticA_position()).getDvalue();
     val -= 273;
     strVal = shortenString(QString::number(val));
-    oneALabel->setText(profile->getDiagnosticA_name()+": "+strVal+" "+profile->getDiagnosticA_units());
+    oneATitle->setText(profile->getDiagnosticA_name()+": ");
+    oneALabel->setText(strVal+" "+profile->getDiagnosticA_units());
+
+    //Diagnostic A - B
     val = curr.at(profile->getDiagnosticB_position()).getDvalue();
     strVal = shortenString(QString::number(val));
-    oneBLabel->setText(profile->getDiagnosticB_name()+": "+strVal+" "+profile->getDiagnosticB_units());
+    oneBTitle->setText(profile->getDiagnosticB_name()+": ");
+    oneBLabel->setText(strVal+" "+profile->getDiagnosticB_units());
+
+    //Diagnostic B - A
     val = curr.at(profile->getDiagnosticC_position()).getDvalue();
     val -= 273;
     if(val < 80) {
@@ -226,13 +286,20 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         twoALabel->setStyleSheet(goodStylesheet);
     }
     strVal = shortenString(QString::number(val));
-    twoALabel->setText(profile->getDiagnosticC_name()+": "+strVal+" C"+profile->getDiagnosticC_units());
+    twoATitle->setText(profile->getDiagnosticC_name()+": ");
+    twoALabel->setText(strVal+" C"+profile->getDiagnosticC_units());
+
+    //Diagnostic B - B
     val = curr.at(profile->getDiagnosticD_position()).getDvalue();
     strVal = shortenString(QString::number(val));
-    twoBLabel->setText(profile->getDiagnosticD_name()+": "+strVal+" "+profile->getDiagnosticD_units());
+    twoBLabel->setText(profile->getDiagnosticD_name()+": ");
+    twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
+
+    //Diagnostic C - A
     val = curr.at(profile->getDiagnosticE_position()).getDvalue();
     strVal = shortenString(QString::number(val));
-    threeALabel->setText(profile->getDiagnosticE_name()+": "+strVal+" "+profile->getDiagnosticE_units());
+    threeATitle->setText(profile->getDiagnosticE_name()+": ");
+    threeALabel->setText(strVal+" "+profile->getDiagnosticE_units());
 }
 
 void StatsWidget::calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, int element_to_sort) {

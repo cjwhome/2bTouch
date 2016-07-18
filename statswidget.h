@@ -33,6 +33,7 @@ private:
     QList<QWidget*> widgets;
     int currentIndex;
 
+    QFont titleFont;
     QString goodStylesheet;
     QString badStylesheet;
 
@@ -42,22 +43,38 @@ private:
 
     QWidget *avgWidget;
     QVBoxLayout *avgVLayout;
+    QHBoxLayout *avgNonRow;
     QLabel *avgNonLabel;
+    QLabel *avgNonTitle;
+    QHBoxLayout *avgHourRow;
+    QLabel *avgHourTitle;
     QLabel *avgHourLabel;
+    QHBoxLayout *avgEightRow;
+    QLabel *avgEightTitle;
     QLabel *avgEightLabel;
 
     QWidget *oneWidget;
     QVBoxLayout *oneVLayout;
+    QHBoxLayout *oneARow;
+    QLabel *oneATitle;
     QLabel *oneALabel;
+    QHBoxLayout *oneBRow;
+    QLabel *oneBTitle;
     QLabel *oneBLabel;
 
     QWidget *twoWidget;
     QVBoxLayout *twoVLayout;
+    QHBoxLayout *twoARow;
+    QLabel *twoATitle;
     QLabel *twoALabel;
+    QHBoxLayout *twoBRow;
+    QLabel *twoBTitle;
     QLabel *twoBLabel;
 
     QWidget *threeWidget;
     QVBoxLayout *threeVLayout;
+    QHBoxLayout *threeARow;
+    QLabel *threeATitle;
     QLabel *threeALabel;
 
 private slots:

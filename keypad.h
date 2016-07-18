@@ -32,6 +32,5 @@ private:
     void setsymbol();
     void setnumeric();
 
-
 };
 #endif // KEYPAD_H

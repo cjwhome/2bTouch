@@ -13,10 +13,12 @@
 #include <QSettings>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QtNetwork>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
 #include "filewriter.h"
 #include "keypad.h"
+#include "keylineedit.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -64,13 +66,13 @@ private:
     QLabel *calTitle;
     QHBoxLayout *calSlopeRow;
     QLabel *calSlopeLabel;
-    QLineEdit *calSlopeField;
+    KeyLineEdit *calSlopeField;
     QHBoxLayout *calOffsetRow;
     QLabel *calOffsetLabel;
-    QLineEdit *calOffsetField;
+    KeyLineEdit *calOffsetField;
     QPushButton *calSubmit;
-    Keypad *calSlopePad;
-    Keypad *calOffPad;
+    //Keypad *calSlopePad;
+    //Keypad *calOffPad;
 
     //Averaging
     QWidget *avgWidget;
@@ -90,12 +92,12 @@ private:
     QLabel *relayOneTitle;
     QHBoxLayout *rOLowRow;
     QLabel *rOLowLabel;
-    QLineEdit *rOLowField;
-    Keypad *rOLowPad;
+    KeyLineEdit *rOLowField;
+    //Keypad *rOLowPad;
     QHBoxLayout *rOHighRow;
     QLabel *rOHighLabel;
-    QLineEdit *rOHighField;
-    Keypad *rOHighPad;
+    KeyLineEdit *rOHighField;
+    //Keypad *rOHighPad;
     QPushButton *rOSubmitButton;
     //QHBoxLayout *rORow;
     //QPushButton *rOLowButton;
@@ -123,11 +125,11 @@ private:
     QLabel *voltTitle;
     QLabel *voltVoltLabel;
     QHBoxLayout *voltPPBRow;
-    QLineEdit *voltPPBField;
+    KeyLineEdit *voltPPBField;
     QLabel *voltPPBLabel;
     QPushButton *voltSubmitButton;
     QIcon *voltIcon;
-    Keypad *voltPad;
+    //Keypad *voltPad;
 
     //Files
     QWidget *filesWidget;
@@ -147,13 +149,31 @@ private:
     QLabel *dateTitle;
     QHBoxLayout *dateDateRow;
     QLabel *dateDateLabel;
-    QLineEdit *dateDateField;
-    Keypad *dateDatePad;
+    KeyLineEdit *dateDateField;
+    //Keypad *dateDatePad;
     QHBoxLayout *dateTimeRow;
     QLabel *dateTimeLabel;
-    QLineEdit *dateTimeField;
-    Keypad *dateTimePad;
+    KeyLineEdit *dateTimeField;
+    //Keypad *dateTimePad;
     QPushButton *dateSubmitButton;
+
+    //Network - Display IP
+    QWidget *netWidget;
+    QVBoxLayout *netVLayout;
+    QLabel *netTitle;
+    QLabel *netSSIDLabel;
+    QLabel *netIPLabel;
+
+    //Network - Connect
+    QWidget *connWidget;
+    QVBoxLayout *connVLayout;
+    QLabel *connTitle;
+    QTableWidget *connTable;
+    QHBoxLayout *connPassRow;
+    QLabel *connPassTitle;
+    KeyLineEdit *connPassField;
+    //Keypad *connPassPad;
+    QPushButton *connSubmitButton;
 
     //Change Password
     QWidget *cpWidget;
@@ -161,13 +181,13 @@ private:
     QLabel *cpTitle;
     QHBoxLayout *cpPassRow;
     QLabel *cpPassLabel;
-    QLineEdit *cpPassText;
+    KeyLineEdit *cpPassText;
     QHBoxLayout *cpConfRow;
     QLabel *cpConfirmLabel;
-    QLineEdit *cpConfText;
+    KeyLineEdit *cpConfText;
     QPushButton *cpSaveButton;
-    Keypad *cpPassPad;
-    Keypad *cpConfPad;
+    //Keypad *cpPassPad;
+    //Keypad *cpConfPad;
 
     QSettings *settings;
 
@@ -203,6 +223,8 @@ private slots:
     void deleteSelectedPressed();
     //Date and Time
     void dateSubmitPressed();
+    //Network
+    void connSubmitPressed();
     //Change Password
     void changePassPressed();
 
@@ -214,6 +236,7 @@ private slots:
     QWidget* widgetForVoltage();
     QWidget* widgetForFiles();
     QWidget* widgetForDate();
+    QWidget* widgetForNet();
     QWidget* widgetForPassChange();
 
     void showCal();
@@ -223,11 +246,15 @@ private slots:
     void showVolt();
     void showFiles();
     void showDate();
+    void showNet();
     void showPassChange();
 
     void clearView();
 
     void sendMessage(QString msg);
+
+    QString checkNetwork();
+    QList<QString> availableNetworks();
 
 public slots:
     void copyAllPressed();

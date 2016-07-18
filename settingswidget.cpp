@@ -53,7 +53,7 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingPassTitle = new QLabel("SETTINGS", landingWidget);
     landingPassRow = new QHBoxLayout(landingWidget);
     landingPassPrompt = new QLabel("Password: ", landingWidget);
-    landingPassField = new QLineEdit(landingWidget);
+    landingPassField = new KeyLineEdit(landingWidget);
     landingPassSubmit = new QPushButton(landingWidget);
     landingPassSubmit->setText("GO");
     //TODO: ICON
@@ -76,7 +76,7 @@ QWidget* SettingsWidget::widgetForLanding() {
 
     homeButton->setParent(landingWidget);
 
-    landingPad = new Keypad(landingPassField, false, landingWidget);
+    //landingPad = new Keypad(landingPassField, false, landingWidget);
 
     return landingWidget;
 }
@@ -88,10 +88,10 @@ QWidget* SettingsWidget::widgetForCal() {
     calTitle = new QLabel("CALIBRATION");
     calSlopeRow = new QHBoxLayout(calWidget);
     calSlopeLabel = new QLabel("Slope: ");
-    calSlopeField = new QLineEdit(calWidget);
+    calSlopeField = new KeyLineEdit(calWidget);
     calOffsetRow= new QHBoxLayout(calWidget);
     calOffsetLabel= new QLabel("Offset: ");
-    calOffsetField = new QLineEdit(calWidget);
+    calOffsetField = new KeyLineEdit(calWidget);
     calSubmit = new QPushButton("SAVE", calWidget);
     //Styling
     calTitle->setFont(titleFont);
@@ -118,8 +118,8 @@ QWidget* SettingsWidget::widgetForCal() {
     calOffsetField->setText(settings->value("Zero").toString());
     calSlopeField->setText(settings->value("Slope").toString());
 
-    calSlopePad = new Keypad(calSlopeField, false, calWidget);
-    calOffPad = new Keypad(calOffsetField, false, calWidget);
+    //calSlopePad = new Keypad(calSlopeField, false, calWidget);
+    //calOffPad = new Keypad(calOffsetField, false, calWidget);
 
     return calWidget;
 }
@@ -154,7 +154,6 @@ QWidget* SettingsWidget::widgetForAvg() {
     avgVLayout->addLayout(avgRowTwo);
     avgWidget->setLayout(avgVLayout);
     //AVeraging - Connect Buttons
-    QSignalMapper *signalMapper = new QSignalMapper(this);
     connect(avgTwoSecButton, SIGNAL(released()),this, SLOT(twoSecPressed()));
     connect(avgTenSecButton, SIGNAL(released()),this, SLOT(tenSecPressed()));
     connect(avgOneMinButton, SIGNAL(released()),this, SLOT(oneMinPressed()));
@@ -183,10 +182,10 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     relayOneTitle = new QLabel("RELAY ONE", rOWidget);
     rOLowRow = new QHBoxLayout(rOWidget);
     rOLowLabel = new QLabel("↓LOW", rOWidget);
-    rOLowField = new QLineEdit(rOWidget);
+    rOLowField = new KeyLineEdit(rOWidget);
     rOHighRow = new QHBoxLayout(rOWidget);
     rOHighLabel = new QLabel("HIGH↑", rOWidget);
-    rOHighField = new QLineEdit(rOWidget);
+    rOHighField = new KeyLineEdit(rOWidget);
     rOSubmitButton = new QPushButton("SAVE", rOWidget);
     //rORow = new QHBoxLayout(rOWidget);
     //rOLowButton = new QPushButton("↓LOW", rOWidget);
@@ -231,8 +230,8 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     high = high / 10;
     rOHighField->setText(QString::number(high));
 
-    rOLowPad = new Keypad(rOLowField, false, rOWidget);
-    rOHighPad = new Keypad(rOHighField,false, rOWidget);
+   //rOLowPad = new Keypad(rOLowField, false, rOWidget);
+    //rOHighPad / new Keypad(rOHighField,false, rOWidget);
 
     homeButton->setParent(rOWidget);
 
@@ -287,7 +286,7 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltTitle = new QLabel("ANALOG OUTPUT", voltWidget);
     voltVoltLabel = new QLabel("2.5 V & 20 mA", voltWidget);
     voltPPBRow = new QHBoxLayout(voltWidget);
-    voltPPBField = new QLineEdit(voltWidget);
+    voltPPBField = new KeyLineEdit(voltWidget);
     voltPPBLabel = new QLabel("ppb", voltWidget);
     voltSubmitButton = new QPushButton("SAVE", voltWidget);
     //Styling
@@ -306,7 +305,7 @@ QWidget* SettingsWidget::widgetForVoltage() {
 
     QString v = settings->value("VOut").toString();
     voltPPBField->setText(v);
-    voltPad = new Keypad(voltPPBField, false, voltWidget);
+    //voltPad = new Keypad(voltPPBField, false, voltWidget);
 
     connect(voltSubmitButton, SIGNAL(pressed()), this, SLOT(voltSubmitPressed()));
 
@@ -373,10 +372,10 @@ QWidget* SettingsWidget::widgetForDate() {
     dateTitle = new QLabel("DATE & TIME", dateWidget);
     dateDateRow = new QHBoxLayout(dateWidget);
     dateDateLabel = new QLabel("Date (DDMMYY): ", dateWidget);
-    dateDateField = new QLineEdit(dateWidget);
+    dateDateField = new KeyLineEdit(dateWidget);
     dateTimeRow = new QHBoxLayout(dateWidget);
     dateTimeLabel = new QLabel("Time (HHMMSS): ", dateWidget);
-    dateTimeField = new QLineEdit(dateWidget);
+    dateTimeField = new KeyLineEdit(dateWidget);
     dateSubmitButton = new QPushButton("SAVE", dateWidget);
 
     dateTitle->setFont(titleFont);
@@ -395,13 +394,78 @@ QWidget* SettingsWidget::widgetForDate() {
     dateVLayout->addWidget(dateSubmitButton);
 
     dateDateField->setText(settings->value("Date").toString());
-    dateDatePad = new Keypad(dateDateField, false, dateWidget);
+    //dateDatePad = new Keypad(dateDateField, false, dateWidget);
     dateTimeField->setText(settings->value("Time").toString());
-    dateTimePad = new Keypad(dateTimeField, false, dateWidget);
+    //dateTimePad = new Keypad(dateTimeField, false, dateWidget);
 
     connect(dateSubmitButton, SIGNAL(released()), this, SLOT(dateSubmitPressed()));
 
     return dateWidget;
+}
+
+QWidget* SettingsWidget::widgetForNet() {
+    QWidget *widget;
+    QString network = checkNetwork();
+    if(network != "false") {
+        netWidget = new QWidget(this);
+        netVLayout = new QVBoxLayout(netWidget);
+        netTitle =new QLabel("NETWORK");
+        netIPLabel = new QLabel(network, netWidget);
+
+        netVLayout->addWidget(netTitle);
+        netVLayout->addWidget(netIPLabel);
+        netWidget->setLayout(netVLayout);
+
+        netTitle->setFont(titleFont);
+        netIPLabel->setFont(labelFont);
+        netVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        widget = netWidget;
+    } else {
+        connWidget = new QWidget(this);
+        connVLayout = new QVBoxLayout(connWidget);
+        connTitle = new QLabel("NETWORK", connWidget);
+
+        connTable = new QTableWidget(0, 1, connWidget);
+        connTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+        connTable->setSelectionMode(QAbstractItemView::SingleSelection);
+        QStringList labels;
+        labels << tr("SSID");
+        connTable->setHorizontalHeaderLabels(labels);
+        connTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+        connTable->verticalHeader()->hide();
+        connTable->setShowGrid(false);
+
+        QList<QString> availableNets = availableNetworks();
+        for(int i = 0; i < availableNets.length(); i++) {
+            QString ssid = availableNets.at(i);
+            QTableWidgetItem *item = new QTableWidgetItem(ssid);
+            int row = connTable->rowCount();
+            connTable->insertRow(row);
+            connTable->setItem(row, 0, item);
+        }
+
+        connPassRow = new QHBoxLayout(connWidget);
+        connPassTitle = new QLabel("Password: ", connWidget);
+        connPassField = new KeyLineEdit(connWidget);
+        connSubmitButton = new QPushButton("Connect", connWidget);
+
+        connVLayout->addWidget(connTitle);
+        connVLayout->addWidget(connTable);
+        connPassRow->addWidget(connPassTitle);
+        connPassRow->addWidget(connPassField);
+        connVLayout->addLayout(connPassRow);
+        connVLayout->addWidget(connSubmitButton);
+
+        connTitle->setFont(titleFont);
+        connPassTitle->setFont(labelFont);
+        connVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        connect(connSubmitButton, SIGNAL(released()), this, SLOT(connSubmitPressed()));
+
+        widget = connWidget;
+    }
+    return widget;
 }
 
 QWidget* SettingsWidget::widgetForPassChange() {
@@ -410,10 +474,10 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpTitle = new QLabel("PASSWORD", cpWidget);
     cpPassRow = new QHBoxLayout(cpWidget);
     cpPassLabel = new QLabel("Password: ", cpWidget);
-    cpPassText = new QLineEdit(cpWidget);
+    cpPassText = new KeyLineEdit(cpWidget);
     cpConfRow = new QHBoxLayout(cpWidget);
     cpConfirmLabel = new QLabel("Confirm: ", cpWidget);
-    cpConfText = new QLineEdit(cpWidget);
+    cpConfText = new KeyLineEdit(cpWidget);
     cpSaveButton = new QPushButton("SAVE", cpWidget);
     //Styling
     cpTitle->setFont(titleFont);
@@ -438,8 +502,8 @@ QWidget* SettingsWidget::widgetForPassChange() {
 
     homeButton->setParent(cpWidget);
 
-    cpPassPad = new Keypad(cpPassText, false, cpWidget);
-    cpConfPad = new Keypad(cpConfText, false, cpWidget);
+    //cpPassPad = new Keypad(cpPassText, false, cpWidget);
+    //cpConfPad = new Keypad(cpConfText, false, cpWidget);
 
     return cpWidget;
 }
@@ -626,7 +690,7 @@ void SettingsWidget::showDate() {
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
+    connect(right, SIGNAL(released()), this, SLOT(showNet()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -644,13 +708,41 @@ void SettingsWidget::showDate() {
     mainLayout->addWidget(w);
 }
 
+void SettingsWidget::showNet() {
+    clearView();
+    QWidget *widget = widgetForNet();
+
+    QPushButton *left = new QPushButton(widget);
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
+    connect(left, SIGNAL(released()), this, SLOT(showDate()));
+
+    QPushButton *right = new QPushButton(widget);
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
+    connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(left);
+    layout->addWidget(widget);
+    layout->addWidget(right);
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    homeButton->setParent(w);
+    mainLayout->addWidget(w);
+}
+
 void SettingsWidget::showPassChange() {
     clearView();
     QWidget *files = widgetForPassChange();
 
     QPushButton *left = new QPushButton(files);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showDate()));
+    connect(left, SIGNAL(released()), this, SLOT(showNet()));
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -786,9 +878,10 @@ void SettingsWidget::copyAllPressed() {
     QDir currentDir = QDir("/"+device.device_name);
     QStringList list = currentDir.entryList(extFilter);
     FileWriter fileWriter;
-    bool test = fileWriter.createDataFolder(device.device_name);
+    fileWriter.createDataFolder(device.device_name);
     QString filePath = fileWriter.getFull_data_path();
     qDebug()<<filePath;
+    bool success = true;
     for(int i = 0; i < list.length(); i++) {
         QString src = "/"+device.device_name+"/"+list.at(i);
         QString dest = filePath+list.at(i);
@@ -798,15 +891,24 @@ void SettingsWidget::copyAllPressed() {
             qDebug()<<"Data copied successfully";
         } else {
             qDebug()<<"Could not copy data";
+            success = false;
         }
     }
+    QMessageBox completion;
+    if(success) {
+        completion.setText("Files Copied Successfully");
+    } else {
+        completion.setText("An Error Occurred While Copying Files");
+    }
+    completion.exec();
 }
 
 void SettingsWidget::copySelectedPressed() {
     FileWriter fileWriter;
-    bool test = fileWriter.createDataFolder(device.device_name);
+    fileWriter.createDataFolder(device.device_name);
     QString filePath = fileWriter.getFull_data_path();
 
+    bool success = true;
     for(int i = 0; i < filesTable->selectedItems().length(); i++) {
         QString src = "/"+ device.device_name + "/" + filesTable->selectedItems().at(i)->text();
         QString dest = filePath+"/"+filesTable->selectedItems().at(i)->text();
@@ -814,8 +916,16 @@ void SettingsWidget::copySelectedPressed() {
             qDebug()<<"Data copied successfully";
         } else {
             qDebug()<<"Could not copy data";
+            success = false;
         }
     }
+    QMessageBox completion;
+    if(success) {
+        completion.setText("Files Copied Successfully");
+    } else {
+        completion.setText("An Error Occurred While Copying Files");
+    }
+    completion.exec();
 }
 
 void SettingsWidget::deleteAllPressed() {
@@ -839,8 +949,7 @@ void SettingsWidget::deleteAllPressed() {
             }
             break;
     }
-
-
+    showFiles();
 }
 
 void SettingsWidget::deleteSelectedPressed() {
@@ -862,6 +971,7 @@ void SettingsWidget::deleteSelectedPressed() {
         default:
             break;
     }
+    showFiles();
 }
 
 void SettingsWidget::dateSubmitPressed() {
@@ -870,6 +980,34 @@ void SettingsWidget::dateSubmitPressed() {
 
     QString timeMsg = "t:" + dateTimeField->text();
     sendMessage(timeMsg);
+}
+
+void SettingsWidget::connSubmitPressed() {
+    QString prog = "/bin/bash";
+
+
+    QStringList args_write;
+    QString new_net = "printf \" \n network={ \n ssid=\\\""+connTable->selectedItems().at(0)->text()+"\\\" \n psk=\\\""+connPassField->text()+"\\\" \n } \n \" >> /etc/wpa_supplicant/wpa_supplicant.conf";
+    args_write<<"-c"<<new_net;
+    QProcess *write = new QProcess();
+    write->start(prog, args_write);
+    write->waitForFinished();
+
+    QStringList args_down;
+    args_down<<"-c"<<"sudo ifdown wlan1";
+
+    QProcess *down = new QProcess();
+    down->start(prog, args_down);
+    down->waitForFinished();
+
+    QStringList args_up;
+    args_up<<"-c"<<"sudo ifup wlan1";
+
+    QProcess *up = new QProcess();
+    up->start(prog, args_up);
+    up->waitForFinished();
+
+    showNet();
 }
 
 void SettingsWidget::sendMessage(QString msg) {
@@ -889,4 +1027,55 @@ void SettingsWidget::changePassPressed() {
         msg.setText("Passwords Do Not Match");
         msg.exec();
     }
+}
+
+QString SettingsWidget::checkNetwork() {
+    QNetworkInterface wlan0 = QNetworkInterface::interfaceFromName("wlan1");
+    QList<QNetworkAddressEntry> entries = wlan0.addressEntries();
+    if(!entries.isEmpty()) {
+        return entries.first().ip().toString();
+    } else {
+        QNetworkInterface eth0 = QNetworkInterface::interfaceFromName("eth0");
+        QList<QNetworkAddressEntry> entries_eth0 = eth0.addressEntries();
+        if(!entries_eth0.isEmpty()) {
+            return entries_eth0.first().ip().toString();
+        } else {
+            return "false";
+        }
+    }
+}
+
+QList<QString> SettingsWidget::availableNetworks() {
+    qDebug()<<"Looking For Available Networks";
+    QList<QString> list;
+    QString prog = "/bin/bash";
+    QStringList args;
+    args<<"-c"<<"sudo iwlist wlan1 scan";
+
+    QProcess *process = new QProcess();
+    process->start(prog, args);
+    process->waitForFinished();
+    QString response = process->readAll();
+    qDebug()<<"Response: "<<response;
+
+    QStringList cells = response.split("Cell ");
+    qDebug()<<"Cells: "<<cells;
+    if(cells.length() > 1) {
+        for(int i = 1; i < cells.length(); i++) {
+            QString cell = cells.at(i);
+            qDebug()<<"Cell: "<<cell;
+            QStringList info = cell.split("\n");
+            qDebug()<<"Info: "<<info;
+            QString ssidLine = info.at(1);
+            qDebug()<<"SSID Line: "<<ssidLine;
+            QString ssid = ssidLine.split(":").at(1);
+            ssid.remove("\"");
+            if(!list.contains(ssid)) {
+                list<<ssid;
+            }
+        }
+    } else {
+        list<<"No Networks Found";
+    }
+    return list;
 }

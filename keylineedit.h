@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QWidget>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QDebug>
 #include "keypad.h"
 
 class KeyLineEdit : public QLineEdit
@@ -13,9 +15,7 @@ public:
 
 private:
     Keypad *keypad;
-
-protected:
-    //bool event(QEvent *event);
+    QPushButton *trigger;
 };
 
 #endif // KEYLINEEDIT_H
