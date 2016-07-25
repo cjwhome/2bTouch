@@ -48,6 +48,7 @@ private:
     QSize buttonSize;
     QString regButtonStyle;
     QString selButtonStyle;
+    QString univStyle;
 
     //Landing Page
     QWidget *landingWidget;

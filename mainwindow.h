@@ -75,6 +75,9 @@ private slots:
     void usbTimerTick();
     void errorTimerTick();
 
+    QString getCpuUsage();
+    QString getFreeSpace();
+
 private:
 	//bool yLessThan(const double &p1, const double &p2);
     Ui::MainWindow *ui;
@@ -96,8 +99,11 @@ private:
     QFile currentFile;
     QString tempDLine;
 
+    QHBoxLayout *statusRow;
     QPushButton *usbIcon;
     QPushButton *errorIcon;
+    QPushButton *cpuIcon;
+    QPushButton *diskSpaceIcon;
     QPushButton *warningIcon;
     QLabel *warningLabel;
 
@@ -123,6 +129,8 @@ private:
     QTimer *usbTimer;
 
     QTimer *errorTimer;
+
+    QString msgBoxStyle;
 };
 
 #endif // MAINWINDOW_H

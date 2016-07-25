@@ -63,6 +63,7 @@ void SerialHandler::configSerialPort() {
 
     if (serialPort->open(QIODevice::ReadWrite)) {
         qDebug()<<"Setup Serial Port successfully";
+        serialPort->flush();
         connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
     }else{
         qDebug()<<"Error setting up serial port";
@@ -73,7 +74,7 @@ void SerialHandler::configSerialPort() {
 void SerialHandler::dataReady() {
     if(serialPort->canReadLine()) {
         QByteArray retData = serialPort->readAll();
-        //qDebug()<<"Received new line from serial: "<<retData;
+       // qDebug()<<"Received new line from serial: "<<retData;
         //serialPort->flush();
         QString *retDataStr = new QString(retData);
         retDataStr->remove('\r');
@@ -154,12 +155,12 @@ void SerialHandler::updateSettings() {
         writeAsync(new QString("v"));
         settings->setValue("InitSettings", 1);
     } else {
-        /*writeSync(new QString("c:" + settings->value("Zero").toString()));
+        writeSync(new QString("c:" + settings->value("Zero").toString()));
         writeSync(new QString("a:" + settings->value("Avg").toString()));
         writeSync(new QString("v:" + settings->value("VOut").toString()));
         writeSync(new QString("l:" + settings->value("Rel1On").toString()));
         writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
-        writeSync(new QString("s:" + settings->value("Slope").toString()));*/
+        writeSync(new QString("s:" + settings->value("Slope").toString()));
     }
 
 }

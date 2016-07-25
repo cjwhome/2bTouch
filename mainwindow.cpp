@@ -165,11 +165,18 @@ MainWindow::MainWindow(QWidget *parent) :
     createDevice();
     setupSerial();
 
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; } background-color: white";
+    this->setStyleSheet(msgBoxStyle);
+
+    //statusRow = new QHBoxLayout(this);
+    //statusRow->setGeometry(QRect(15, 15, 100, 20));
+
     QPixmap pixmap(":/icons/pics/usb-icon.png");
     QIcon icon(pixmap);
     usbIcon = new QPushButton(this);
     usbIcon->setIcon(icon);
     usbIcon->setGeometry(15, 15, 20, 20);
+    usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
 
     usbTimer = new QTimer(this);
@@ -180,8 +187,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon eIc(errorPix);
     errorIcon = new QPushButton(this);
     errorIcon->setIcon(eIc);
-    errorIcon->setGeometry(35, 15, 20, 20);
+    errorIcon->setGeometry(100, 15, 20, 20);
+    errorIcon->setFixedSize(QSize(20, 20));
     errorIcon->setIconSize(QSize(20, 20));
+
+    cpuIcon = new QPushButton(this);
+    cpuIcon->setGeometry(35, 15, 40, 20);
+    cpuIcon->setFixedSize(QSize(40, 20));
+    cpuIcon->setText(getCpuUsage());
+
+    QPixmap diskPix(":/icons/pics/disk-error-icon.png");
+    QIcon diskIc(diskPix);
+    diskSpaceIcon = new QPushButton(this);
+    diskSpaceIcon->setIcon(diskIc);
+    diskSpaceIcon->setGeometry(75, 15, 20, 20);
+    diskSpaceIcon->setFixedSize(QSize(20, 20));
+    diskSpaceIcon->setIconSize(QSize(20, 20));
 
     warningIcon = new QPushButton(this);
     warningIcon->setIcon(eIc);
@@ -191,12 +212,17 @@ MainWindow::MainWindow(QWidget *parent) :
     warningLabel = new QLabel("Default Text", this);
     warningLabel->setGeometry(35, 190, 400, 20);
 
-    //warningIcon->hide();
-    //warningLabel->hide();
+    warningIcon->hide();
+    warningLabel->hide();
 
     errorTimer= new QTimer(this);
     connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
     errorTimer->start(2000);
+
+    //statusRow->addWidget(usbIcon);
+    //statusRow->addWidget(cpuIcon);
+    //statusRow->addWidget(diskSpaceIcon);
+    //statusRow->addWidget(errorIcon);
 }
 
 MainWindow::~MainWindow()
@@ -589,7 +615,7 @@ void MainWindow::errorTimerTick() {
     if(allParsedRecordsList.length() != 0) {
         SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
         double val = item.getDvalue();
-        if(true) {
+        if(val < (80 + 273)) {
             errorIcon->show();
             warningIcon->show();
             warningLabel->setText("Waiting For The Heater To Warm Up");
@@ -600,4 +626,68 @@ void MainWindow::errorTimerTick() {
             warningLabel->hide();
         }
     }
+    cpuIcon->setText(getCpuUsage());
+    QString spaceStr = getFreeSpace();
+    //qDebug()<<"Space: "<<spaceStr;
+    double space = spaceStr.toDouble();
+    if(space < 2000) {
+        diskSpaceIcon->show();
+    } else {
+        diskSpaceIcon->hide();
+    }
+}
+
+QString MainWindow::getCpuUsage() {
+    QString prog = "/bin/bash";
+    QStringList args;
+    args<<"/home/armadillo/cpuUsage";
+
+    QProcess *process = new QProcess();
+    process->start(prog, args);
+    process->waitForFinished();
+
+    QString ret = process->readAll();
+    //qDebug()<<"CPU: "<<ret;
+    return ret;
+}
+
+QString MainWindow::getFreeSpace() {
+    QString prog = "/bin/bash";
+    QStringList args;
+    args<<"/home/armadillo/diskSpace";
+
+    QProcess *process = new QProcess();
+    process->start(prog, args);
+    process->waitForFinished();
+
+    QString ret = process->readAll();
+    //qDebug()<<"Free Space: "<<ret;
+    int pos = 0;
+    char t;
+    bool cont = true;
+    while(cont) {
+        if((t == 'G') || (t == 'M') || (t == 'K')) {
+            cont = false;
+        } else {
+            pos++;
+            t = ret.at(pos).toLatin1();
+        }
+    }
+    QString spaceStr = ret.mid(0, pos);
+    double space = spaceStr.toDouble();
+    switch(t) {
+        case 'M':
+            space *=1000;
+            break;
+        case 'G':
+            space *=1000*1000;
+            break;
+        case 'K':
+            space = space;
+            break;
+        default:
+            space = -1;
+            break;
+    }
+    return QString::number(space);
 }

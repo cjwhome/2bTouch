@@ -125,6 +125,7 @@ QWidget* StatsWidget::widgetForAvg() {
         avgEightLabel->setFont(titleFont);
         avgWidget->hide();
     }
+    avgWidget->setStyleSheet("");
     return avgWidget;
 }
 
@@ -292,7 +293,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     //Diagnostic B - B
     val = curr.at(profile->getDiagnosticD_position()).getDvalue();
     strVal = shortenString(QString::number(val));
-    twoBLabel->setText(profile->getDiagnosticD_name()+": ");
+    twoBTitle->setText(profile->getDiagnosticD_name()+": ");
     twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
 
     //Diagnostic C - A

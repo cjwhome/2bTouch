@@ -30,6 +30,8 @@ void SettingsWidget::initializeViews() {
     buttonSize = QSize(35, 31);
     this->setStyleSheet("QPushButton { border: none; }");
 
+    univStyle = "QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+
     homeButton = new QPushButton();
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
     homeButton->setFixedSize(buttonSize);
@@ -75,6 +77,7 @@ QWidget* SettingsWidget::widgetForLanding() {
     connect(landingPassSubmit, SIGNAL(released()), this, SLOT(landingSubmit()));
 
     homeButton->setParent(landingWidget);
+    landingWidget->setStyleSheet(univStyle);
 
     //landingPad = new Keypad(landingPassField, false, landingWidget);
 
@@ -110,6 +113,7 @@ QWidget* SettingsWidget::widgetForCal() {
     calVLayout->addLayout(calOffsetRow);
     calVLayout->addWidget(calSubmit);
     calWidget->setLayout(calVLayout);
+    calWidget->setStyleSheet(univStyle);
     //Calibration - Connect Buttons
     connect(calSubmit, SIGNAL(released()), this, SLOT(calSubmitReleased()));
 
@@ -153,6 +157,7 @@ QWidget* SettingsWidget::widgetForAvg() {
     avgRowTwo->addWidget(avgOneHourButton);
     avgVLayout->addLayout(avgRowTwo);
     avgWidget->setLayout(avgVLayout);
+    avgWidget->setStyleSheet(univStyle);
     //AVeraging - Connect Buttons
     connect(avgTwoSecButton, SIGNAL(released()),this, SLOT(twoSecPressed()));
     connect(avgTenSecButton, SIGNAL(released()),this, SLOT(tenSecPressed()));
@@ -216,6 +221,7 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     //rOVLayout->addLayout(rORow);
     rOHelpButton->setGeometry(320, 15, 30, 30);
     rOWidget->setLayout(rOVLayout);
+    rOWidget->setStyleSheet(univStyle);
     //Relay One - Connect Buttons
     //connect(rOLowButton, SIGNAL(released()), this, SLOT(rOLowPressed()));
     //connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
@@ -268,6 +274,7 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     rTVLayout->addLayout(rTModeHLayout);
     rTVLayout->addWidget(rTDiagnosticsLabel);
     rTWidget->setLayout(rTVLayout);
+    rTWidget->setStyleSheet(univStyle);
     //TODO: Fill Diagnostic Buttons
     //Relay Two - Connect Buttons
     connect(rTOzoneButton, SIGNAL(released()), this, SLOT(rTOzonePresed()));
@@ -302,6 +309,7 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltVLayout->addLayout(voltPPBRow);
     voltVLayout->addWidget(voltSubmitButton);
     voltWidget->setLayout(voltVLayout);
+    voltWidget->setStyleSheet(univStyle);
 
     QString v = settings->value("VOut").toString();
     voltPPBField->setText(v);
@@ -353,6 +361,7 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesDeleteActionsMenu->addWidget(filesDeleteAllButton);
     filesDeleteActionsMenu->addWidget(filesDeleteSelectedButton);
     filesVLayout->addLayout(filesDeleteActionsMenu);
+    filesWidget->setStyleSheet(univStyle);
 
     filesTitle->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
@@ -392,6 +401,7 @@ QWidget* SettingsWidget::widgetForDate() {
     dateTimeRow->addWidget(dateTimeField);
     dateVLayout->addLayout(dateTimeRow);
     dateVLayout->addWidget(dateSubmitButton);
+    dateWidget->setStyleSheet(univStyle);
 
     dateDateField->setText(settings->value("Date").toString());
     //dateDatePad = new Keypad(dateDateField, false, dateWidget);
@@ -465,6 +475,7 @@ QWidget* SettingsWidget::widgetForNet() {
 
         widget = connWidget;
     }
+    widget->setStyleSheet(univStyle);
     return widget;
 }
 
@@ -497,6 +508,7 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpVLayout->addLayout(cpConfRow);
     cpVLayout->addWidget(cpSaveButton);
     cpWidget->setLayout(cpVLayout);
+    cpWidget->setStyleSheet(univStyle);
 
     connect(cpSaveButton, SIGNAL(released()), this, SLOT(changePassPressed()));
 
@@ -994,14 +1006,14 @@ void SettingsWidget::connSubmitPressed() {
     write->waitForFinished();
 
     QStringList args_down;
-    args_down<<"-c"<<"sudo ifdown wlan1";
+    args_down<<"-c"<<"sudo ifdown wlan0";
 
     QProcess *down = new QProcess();
     down->start(prog, args_down);
     down->waitForFinished();
 
     QStringList args_up;
-    args_up<<"-c"<<"sudo ifup wlan1";
+    args_up<<"-c"<<"sudo ifup wlan0";
 
     QProcess *up = new QProcess();
     up->start(prog, args_up);
@@ -1030,7 +1042,7 @@ void SettingsWidget::changePassPressed() {
 }
 
 QString SettingsWidget::checkNetwork() {
-    QNetworkInterface wlan0 = QNetworkInterface::interfaceFromName("wlan1");
+    QNetworkInterface wlan0 = QNetworkInterface::interfaceFromName("wlan0");
     QList<QNetworkAddressEntry> entries = wlan0.addressEntries();
     if(!entries.isEmpty()) {
         return entries.first().ip().toString();
@@ -1050,7 +1062,7 @@ QList<QString> SettingsWidget::availableNetworks() {
     QList<QString> list;
     QString prog = "/bin/bash";
     QStringList args;
-    args<<"-c"<<"sudo iwlist wlan1 scan";
+    args<<"-c"<<"sudo iwlist wlan0 scan";
 
     QProcess *process = new QProcess();
     process->start(prog, args);
