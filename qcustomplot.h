@@ -45,6 +45,7 @@
 #include <QMargins>
 #include <qmath.h>
 #include <limits>
+#include <QElapsedTimer>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #  include <qnumeric.h>
 #  include <QPrinter>
@@ -2055,6 +2056,7 @@ protected:
   QCP::AntialiasedElements mAADragBackup, mNotAADragBackup;
   QPoint mDragStart;
   bool mDragging;
+  QElapsedTimer mDragTimer;
   QHash<QCPAxis::AxisType, QList<QCPAxis*> > mAxes;
   
   // reimplemented virtual methods:

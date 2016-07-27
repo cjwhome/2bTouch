@@ -57,8 +57,8 @@ GraphSettingsDialog::GraphSettingsDialog(QWidget *parent) :
     m_sSettingsFile = QApplication::applicationDirPath().left(1) + ":/2btouch_settings.ini";
     loadSettings();
 
-    ui->autoscaleXcheckbox->setChecked(autoscalex);
-    ui->autoscaleYcheckbox->setChecked(autoscaley);
+    //ui->autoscaleXcheckbox->setChecked(autoscalex);
+    //ui->autoscaleYcheckbox->setChecked(autoscaley);
     connect(ui->applyButton, SIGNAL(pressed()), this, SLOT(apply()));
     //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
@@ -77,6 +77,7 @@ void GraphSettingsDialog::apply()
 {
     saveSettings();
     hide();
+    emit applyGraphSettings();
 }
 
 
@@ -84,8 +85,25 @@ void GraphSettingsDialog::loadSettings()
 {
      QSettings settings("2B Technologies", "2B Touch");
 
-     autoscalex = settings.value("xautoscale", true).toBool();
-     autoscaley = settings.value("yautoscale", true).toBool();
+     autoscalex = settings.value("xautoscale").toBool();
+     autoscaley = settings.value("yautoscale").toBool();
+
+     //qDebug necessary ???
+     if(autoscalex) {
+         ui->autoscaleXcheckbox->setChecked(true);
+         qDebug()<<"autoscalex true";
+     } else {
+         ui->autoscaleXcheckbox->setChecked(false);
+         qDebug()<<"autoscalex false";
+     }
+
+     if(autoscaley) {
+         ui->autoscaleYcheckbox->setChecked(true);
+         qDebug()<<"autoscaley true";
+     } else {
+         ui->autoscaleYcheckbox->setChecked(false);
+         qDebug()<<"autoscaley false";
+     }
 
      //qDebug()<<"X scale:"<<QString::number(autoscalex);
      //qDebug()<<"Y scale:"<<QString::number(autoscaley);

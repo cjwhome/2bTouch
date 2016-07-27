@@ -65,6 +65,9 @@ private slots:
 
     void apply();
 
+signals:
+    void applyGraphSettings();
+
 
 private:
     Ui::GraphSettingsDialog *ui;

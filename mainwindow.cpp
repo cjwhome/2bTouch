@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     started_file = false;
-    this->setStyleSheet("background-color:white;");
+    //this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
     //this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-white.png);");
     //ControlBacklight controlBacklight;
@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     settings = new QSettings("2B Technologies", "2B Touch");
     usbMounted = false;
+    buttonSize = QSize(50, 50);
 
     QWidget *centralWidget = new QWidget();
 
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *configure_button = new QPushButton();
     configure_button->setIcon(configButtonIcon);
     configure_button->setIconSize(QSize(35,31));
-    configure_button->setFixedSize(35,31);
+    configure_button->setFixedSize(buttonSize);
 
 
     QPushButton *homeButton = new QPushButton();
@@ -60,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
-    homeButton->setFixedSize(35,31);
+    homeButton->setFixedSize(buttonSize);
 
 
     graph_button = new QPushButton();
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     graph_button->setIcon(chartButtonIcon);
     graph_button->setIconSize(QSize(35,31));
-    graph_button->setFixedSize(35,31);
+    graph_button->setFixedSize(buttonSize);
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
 
@@ -78,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon statsButtonIcon(statsPixmap);
     stats_button->setIcon(statsButtonIcon);
     stats_button->setIconSize(QSize(35,31));
-    stats_button->setFixedSize(35,31);
+    stats_button->setFixedSize(buttonSize);
     QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
     QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
 
@@ -165,7 +166,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDevice();
     setupSerial();
 
-    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; } background-color: white";
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
     this->setStyleSheet(msgBoxStyle);
 
     //statusRow = new QHBoxLayout(this);
@@ -175,7 +176,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon icon(pixmap);
     usbIcon = new QPushButton(this);
     usbIcon->setIcon(icon);
-    usbIcon->setGeometry(15, 15, 20, 20);
+    usbIcon->setGeometry(15, 20, 20, 20);
     usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
 
@@ -187,12 +188,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon eIc(errorPix);
     errorIcon = new QPushButton(this);
     errorIcon->setIcon(eIc);
-    errorIcon->setGeometry(100, 15, 20, 20);
+    errorIcon->setGeometry(100, 20, 20, 20);
     errorIcon->setFixedSize(QSize(20, 20));
     errorIcon->setIconSize(QSize(20, 20));
 
     cpuIcon = new QPushButton(this);
-    cpuIcon->setGeometry(35, 15, 40, 20);
+    cpuIcon->setGeometry(35, 20, 40, 20);
     cpuIcon->setFixedSize(QSize(40, 20));
     cpuIcon->setText(getCpuUsage());
 
@@ -200,7 +201,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon diskIc(diskPix);
     diskSpaceIcon = new QPushButton(this);
     diskSpaceIcon->setIcon(diskIc);
-    diskSpaceIcon->setGeometry(75, 15, 20, 20);
+    diskSpaceIcon->setGeometry(75, 20, 20, 20);
     diskSpaceIcon->setFixedSize(QSize(20, 20));
     diskSpaceIcon->setIconSize(QSize(20, 20));
 
@@ -272,9 +273,14 @@ void MainWindow::createDevice(){
             deviceProfile.setDiagnosticE_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticE_name(serialDataItem.getName());
             deviceProfile.setDiagnosticE_position(i);
+        } else if(serialDataItem.getPriority() == 6) {
+            deviceProfile.setDiagnosticF_uints(serialDataItem.getUnits());
+            deviceProfile.setDiagnosticF_name(serialDataItem.getName());
+            deviceProfile.setDiagnosticF_position(i);
         }
         //qDebug()<<"For "<<i<<" priority="<<serialDataItem.getPriority();
     }
+    qDebug()<<"Finished Profile Setup";
     deviceProfile.setNumber_of_columns(i);
     //qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
 
@@ -495,9 +501,10 @@ void MainWindow::displayBigPlot(void){
  
 void MainWindow::clearPlotData(void){
     //qDebug()<<"Clearing plot data, xcount:"<<x.count()<<", ycount:"<<y.count();
-    data_point = 0;
+    data_index = 0;
     x.clear();
     y.clear();
+    qDebug()<<"Finished Clearing Data";
 }
 
 void MainWindow::displayStats(void){
@@ -545,6 +552,7 @@ void MainWindow::createFileName(void){
     currentFile.setFileName(fileName);
     //currentFile = new QFile(fileName);
     started_file = true;
+    qDebug()<<"Finished Creating File";
 }
 
 void MainWindow::writeFile(void){
@@ -612,6 +620,7 @@ void MainWindow::usbTimerTick() {
 
 void MainWindow::errorTimerTick() {
     //Check STemp
+    qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
     if(allParsedRecordsList.length() != 0) {
         SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
         double val = item.getDvalue();

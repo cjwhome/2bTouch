@@ -76,6 +76,9 @@ private:
     QHBoxLayout *threeARow;
     QLabel *threeATitle;
     QLabel *threeALabel;
+    QHBoxLayout *threeBRow;
+    QLabel *threeBTitle;
+    QLabel *threeBLabel;
 
 private slots:
     void leftPressed();

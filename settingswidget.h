@@ -32,6 +32,8 @@ public:
     explicit SettingsWidget(QWidget *parent = 0);
     ~SettingsWidget();
 
+    void invalidate();
+
 signals:
     void sendMsg(QString msg);
     void sendAMsg(QString *msg);
@@ -164,6 +166,7 @@ private:
     QLabel *netTitle;
     QLabel *netSSIDLabel;
     QLabel *netIPLabel;
+    QPushButton *netDisButton;
 
     //Network - Connect
     QWidget *connWidget;
@@ -225,6 +228,7 @@ private slots:
     //Date and Time
     void dateSubmitPressed();
     //Network
+    void netDisButtonPressed();
     void connSubmitPressed();
     //Change Password
     void changePassPressed();

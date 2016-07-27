@@ -125,6 +125,15 @@ void DeviceProfile::setDiagnosticE_units(const QString &value)
     diagnosticE_units = value;
 }
 
+QString DeviceProfile::getDiagnosticF_units() const
+{
+    return diagnosticF_units;
+}
+
+void DeviceProfile::setDiagnosticF_uints(const QString &value) {
+    diagnosticF_units = value;
+}
+
 QString DeviceProfile::getMain_display_name() const
 {
     return main_display_name;
@@ -185,6 +194,16 @@ void DeviceProfile::setDiagnosticE_name(const QString &value)
     diagnosticE_name = value;
 }
 
+QString DeviceProfile::getDiagnosticF_name() const
+{
+    return diagnosticF_name;
+}
+
+void DeviceProfile::setDiagnosticF_name(const QString &value)
+{
+    diagnosticF_name = value;
+}
+
 int DeviceProfile::getDiagnosticA_position() const
 {
     return diagnosticA_position;
@@ -233,6 +252,16 @@ void DeviceProfile::setDiagnosticD_position(int value)
 void DeviceProfile::setDiagnosticE_position(int value)
 {
     diagnosticE_position = value;
+}
+
+void DeviceProfile::setDiagnosticF_position(int value)
+{
+    diagnosticF_position = value;
+}
+
+int DeviceProfile::getDiagnosticF_position() const
+{
+    return diagnosticF_position;
 }
 
 int DeviceProfile::getBaud_rate() const

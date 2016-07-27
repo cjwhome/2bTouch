@@ -43,6 +43,9 @@ public:
     QString getDiagnosticE_units() const;
     void setDiagnosticE_units(const QString &value);
 
+    QString getDiagnosticF_units() const;
+    void setDiagnosticF_uints(const QString &value);
+
     QString getMain_display_name() const;
     void setMain_display_name(const QString &value);
 
@@ -61,6 +64,9 @@ public:
     QString getDiagnosticE_name() const;
     void setDiagnosticE_name(const QString &value);
 
+    QString getDiagnosticF_name() const;
+    void setDiagnosticF_name(const QString &value);
+
     int getDiagnosticA_position() const;
     void setDiagnosticA_position(int value);
 
@@ -76,6 +82,9 @@ public:
     int getDiagnosticE_position() const;
     void setDiagnosticE_position(int value);
 
+    int getDiagnosticF_position() const;
+    void setDiagnosticF_position(int value);
+
     int getBaud_rate() const;
     void setBaud_rate(int value);
 
@@ -90,11 +99,13 @@ private:
     QString diagnosticC_units;
     QString diagnosticD_units;
     QString diagnosticE_units;
+    QString diagnosticF_units;
     QString diagnosticA_name;
     QString diagnosticB_name;
     QString diagnosticC_name;
     QString diagnosticD_name;
     QString diagnosticE_name;
+    QString diagnosticF_name;
     QString com_port;
     int main_display_position;      //this tells where the main (ozone, NO2, yada yada yada) is located in the qlist
     int diagnosticA_position;
@@ -102,6 +113,7 @@ private:
     int diagnosticC_position;
     int diagnosticD_position;
     int diagnosticE_position;
+    int diagnosticF_position;
     int date_position;          //this tells where the date/time is located in the qlist
     int time_position;
     int number_of_columns;

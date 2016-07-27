@@ -201,6 +201,8 @@ void Keypad::setnumeric()
 
     ui->comma->setText("_");
 
+
+
     ui->apostrophe->setEnabled(0);
 
     ui->fstop->setEnabled(0);
@@ -239,7 +241,7 @@ void Keypad::keypadHandler()
 
             ui->lineEdit->insert(" ");
 
-            setsymbol();
+            //setsymbol();
 
         }
 
@@ -405,7 +407,15 @@ void Keypad::setalphabet()
 
     ui->numbutton->setText("CAPS");
 
-    ui->comma->setText("'");
+    ui->comma->setText(",");
+
+    ui->apostrophe->setText("'");
+
+    ui->fstop->setText(".");
+
+    ui->question->setText("?");
+
+    ui->spacebutton->setText("SPACE");
 
     ui->apostrophe->setEnabled(1);
 
@@ -492,11 +502,14 @@ void Keypad::setsymbol()
 
     ui->zbutton->setText("Z");
 
+    ui->fstop->setText(".");
 
 
     ui->numbutton->setText("CAPS");
 
-    ui->comma->setText("'");
+    ui->comma->setText(",");
+
+    ui->apostrophe->setText(QString('"'));
 
     ui->apostrophe->setEnabled(1);
 

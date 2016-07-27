@@ -347,11 +347,18 @@ QWidget* SettingsWidget::widgetForFiles() {
         int row = filesTable->rowCount();
         filesTable->insertRow(row);
         filesTable->setItem(row, 0, fileNameItem);
+
+        QFileInfo fileInfo("/"+device.device_name+"/"+list.at(i));
+        QString date = fileInfo.created().toString("MM/dd/yy");
+        QTableWidgetItem *dateItem = new QTableWidgetItem(date);
+        filesTable->setItem(row, 1, dateItem);
     }
 
     filesDeleteActionsMenu = new QHBoxLayout(filesWidget);
     filesDeleteAllButton = new QPushButton("Delete All", filesWidget);
     filesDeleteSelectedButton = new QPushButton("Delete Selected", filesWidget);
+
+    filesTitle->setFont(titleFont);
 
     filesVLayout->addWidget(filesTitle);
     filesCopyActionsMenu->addWidget(filesCopyAllButton);
@@ -421,14 +428,18 @@ QWidget* SettingsWidget::widgetForNet() {
         netVLayout = new QVBoxLayout(netWidget);
         netTitle =new QLabel("NETWORK");
         netIPLabel = new QLabel(network, netWidget);
+        netDisButton = new QPushButton("DISCONNECT", netWidget);
 
         netVLayout->addWidget(netTitle);
         netVLayout->addWidget(netIPLabel);
+        netVLayout->addWidget(netDisButton);
         netWidget->setLayout(netVLayout);
 
         netTitle->setFont(titleFont);
         netIPLabel->setFont(labelFont);
         netVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        connect(netDisButton, SIGNAL(released()), this, SLOT(netDisButtonPressed()));
 
         widget = netWidget;
     } else {
@@ -521,6 +532,7 @@ QWidget* SettingsWidget::widgetForPassChange() {
 }
 
 void SettingsWidget::homePressed() {
+    invalidate();
     close();
 }
 
@@ -1090,4 +1102,53 @@ QList<QString> SettingsWidget::availableNetworks() {
         list<<"No Networks Found";
     }
     return list;
+}
+
+void SettingsWidget::netDisButtonPressed() {
+    QString prog = "/bin/bash";
+    QStringList args;
+    args<<"-c"<<"sudo iwconfig | grep wlan0";
+
+    QProcess *process = new QProcess();
+    process->start(prog, args);
+    process->waitForFinished();
+
+    QString ret = process->readAll();
+    qDebug()<<args;
+    qDebug()<<ret;
+    ret = ret.split("wlan0").at(1);
+    qDebug()<<ret;
+    ret = ret.split(QString('"')).at(1);
+    qDebug()<<ret;
+
+    args.clear();
+    args<<"-c"<<"awk '/"+ret+"/ {print NR;exit}' /etc/wpa_supplicant/wpa_supplicant.conf";
+    qDebug()<<args;
+    process->start(prog, args);
+    process->waitForFinished();
+
+    ret = process->readAll();
+    qDebug()<<ret;
+    int lineNum = ret.toInt();
+    int bottom = lineNum-1;
+    int top = lineNum+3;
+    args.clear();
+    args<<"-c"<<"sudo sed -i.back -e '"+QString::number(bottom)+","+QString::number(top)+"d' /etc/wpa_supplicant/wpa_supplicant.conf";
+    qDebug()<<args;
+    process->start(prog, args);
+    process->waitForFinished();
+
+    args.clear();
+    args<<"-c"<<"sudo ifdown wlan0";
+    process->start(prog, args);
+    process->waitForFinished();
+
+    showNet();
+}
+
+void SettingsWidget::invalidate() {
+    clearView();
+
+    QWidget *landing = widgetForLanding();
+    mainLayout->addWidget(landing);
 }

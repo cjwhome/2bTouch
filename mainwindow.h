@@ -99,6 +99,8 @@ private:
     QFile currentFile;
     QString tempDLine;
 
+    QSize buttonSize;
+
     QHBoxLayout *statusRow;
     QPushButton *usbIcon;
     QPushButton *errorIcon;

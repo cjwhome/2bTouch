@@ -17,26 +17,28 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 
     settings = new QSettings("2B Technologies", "2B Touch");
 
+    QSize buttonSize(50, 50);
+
     QPushButton *homeButton = new QPushButton();
     QPixmap homePixmap(":/buttons/pics/home-icon.gif");
     QIcon homeButtonIcon(homePixmap);
     homeButton->setIcon(homeButtonIcon);
     homeButton->setIconSize(QSize(35,31));
-    homeButton->setFixedSize(35,31);
+    homeButton->setFixedSize(buttonSize);
 
     QPushButton *clearButton = new QPushButton();
     QPixmap clearPixmap(":/buttons/pics/clear-icon.gif");
     QIcon clearButtonIcon(clearPixmap);
     clearButton->setIcon(clearButtonIcon);
     clearButton->setIconSize(QSize(35,31));
-    clearButton->setFixedSize(35,31);
+    clearButton->setFixedSize(buttonSize);
 
     QPushButton *settingsButton = new QPushButton();
     QPixmap settingsPixmap(":/buttons/pics/settings-icon.gif");
     QIcon settingsButtonIcon(settingsPixmap);
     settingsButton->setIcon(settingsButtonIcon);
     settingsButton->setIconSize(QSize(35,31));
-    settingsButton->setFixedSize(35,31);
+    settingsButton->setFixedSize(buttonSize);
 
     settingsdialog = new GraphSettingsDialog(this);
 
@@ -46,14 +48,14 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     QIcon zoomInButtonIcon(zoomInPixmap);
     zoomInButton->setIcon(zoomInButtonIcon);
     zoomInButton->setIconSize(QSize(35,31));
-    zoomInButton->setFixedSize(35,31);
+    zoomInButton->setFixedSize(buttonSize);
 
     QPushButton *zoomOutButton = new QPushButton();
     QPixmap zoomOutPixmap(":/buttons/pics/zoom-out-icon.gif");
     QIcon zoomOutButtonIcon(zoomOutPixmap);
     zoomOutButton->setIcon(zoomOutButtonIcon);
     zoomOutButton->setIconSize(QSize(35,31));
-    zoomOutButton->setFixedSize(35,31);
+    zoomOutButton->setFixedSize(buttonSize);
 
     zoomHLayout->addWidget(zoomOutButton);
     zoomHLayout->addWidget(zoomInButton);
@@ -94,15 +96,16 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoomInButton->setAutoRepeat(true);
     zoomInButton->setAutoRepeatInterval(25);
     zoomInButton->setAutoRepeatDelay(500);
-    zoomInButton->setAutoRepeat(true);
-    zoomInButton->setAutoRepeatInterval(25);
-    zoomInButton->setAutoRepeatDelay(500);
+    zoomOutButton->setAutoRepeat(true);
+    zoomOutButton->setAutoRepeatInterval(25);
+    zoomOutButton->setAutoRepeatDelay(500);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(zoomOut()));
     connect(settingsButton, SIGNAL(clicked(bool)), settingsdialog, SLOT(show()));
+    connect(settingsdialog, SIGNAL(applyGraphSettings()), this, SLOT(redrawPlot()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
     connect(customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
@@ -208,19 +211,23 @@ void DisplayGraph::setYaxisLabel(QString label){
 
 void DisplayGraph::mousePress()
 {
+    qDebug()<<"Mouse Press Event: "<<QDateTime::currentDateTime().toTime_t();
+    settings->setValue("xautoscale", false);
+    settings->setValue("yautoscale", false);
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
 
-  if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+  /*if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
     customPlot->axisRect()->setRangeDrag(customPlot->xAxis->orientation());
   else if (customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
     customPlot->axisRect()->setRangeDrag(customPlot->yAxis->orientation());
   else
-    customPlot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    customPlot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);*/
 }
 
 void DisplayGraph::mouseWheel()
 {
+    qDebug()<<"Mouse Wheel Event: "<<QDateTime::currentDateTime().toTime_t();
   // if an axis is selected, only allow the direction of that axis to be zoomed
   // if no axis is selected, both directions may be zoomed
 
@@ -235,6 +242,9 @@ void DisplayGraph::mouseWheel()
 }
 
 void DisplayGraph::zoomIn(){
+    settings->setValue("xautoscale", false);
+    settings->setValue("yautoscale", false);
+
     QCPRange x_range = customPlot->xAxis->range();
     QCPRange y_range = customPlot->yAxis->range();
 
@@ -251,6 +261,9 @@ void DisplayGraph::zoomIn(){
 }
 
 void DisplayGraph::zoomOut(){
+    settings->setValue("xautoscale", false);
+    settings->setValue("yautoscale", false);
+
     QCPRange x_range = customPlot->xAxis->range();
     QCPRange y_range = customPlot->yAxis->range();
 

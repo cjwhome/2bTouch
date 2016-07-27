@@ -525,7 +525,7 @@ border-radius:10px;</string>
   <widget class="QPushButton" name="xbutton">
    <property name="geometry">
     <rect>
-     <x>182</x>
+     <x>77</x>
      <y>140</y>
      <width>35</width>
      <height>39</height>

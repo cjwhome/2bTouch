@@ -12509,6 +12509,7 @@ void QCPAxisRect::mousePressEvent(QMouseEvent *event)
         mDragStartVertRange = mRangeDragVertAxis.data()->range();
     }
   }
+  mDragTimer.start();
 }
 
 /*! \internal
@@ -12520,8 +12521,25 @@ void QCPAxisRect::mousePressEvent(QMouseEvent *event)
 */
 void QCPAxisRect::mouseMoveEvent(QMouseEvent *event)
 {
+    //kopala
+    double hDiff = mDragStart.x() - event->pos().x();
+    hDiff /= mParentPlot->width();
+    hDiff *= (mParentPlot->xAxis->range().upper - mParentPlot->xAxis->range().lower);
+    mParentPlot->xAxis->setRange(mDragStartHorzRange.lower + hDiff, mDragStartHorzRange.upper + hDiff);
+
+    double vDiff = mDragStart.y() - event->pos().y();
+    vDiff /= mParentPlot->height();
+    vDiff *= (mParentPlot->yAxis->range().upper - mParentPlot->yAxis->range().lower);
+    mParentPlot->yAxis->setRange(mDragStartVertRange.lower - vDiff, mDragStartVertRange.upper - vDiff);
+
+    if(mDragTimer.elapsed() > 250) {
+        mParentPlot->replot();
+        qDebug()<<"mouseMoveEvent replotting: "<<mDragTimer.elapsed();
+        mDragTimer.restart();
+    }
+    //mParentPlot->replot();
   // Mouse range dragging interaction:
-  if (mDragging && mParentPlot->interactions().testFlag(QCP::iRangeDrag))
+  /*if (mDragging && mParentPlot->interactions().testFlag(QCP::iRangeDrag))
   {
     if (mRangeDrag.testFlag(Qt::Horizontal))
     {
@@ -12551,7 +12569,7 @@ void QCPAxisRect::mouseMoveEvent(QMouseEvent *event)
           double diff = rangeDragVertAxis->pixelToCoord(mDragStart.y()) / rangeDragVertAxis->pixelToCoord(event->pos().y());
           rangeDragVertAxis->setRange(mDragStartVertRange.lower*diff, mDragStartVertRange.upper*diff);
         }
-      }
+
     }
     if (mRangeDrag != 0) // if either vertical or horizontal drag was enabled, do a replot
     {
@@ -12559,7 +12577,7 @@ void QCPAxisRect::mouseMoveEvent(QMouseEvent *event)
         mParentPlot->setNotAntialiasedElements(QCP::aeAll);
       mParentPlot->replot();
     }
-  }
+  }*/
 }
 
 /* inherits documentation from base class */
@@ -12572,6 +12590,8 @@ void QCPAxisRect::mouseReleaseEvent(QMouseEvent *event)
     mParentPlot->setAntialiasedElements(mAADragBackup);
     mParentPlot->setNotAntialiasedElements(mNotAADragBackup);
   }
+  qDebug()<<"Mouse Release Event";
+  mParentPlot->replot();
 }
 
 /*! \internal
