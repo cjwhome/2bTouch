@@ -635,7 +635,7 @@ void MainWindow::errorTimerTick() {
             warningLabel->hide();
         }
     }
-    cpuIcon->setText(getCpuUsage());
+    /*cpuIcon->setText(getCpuUsage());
     QString spaceStr = getFreeSpace();
     //qDebug()<<"Space: "<<spaceStr;
     double space = spaceStr.toDouble();
@@ -643,10 +643,12 @@ void MainWindow::errorTimerTick() {
         diskSpaceIcon->show();
     } else {
         diskSpaceIcon->hide();
-    }
+    }*/
 }
 
 QString MainWindow::getCpuUsage() {
+    QElapsedTimer cpuTimer;
+    cpuTimer.start();
     QString prog = "/bin/bash";
     QStringList args;
     args<<"/home/armadillo/cpuUsage";
@@ -657,10 +659,14 @@ QString MainWindow::getCpuUsage() {
 
     QString ret = process->readAll();
     //qDebug()<<"CPU: "<<ret;
+    qDebug()<<"CPU Elapsed"<<cpuTimer.elapsed();
+    cpuTimer.invalidate();
     return ret;
 }
 
 QString MainWindow::getFreeSpace() {
+    QElapsedTimer freeTimer;
+    freeTimer.start();
     QString prog = "/bin/bash";
     QStringList args;
     args<<"/home/armadillo/diskSpace";
@@ -698,5 +704,7 @@ QString MainWindow::getFreeSpace() {
             space = -1;
             break;
     }
+    qDebug()<<"Free Elapsed"<<freeTimer.elapsed();
     return QString::number(space);
+
 }

@@ -67,6 +67,8 @@ private:
 
     bool autoscalex;
     bool autoscaley;
+
+    bool isVisible;
 };
 
 #endif // DISPLAYGRAPH_H

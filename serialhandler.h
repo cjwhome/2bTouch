@@ -8,8 +8,10 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QSettings>
+#include <QtNetwork>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
+#include "networkthread.h"
 
 class SerialHandler : public QObject
 {
@@ -38,8 +40,13 @@ public slots:
     void writeChar(char c);
 
     void dataReady();
+    void netDataReady();
+    void readData(QString data);
 
     void updateSettings();
+
+private slots:
+    void newConnection();
 
 private:
     QThread *thread;
@@ -62,6 +69,10 @@ private:
 
     QSettings *settings;
     bool gettingSettings;
+
+    //Netowrking
+    QTcpServer server;
+    QList<QTcpSocket *> netSockets;
 };
 
 #endif // SERIALHANDLER_H

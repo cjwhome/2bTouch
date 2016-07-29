@@ -10378,8 +10378,12 @@ void QCustomPlot::deselectAll()
 */
 void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
 {
-  if (mReplotting) // incase signals loop back to replot slot
+    QElapsedTimer replotTimer;
+    replotTimer.start();
+  if (mReplotting) {// incase signals loop back to replot slot
+      replotTimer.invalidate();
     return;
+  }
   mReplotting = true;
   emit beforeReplot();
   
@@ -10402,6 +10406,8 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
   
   emit afterReplot();
   mReplotting = false;
+  qDebug()<<"Replotting Took: "<<replotTimer.elapsed();
+  replotTimer.invalidate();
 }
 
 /*!
