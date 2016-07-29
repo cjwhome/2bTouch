@@ -287,8 +287,7 @@ void MainWindow::createDevice(){
 }
 
 void MainWindow::setupSerial(){
-    QThread *thread = new QThread(this);
-    serialHandler = new SerialHandler(thread);
+    serialHandler = new SerialHandler(0, QHostAddress("10.0.5.146"));
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));

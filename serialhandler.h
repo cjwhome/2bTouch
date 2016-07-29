@@ -11,13 +11,18 @@
 #include <QtNetwork>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
-#include "networkthread.h"
 
 class SerialHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit SerialHandler(QThread *thr, QObject *parent = 0);
+    explicit SerialHandler(int type, QHostAddress addr, QObject *parent = 0);
+
+    enum ConnType
+    {
+        Serial = 0,
+        Tcp = 1
+    };
 
     enum Types
     {
@@ -49,7 +54,7 @@ private slots:
     void newConnection();
 
 private:
-    QThread *thread;
+    ConnType connType;
 
     QString portName;
     QSerialPort *serialPort;
@@ -73,6 +78,8 @@ private:
     //Netowrking
     QTcpServer server;
     QList<QTcpSocket *> netSockets;
+    QTcpSocket *getSocket;
+    QHostAddress getAddress;
 };
 
 #endif // SERIALHANDLER_H
