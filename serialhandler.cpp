@@ -89,7 +89,12 @@ void SerialHandler::netDataReady() {
         }
     }
 
-    readData(QString(socket->readAll()));
+    QString *data = new QString(socket->readAll());
+    QList<QString> list = data->split('\n');
+    foreach(QString command, list) {
+        qDebug()<<"Received New Line From TCP: "<<command;
+        writeSync(new QString(command));
+    }
 }
 
 void SerialHandler::dataReady() {

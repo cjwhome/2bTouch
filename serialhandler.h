@@ -11,7 +11,6 @@
 #include <QtNetwork>
 #include "xmldevicereader.h"
 #include "twobtechdevice.h"
-#include "networkthread.h"
 
 class SerialHandler : public QObject
 {
