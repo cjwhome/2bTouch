@@ -145,7 +145,7 @@ void SerialHandler::readData(QString data) {
             } else {
                 emit dataAvailable(line);
                 foreach(QTcpSocket *socket, netSockets) {
-                    socket->write(line.toLatin1());
+                    socket->write(line.toLatin1() + "\n\r");
                 }
             }
         }
@@ -167,7 +167,7 @@ void SerialHandler::handleSyncData(QString retData) {
     } else {
         emit dataAvailable(retData);
         foreach(QTcpSocket *socket, netSockets) {
-            socket->write(retData.toLatin1());
+            socket->write(retData.toLatin1() + "\n\r");
         }
     }
 }
@@ -205,5 +205,5 @@ void SerialHandler::newConnection() {
     QTcpSocket *socket = server.nextPendingConnection();
     netSockets<<socket;
     connect(socket, SIGNAL(readyRead()), this, SLOT(netDataReady()));
-    socket->write(QByteArray("Connected!"));
+    socket->write(QByteArray("Connected!\n\r"));
 }

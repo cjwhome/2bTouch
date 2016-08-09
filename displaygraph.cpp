@@ -74,6 +74,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     // create graph and assign data to it:
     customPlot->addGraph();
+    customPlot->graph(0)->setName("Ozone");
     verticalLayout->addWidget(customPlot);
     verticalLayout->addWidget(myFrame);
     verticalLayout->addLayout(buttonLayout);
@@ -117,6 +118,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->xAxis->setAutoTickStep(false);
     customPlot->xAxis->setTickStep(10);
     customPlot->xAxis->setSubTickCount(3);
+    customPlot->yAxis->setLabel("Ozone (ppb)");
 
     customPlot->graph(0)->setData(x, y);
     //customPlot->xAxis->setLabel("Time");
@@ -126,6 +128,24 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
 
     customPlot->xAxis->setTickLabelRotation(-30);
+
+    customPlot->addGraph();
+    customPlot->graph(1)->setPen(QPen(Qt::green));
+    customPlot->graph(1)->setName("Temperature");
+    customPlot->yAxis2->setVisible(true);
+    customPlot->yAxis2->setTickLabels(true);
+    customPlot->yAxis2->setTickLabelType(QCPAxis::ltNumber);
+    customPlot->yAxis2->setLabel("Temperature (C)");
+    customPlot->yAxis2->setRange(10, 40);
+    customPlot->yAxis2->setAutoTickStep(false);
+    customPlot->yAxis2->setTickStep(5);
+    customPlot->yAxis2->setSubTickCount(1);
+
+    connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
+
+    customPlot->legend->setVisible(true);
+
     fixScale();
 }
 
@@ -141,12 +161,25 @@ DisplayGraph::~DisplayGraph()
 }
 
 void DisplayGraph::setData(QVector<double> a, QVector<double> b){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     x = a;      //x is time
     y = b;      //y is measurement
     customPlot->graph(0)->setData(x, y);
 
+    //qDebug()<<"setData: "<<debugTimer.elapsed();
 }
+
+void DisplayGraph::setData2(QVector<double> a, QVector<double> b) {
+    x2 = a;
+    y2 = b;
+
+    customPlot->graph(1)->setData(x2, y2);
+}
+
 void DisplayGraph::redrawPlot(){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     QVector<double> u;
     u = y;
     loadSettings();
@@ -168,15 +201,31 @@ void DisplayGraph::redrawPlot(){
         customPlot->yAxis->setRange(min - 1, max + 1);
     }
 
+    double min2 = 0;
+    double max2 = 0;
+    for(int i = 0; i < y2.length(); i++) {
+        double val = y2.at(i);
+        if(val > max2) {
+            max2 = val;
+        } else if(val < min2) {
+            min2 = val;
+        }
+    }
+    customPlot->yAxis2->setRange(min2 - 1, max2 + 1);
+
     fixScale();
 
     customPlot->replot();
 
+    //qDebug()<<"redrawPlot: "<<debugTimer.elapsed();
 }
 
 void DisplayGraph::loadSettings() {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     autoscalex = settings->value("xautoscale", true).toBool();
     autoscaley = settings->value("yautoscale", true).toBool();
+    //qDebug()<<"loadSettings: "<<debugTimer.elapsed();
 }
 
 void DisplayGraph::clear(){
@@ -184,6 +233,8 @@ void DisplayGraph::clear(){
 }
 
 void DisplayGraph::drawPlot(){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     QVector<double> u;
 
 
@@ -202,6 +253,7 @@ void DisplayGraph::drawPlot(){
     //qDebug()<<"Max value is:"<<u.last();
     //customPlot->yAxis->setRange(getYRange().lower, getYRange().upper);
     customPlot->replot();
+    //qDebug()<<"drawPlot: "<<debugTimer.elapsed();
 
 }
 
@@ -211,23 +263,39 @@ void DisplayGraph::setYaxisLabel(QString label){
 
 void DisplayGraph::mousePress()
 {
-    qDebug()<<"Mouse Press Event: "<<QDateTime::currentDateTime().toTime_t();
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     settings->setValue("xautoscale", false);
     settings->setValue("yautoscale", false);
+    //qDebug()<<"mousePress: "<<debugTimer.elapsed();
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
 
-  /*if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+  /*if (customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis)) {
     customPlot->axisRect()->setRangeDrag(customPlot->xAxis->orientation());
-  else if (customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    qDebug()<<"Horizontal Drag";
+  } else if (customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis)) {
     customPlot->axisRect()->setRangeDrag(customPlot->yAxis->orientation());
-  else
-    customPlot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);*/
+    qDebug()<<"Vertical Drag";
+  } else {
+    customPlot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    qDebug()<<"Both Ranges OK";
+  }*/
+
+    /*QList<QCPAxis *> axes = customPlot->selectedAxes();
+    if(axes.length() > 0) {
+        //customPlot->axisRect()->setRangeDrag(axes.at(0)->orientation());
+        customPlot->axisRect()->setRangeDragAxes(axes.at(0), axes.at(0));
+    } else {
+        customPlot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    }*/
 }
 
 void DisplayGraph::mouseWheel()
 {
-    qDebug()<<"Mouse Wheel Event: "<<QDateTime::currentDateTime().toTime_t();
+    QElapsedTimer debugTimer;
+    debugTimer.start();
+    //qDebug()<<"Mouse Wheel Event: "<<QDateTime::currentDateTime().toTime_t();
   // if an axis is selected, only allow the direction of that axis to be zoomed
   // if no axis is selected, both directions may be zoomed
 
@@ -239,9 +307,12 @@ void DisplayGraph::mouseWheel()
     customPlot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
 
   fixScale();
+  //qDebug()<<"mouseWheel: "<<debugTimer.elapsed();
 }
 
 void DisplayGraph::zoomIn(){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     settings->setValue("xautoscale", false);
     settings->setValue("yautoscale", false);
 
@@ -258,9 +329,12 @@ void DisplayGraph::zoomIn(){
     }
     fixScale();
     customPlot->replot();
+    //qDebug()<<"zoomIn: "<<debugTimer.elapsed();
 }
 
 void DisplayGraph::zoomOut(){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     settings->setValue("xautoscale", false);
     settings->setValue("yautoscale", false);
 
@@ -277,9 +351,13 @@ void DisplayGraph::zoomOut(){
     }
     fixScale();
     customPlot->replot();
+    //qDebug()<<"zoomOut: "<<debugTimer.elapsed();
 }
 
 void DisplayGraph::fixScale() {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
+    //Ozone Graph
     QCPRange plotRange = customPlot->xAxis->range();
     double range = plotRange.upper - plotRange.lower;
     if(range < 120) {
@@ -295,4 +373,16 @@ void DisplayGraph::fixScale() {
         customPlot->xAxis->setDateTimeFormat("mm-dd-yy");
         customPlot->xAxis->setTickStep(24*60*60);
     }
+
+    //Temperature Graph
+    QCPRange tempRangeR = customPlot->yAxis2->range();
+    double tempRange = tempRangeR.upper - tempRangeR.lower;
+    if(tempRange < 50) {
+        customPlot->yAxis2->setTickStep(10);
+    } else if((tempRange >= 50) && (tempRange < 100)) {
+        customPlot->yAxis2->setTickStep(20);
+    } else {
+        customPlot->yAxis2->setTickStep(50);
+    }
+    //qDebug()<<"fixScale: "<<debugTimer.elapsed();
 }

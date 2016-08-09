@@ -1,6 +1,7 @@
 #include "statswidget.h"
 #include "ui_statswidget.h"
 #include <QDebug>
+#include <QElapsedTimer>
 
 StatsWidget::StatsWidget(QWidget *parent) :
     QWidget(parent),
@@ -222,6 +223,8 @@ QWidget* StatsWidget::widgetForThree() {
 }
 
 void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile *profile) {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     SerialDataItem temp;
     QList<SerialDataItem> curr = records->last();
 
@@ -248,7 +251,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     }
     hourAvg /= ((records->length() - 1) - pos);
     avgHourTitle->setText("Hour Avg "+profile->getMain_display_name()+": ");
-    avgHourLabel->setText(QString::number(hourAvg)+" "+profile->getMain_display_units());
+    avgHourLabel->setText(shortenString(QString::number(hourAvg))+" "+profile->getMain_display_units());
 
     //Eight Hours
     found = false;
@@ -266,8 +269,8 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         eightAvg += records->at(i).at(profile->getMain_display_position()).getDvalue();
     }
     eightAvg /= ((records->length() - 1) - pos);
-    avgEightTitle->setText("Eight Hour Avg "+profile->getMain_display_name()+": ");
-    avgEightLabel->setText(QString::number(eightAvg)+" "+profile->getMain_display_units());
+    avgEightTitle->setText("8 Hour Avg "+profile->getMain_display_name()+": ");
+    avgEightLabel->setText(shortenString(QString::number(eightAvg))+" "+profile->getMain_display_units());
 
     QString strVal;
     double val;
@@ -314,9 +317,12 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     strVal = shortenString(QString::number(val));
     threeBTitle->setText(profile->getDiagnosticF_name() + ": ");
     threeBLabel->setText(strVal + " " + profile->getDiagnosticF_units());
+    qDebug()<<"setData: "<<debugTimer.elapsed();
 }
 
 void StatsWidget::calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, int element_to_sort) {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     QList< QList<SerialDataItem> > copied_records = records;
 
     int n;
@@ -336,9 +342,12 @@ void StatsWidget::calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, 
             }
         }
     }
+    qDebug()<<"calculateMaxMinMedian: "<<debugTimer.elapsed();
 }
 
 QString StatsWidget::shortenString(QString string) {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     if(string.contains('.')) {
         while(string.at(string.length() - 2) != '.') {
             string = string.mid(0, string.length() - 1);
@@ -346,6 +355,7 @@ QString StatsWidget::shortenString(QString string) {
     } else {
         string.append(".0");
     }
+    qDebug()<<"shortenString: "<<debugTimer.elapsed();
     return string;
 }
 

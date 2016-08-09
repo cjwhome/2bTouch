@@ -26,6 +26,7 @@ public:
     explicit DisplayGraph(QWidget *parent = 0);
     ~DisplayGraph();
     void setData(QVector<double> a, QVector<double> b);
+    void setData2(QVector<double> a, QVector<double> b);
 
     void drawPlot();
 
@@ -55,7 +56,7 @@ private:
     QHBoxLayout *buttonLayout;
 
     QCustomPlot *customPlot;
-    QVector<double> x,y;
+    QVector<double> x,y, x2, y2;
 
     QString m_sSettingsFile;
 

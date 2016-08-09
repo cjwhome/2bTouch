@@ -43,7 +43,7 @@ public:
     void createDevice();
     void setupSerial();
     void updateDisplay();
-    QVector<double> x,y;
+    QVector<double> x,y,x2,y2;
 
     void initFile();            //determine where the file will be saved (usb, locally)
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)

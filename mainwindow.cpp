@@ -325,15 +325,24 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
+    QElapsedTimer debugTimer;
+    debugTimer.start();
+
     if(parseDataLine(dLine)){
         displayGraph->setData(x, y);
+        displayGraph->setData2(x2, y2);
         emit validDataReady();
     }
+
+    qDebug()<<"newDataLine: "<<debugTimer.elapsed();
 }
 
 
 
 bool MainWindow::parseDataLine(QString dLine){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
+
     QStringList fields;
     QVector<double> t,u;
     QDateTime tempDate;
@@ -375,23 +384,30 @@ bool MainWindow::parseDataLine(QString dLine){
         data_point = QDateTime::currentDateTime().toTime_t();
         x.insert(data_index,data_point);
         y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
-        t=x;                    //copy the vectors to order them to get high and low for range
-        u=y;
+        //t=x;                    //copy the vectors to order them to get high and low for range
+        //u=y;
+
+        x2.insert(data_index, data_point);
+        y2.insert(data_index, data_index);
         data_index++;
 
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
 
         updateDisplay();
+        qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
         return true;
 
 
     }else{
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
+        qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
         return false;
     }
 }
 
 void MainWindow::updateAverage(double value) {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     int avgIndex = settings->value("Avg").toInt();
     //qDebug()<<"Avg Index: "<<avgIndex;
     int avgDur;
@@ -444,9 +460,13 @@ void MainWindow::updateAverage(double value) {
         sum += avgList.at(i);
     }
     avg = sum / avgList.length();
+
+    qDebug()<<"updateAverage: "<<debugTimer.elapsed();
 }
 
 void MainWindow::updateDisplay(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     double current_value;
 
     if(!started_file){
@@ -463,6 +483,9 @@ void MainWindow::updateDisplay(void){
     }else if(deviceProfile.getMain_display_name().contains("2")){
          main_label->setText("NO<sub>2</sub>: ");
     }
+
+    qDebug()<<"updateDisplay A: "<<debugTimer.elapsed();
+
     QString mesStr = QString::number(current_value);
     if(mesStr.contains(".")) {
         while(mesStr.at(mesStr.length() - 2) != '.') {
@@ -471,6 +494,7 @@ void MainWindow::updateDisplay(void){
     } else {
        mesStr.append(".0");
     }
+    qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
 
     main_measurement_display->setText(mesStr);
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
@@ -480,9 +504,11 @@ void MainWindow::updateDisplay(void){
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
+    qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
-    statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
+    //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
+    qDebug()<<"updateDisplay D: "<<debugTimer.elapsed();
     this->writeFile();
     /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
@@ -490,21 +516,30 @@ void MainWindow::updateDisplay(void){
         displayGraph->drawPlot();
     }else
         qDebug()<<"No Data to Plot";*/
+    qDebug()<<"updateDisplay: "<<debugTimer.elapsed();
 }
 
 void MainWindow::displayBigPlot(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
         displayGraph->setData(x, y);
         displayGraph->drawPlot();
         displayGraph->show();
 
+        qDebug()<<"displayBigPlot: "<<debugTimer.elapsed();
 }
  
 void MainWindow::clearPlotData(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     //qDebug()<<"Clearing plot data, xcount:"<<x.count()<<", ycount:"<<y.count();
     data_index = 0;
     x.clear();
     y.clear();
-    qDebug()<<"Finished Clearing Data";
+
+    x2.clear();
+    y2.clear();
+    qDebug()<<"clearPlotData: "<<debugTimer.elapsed();
 }
 
 void MainWindow::displayStats(void){
@@ -530,6 +565,8 @@ void MainWindow::initFile(void){
 }
 
 void MainWindow::createFileName(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     QString dataPath;
     if(allParsedRecordsList.empty())
         return;
@@ -552,10 +589,12 @@ void MainWindow::createFileName(void){
     currentFile.setFileName(fileName);
     //currentFile = new QFile(fileName);
     started_file = true;
-    qDebug()<<"Finished Creating File";
+    qDebug()<<"createFileName: "<<debugTimer.elapsed();
 }
 
 void MainWindow::writeFile(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
 
     if(currentFile.open(QIODevice::Append))
     {
@@ -564,10 +603,14 @@ void MainWindow::writeFile(void){
         stream<<tempDLine;
         currentFile.close();
     }
+
+    qDebug()<<"writeFile: "<<debugTimer.elapsed();
 }
 
 
 void MainWindow::listFonts(void){
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     QFontDatabase database;
     QTreeWidget fontTree;
     fontTree.setColumnCount(2);
@@ -589,6 +632,7 @@ void MainWindow::listFonts(void){
             styleItem->setText(1, sizes.trimmed());
         }
     }
+    qDebug()<<"listFonts: "<<debugTimer.elapsed();
 }
 
 void MainWindow::sendMsg(QString msg) {
@@ -596,6 +640,8 @@ void MainWindow::sendMsg(QString msg) {
 }
 
 void MainWindow::usbTimerTick() {
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     if(usbMounted) {
         usbMounted = fileWriter.checkIfUsbMounted();
         usbIcon->show();
@@ -616,10 +662,13 @@ void MainWindow::usbTimerTick() {
             }
         }
     }
+    qDebug()<<"usbTimerTick: "<<debugTimer.elapsed();
 }
 
 void MainWindow::errorTimerTick() {
     //Check STemp
+    QElapsedTimer debugTimer;
+    debugTimer.start();
     qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
     if(allParsedRecordsList.length() != 0) {
         SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
@@ -635,6 +684,7 @@ void MainWindow::errorTimerTick() {
             warningLabel->hide();
         }
     }
+    qDebug()<<"errorTimerTick: "<<debugTimer.elapsed();
     /*cpuIcon->setText(getCpuUsage());
     QString spaceStr = getFreeSpace();
     //qDebug()<<"Space: "<<spaceStr;
