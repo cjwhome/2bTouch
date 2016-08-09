@@ -133,8 +133,9 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
-    displayGraph = new DisplayGraph();
+    displayGraph = new DisplayGraph(this);
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    displayGraph->setFixedSize(this->size());
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
@@ -146,14 +147,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     statsWidget = new StatsWidget(this);
     statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    statsWidget->setFixedSize(this->size());
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
-    settingsView = new SettingsView();
+    settingsView = new SettingsView(this);
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    settingsView->setFixedSize(this->size());
     connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
 
-    settingsWidget = new SettingsWidget();
+    settingsWidget = new SettingsWidget(this);
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    settingsWidget->setFixedSize(this->size());
     connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
     //connect(settingsWidget, SIGNAL(sendAMsg(QString*)), serialHandler, SLOT(writeAsync(QString*)));
 
@@ -164,7 +168,19 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
-    setupSerial();
+
+    ipPrompt = new QDialog(this);
+    ipLabel = new QLabel("Enter IP Address of Unit:", ipPrompt);
+    ipField = new KeyLineEdit(ipPrompt);
+    ipLayout = new QVBoxLayout(ipPrompt);
+    ipSubmit = new QPushButton("GO", ipPrompt);
+    ipLayout->addWidget(ipLabel);
+    ipLayout->addWidget(ipField);
+    ipLayout->addWidget(ipSubmit);
+    ipPrompt->setLayout(ipLayout);
+    ipPrompt->show();
+
+    connect(ipSubmit, SIGNAL(released()), this, SLOT(setupSerial()));
 
     msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
     this->setStyleSheet(msgBoxStyle);
@@ -287,7 +303,9 @@ void MainWindow::createDevice(){
 }
 
 void MainWindow::setupSerial(){
-    serialHandler = new SerialHandler(0, QHostAddress("10.0.5.146"));
+    qDebug()<<"Setup Serial";
+    ipPrompt->hide();
+    serialHandler = new SerialHandler(0, QHostAddress(ipField->text()));
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
@@ -482,7 +500,7 @@ void MainWindow::updateDisplay(void){
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
     statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
-    this->writeFile();
+    //this->writeFile();
     /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
         displayGraph->setData(x, y);

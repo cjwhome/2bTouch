@@ -41,7 +41,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void createDevice();
-    void setupSerial();
     void updateDisplay();
     QVector<double> x,y;
 
@@ -71,6 +70,7 @@ private slots:
     void handleError(QSerialPort::SerialPortError error);
     void closeSerialPort();
     void updateAverage(double value);
+    void setupSerial();
 
     void usbTimerTick();
     void errorTimerTick();
@@ -98,6 +98,12 @@ private:
     QPushButton *graph_button;
     QFile currentFile;
     QString tempDLine;
+
+    QDialog *ipPrompt;
+    QLabel *ipLabel;
+    KeyLineEdit *ipField;
+    QVBoxLayout *ipLayout;
+    QPushButton *ipSubmit;
 
     QSize buttonSize;
 
