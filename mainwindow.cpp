@@ -192,6 +192,8 @@ MainWindow::MainWindow(QWidget *parent) :
     errorIcon->setFixedSize(QSize(20, 20));
     errorIcon->setIconSize(QSize(20, 20));
 
+    errorIcon->hide();
+
     cpuIcon = new QPushButton(this);
     cpuIcon->setGeometry(35, 20, 40, 20);
     cpuIcon->setFixedSize(QSize(40, 20));
@@ -204,6 +206,8 @@ MainWindow::MainWindow(QWidget *parent) :
     diskSpaceIcon->setGeometry(75, 20, 20, 20);
     diskSpaceIcon->setFixedSize(QSize(20, 20));
     diskSpaceIcon->setIconSize(QSize(20, 20));
+
+    diskSpaceIcon->hide();
 
     warningIcon = new QPushButton(this);
     warningIcon->setIcon(eIc);
@@ -234,7 +238,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(3);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -484,7 +488,7 @@ void MainWindow::updateDisplay(void){
          main_label->setText("NO<sub>2</sub>: ");
     }
 
-    qDebug()<<"updateDisplay A: "<<debugTimer.elapsed();
+    //qDebug()<<"updateDisplay A: "<<debugTimer.elapsed();
 
     QString mesStr = QString::number(current_value);
     if(mesStr.contains(".")) {
@@ -494,7 +498,7 @@ void MainWindow::updateDisplay(void){
     } else {
        mesStr.append(".0");
     }
-    qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
+    //qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
 
     main_measurement_display->setText(mesStr);
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
@@ -504,11 +508,11 @@ void MainWindow::updateDisplay(void){
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
-    qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
+    //qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
     //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
-    qDebug()<<"updateDisplay D: "<<debugTimer.elapsed();
+    //qDebug()<<"updateDisplay D: "<<debugTimer.elapsed();
     this->writeFile();
     /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
@@ -670,7 +674,8 @@ void MainWindow::errorTimerTick() {
     QElapsedTimer debugTimer;
     debugTimer.start();
     qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
-    if(allParsedRecordsList.length() != 0) {
+    //IAQ START
+    /*if(allParsedRecordsList.length() != 0) {
         SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
         double val = item.getDvalue();
         if(val < (80 + 273)) {
@@ -683,7 +688,8 @@ void MainWindow::errorTimerTick() {
             warningIcon->hide();
             warningLabel->hide();
         }
-    }
+    }*/
+    //IAQ END
     qDebug()<<"errorTimerTick: "<<debugTimer.elapsed();
     /*cpuIcon->setText(getCpuUsage());
     QString spaceStr = getFreeSpace();

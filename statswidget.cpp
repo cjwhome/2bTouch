@@ -49,7 +49,7 @@ StatsWidget::StatsWidget(QWidget *parent) :
     widgets<<widgetForAvg();
     widgets<<widgetForOne();
     widgets<<widgetForTwo();
-    widgets<<widgetForThree();
+    //widgets<<widgetForThree();
     widgets.at(currentIndex)->show();
 
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
@@ -277,7 +277,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     //Diagnostic A - A
     val = curr.at(profile->getDiagnosticA_position()).getDvalue();
-    val -= 273;
+    //val -= 273;
     strVal = shortenString(QString::number(val));
     oneATitle->setText(profile->getDiagnosticA_name()+": ");
     oneALabel->setText(strVal+" "+profile->getDiagnosticA_units());
@@ -290,12 +290,13 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     //Diagnostic B - A
     val = curr.at(profile->getDiagnosticC_position()).getDvalue();
-    val -= 273;
+    //IAQ
+    /*val -= 273;
     if(val < 80) {
         twoALabel->setStyleSheet(badStylesheet);
     } else {
         twoALabel->setStyleSheet(goodStylesheet);
-    }
+    }*/
     strVal = shortenString(QString::number(val));
     twoATitle->setText(profile->getDiagnosticC_name()+": ");
     twoALabel->setText(strVal+" C"+profile->getDiagnosticC_units());
@@ -306,7 +307,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     twoBTitle->setText(profile->getDiagnosticD_name()+": ");
     twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
 
-    //Diagnostic C - A
+    /*//Diagnostic C - A
     val = curr.at(profile->getDiagnosticE_position()).getDvalue();
     strVal = shortenString(QString::number(val));
     threeATitle->setText(profile->getDiagnosticE_name()+": ");
@@ -317,9 +318,13 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     strVal = shortenString(QString::number(val));
     threeBTitle->setText(profile->getDiagnosticF_name() + ": ");
     threeBLabel->setText(strVal + " " + profile->getDiagnosticF_units());
-    qDebug()<<"setData: "<<debugTimer.elapsed();
+    qDebug()<<"setData: "<<debugTimer.elapsed();*/
 }
 
+
+//DO NOT USE
+//This method will take upwards of 4 seconds and causethe main thread to hange, it does the inside operation (copied_records.length())^2
+//Try to implement an on the fly technique
 void StatsWidget::calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, int element_to_sort) {
     QElapsedTimer debugTimer;
     debugTimer.start();
@@ -346,8 +351,6 @@ void StatsWidget::calculateMaxMinMedian(QList<QList<SerialDataItem> > &records, 
 }
 
 QString StatsWidget::shortenString(QString string) {
-    QElapsedTimer debugTimer;
-    debugTimer.start();
     if(string.contains('.')) {
         while(string.at(string.length() - 2) != '.') {
             string = string.mid(0, string.length() - 1);
@@ -355,7 +358,6 @@ QString StatsWidget::shortenString(QString string) {
     } else {
         string.append(".0");
     }
-    qDebug()<<"shortenString: "<<debugTimer.elapsed();
     return string;
 }
 

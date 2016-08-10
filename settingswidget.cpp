@@ -16,7 +16,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     XmlDeviceReader *reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
-    device = reader->getADevice(1);
+    device = reader->getADevice(3);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -602,7 +602,7 @@ void SettingsWidget::showRO() {
 
     QPushButton *right = new QPushButton(ro);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showVolt()));
+    connect(right, SIGNAL(released()), this, SLOT(showRT()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -654,7 +654,7 @@ void SettingsWidget::showVolt() {
 
     QPushButton *left = new QPushButton(volt);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showRO()));
+    connect(left, SIGNAL(released()), this, SLOT(showRT()));
 
     QPushButton *right = new QPushButton(volt);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));

@@ -129,7 +129,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
 
     customPlot->xAxis->setTickLabelRotation(-30);
 
-    customPlot->addGraph();
+    //Second Graph Setup START
+    /*customPlot->addGraph();
     customPlot->graph(1)->setPen(QPen(Qt::green));
     customPlot->graph(1)->setName("Temperature");
     customPlot->yAxis2->setVisible(true);
@@ -144,7 +145,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
     connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
 
-    customPlot->legend->setVisible(true);
+    customPlot->legend->setVisible(true);*/
+    //Second Graph Setup END
 
     fixScale();
 }
@@ -174,7 +176,8 @@ void DisplayGraph::setData2(QVector<double> a, QVector<double> b) {
     x2 = a;
     y2 = b;
 
-    customPlot->graph(1)->setData(x2, y2);
+    //Second Graph
+    //customPlot->graph(1)->setData(x2, y2);
 }
 
 void DisplayGraph::redrawPlot(){
@@ -201,7 +204,8 @@ void DisplayGraph::redrawPlot(){
         customPlot->yAxis->setRange(min - 1, max + 1);
     }
 
-    double min2 = 0;
+    //Second Graph - This Needs Work
+    /*double min2 = 0;
     double max2 = 0;
     for(int i = 0; i < y2.length(); i++) {
         double val = y2.at(i);
@@ -211,7 +215,7 @@ void DisplayGraph::redrawPlot(){
             min2 = val;
         }
     }
-    customPlot->yAxis2->setRange(min2 - 1, max2 + 1);
+    customPlot->yAxis2->setRange(min2 - 1, max2 + 1);*/
 
     fixScale();
 
@@ -374,8 +378,8 @@ void DisplayGraph::fixScale() {
         customPlot->xAxis->setTickStep(24*60*60);
     }
 
-    //Temperature Graph
-    QCPRange tempRangeR = customPlot->yAxis2->range();
+    //Second Graph
+    /*QCPRange tempRangeR = customPlot->yAxis2->range();
     double tempRange = tempRangeR.upper - tempRangeR.lower;
     if(tempRange < 50) {
         customPlot->yAxis2->setTickStep(10);
@@ -383,6 +387,6 @@ void DisplayGraph::fixScale() {
         customPlot->yAxis2->setTickStep(20);
     } else {
         customPlot->yAxis2->setTickStep(50);
-    }
+    }*/
     //qDebug()<<"fixScale: "<<debugTimer.elapsed();
 }

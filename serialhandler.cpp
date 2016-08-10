@@ -59,7 +59,7 @@ void SerialHandler::configSerialPort() {
     reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
 
-    device = reader->getADevice(1);
+    device = reader->getADevice(3);
     portName = device.getCom_port();
     baudRate = device.getBaud_rate();
 
