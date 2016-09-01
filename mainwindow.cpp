@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     //showStats = new ShowStats();
     //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    statsWidget = new StatsWidget(this);
+    statsWidget = new StatsWidget(deviceProfile, this);
     statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
@@ -234,7 +234,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(3);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -250,30 +250,37 @@ void MainWindow::createDevice(){
         else if(serialDataItem.getName()=="Time")
             deviceProfile.setTime_position(i);
         else if(serialDataItem.getPriority()==0){
+
             deviceProfile.setMain_display_position(i);
             deviceProfile.setMain_display_units(serialDataItem.getUnits());
             deviceProfile.setMain_display_name(serialDataItem.getName());
         }else if(serialDataItem.getPriority()==1){
+
             deviceProfile.setDiagnosticA_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticA_name(serialDataItem.getName());
             deviceProfile.setDiagnosticA_position(i);
         }else if(serialDataItem.getPriority()==2){
+
             deviceProfile.setDiagnosticB_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticB_name(serialDataItem.getName());
             deviceProfile.setDiagnosticB_position(i);
         }else if(serialDataItem.getPriority()==3){
+
             deviceProfile.setDiagnosticC_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticC_name(serialDataItem.getName());
             deviceProfile.setDiagnosticC_position(i);
         }else if(serialDataItem.getPriority()==4){
+
             deviceProfile.setDiagnosticD_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticD_name(serialDataItem.getName());
             deviceProfile.setDiagnosticD_position(i);
         }else if(serialDataItem.getPriority()==5){
+
             deviceProfile.setDiagnosticE_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticE_name(serialDataItem.getName());
             deviceProfile.setDiagnosticE_position(i);
         } else if(serialDataItem.getPriority() == 6) {
+
             deviceProfile.setDiagnosticF_uints(serialDataItem.getUnits());
             deviceProfile.setDiagnosticF_name(serialDataItem.getName());
             deviceProfile.setDiagnosticF_position(i);
@@ -308,7 +315,9 @@ void MainWindow::writeData(const QByteArray &data)
 void MainWindow::readData()
 {
     if(serial->canReadLine()){
+
         QByteArray data = serial->readAll();
+
         newDataLine(data);
     }
 }
@@ -393,7 +402,8 @@ bool MainWindow::parseDataLine(QString dLine){
 
 void MainWindow::updateAverage(double value) {
     int avgIndex = settings->value("Avg").toInt();
-    //qDebug()<<"Avg Index: "<<avgIndex;
+    avgIndex = 0;
+    qDebug()<<"Avg Index: "<<avgIndex;
     int avgDur;
     if (avgIndex == 0) {
         avgDur = 2;
@@ -406,7 +416,7 @@ void MainWindow::updateAverage(double value) {
     } else if (avgIndex == 4) {
         avgDur = 60 * 60;
     }
-    int avgCount = avgDur / 5;
+    int avgCount = avgDur / 2;
     if(avgCount < 1) {
         avgCount = 1;
     }
@@ -416,7 +426,7 @@ void MainWindow::updateAverage(double value) {
     if(curLength > avgCount) {
         //Average The List By Pairs Until It is Less Than The New Value
         while(avgList.length() > avgCount) {
-            //qDebug()<<"Consolidating Avg List";
+            qDebug()<<"Consolidating Avg List";
             QList<double> temp;
             for(int i = 0; i < (avgList.length() / 2); i++) {
                 double a = avgList.at(i);
@@ -437,7 +447,7 @@ void MainWindow::updateAverage(double value) {
         avgList = tempList;
     }
     avgList<<value;
-    //qDebug()<<"Avg List: "<<avgList;
+    qDebug()<<"Avg List: "<<avgList;
 
     double sum = 0;
     for(int i = 0; i < avgList.length(); i++) {
@@ -455,15 +465,20 @@ void MainWindow::updateDisplay(void){
         this->createFileName();
     }
     SerialDataItem tempSerialDataItem;
+
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
+
     current_value = avg;//tempSerialDataItem.getDvalue();
+
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
         main_label->setText("O<sub>3</sub>: ");
     }else if(deviceProfile.getMain_display_name().contains("2")){
          main_label->setText("NO<sub>2</sub>: ");
     }
+
     QString mesStr = QString::number(current_value);
+
     if(mesStr.contains(".")) {
         while(mesStr.at(mesStr.length() - 2) != '.') {
             mesStr = mesStr.mid(0, mesStr.length() - 1);
@@ -482,14 +497,17 @@ void MainWindow::updateDisplay(void){
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
-    statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
+     //qDebug()<<"Here9";
+    //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
+     //qDebug()<<"Here10";
     this->writeFile();
-    /*if(!y.isEmpty()){
+    if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
         displayGraph->setData(x, y);
         displayGraph->drawPlot();
     }else
-        qDebug()<<"No Data to Plot";*/
+        qDebug()<<"No Data to Plot";
+    //qDebug()<<"Here9";
 }
 
 void MainWindow::displayBigPlot(void){
@@ -621,18 +639,20 @@ void MainWindow::usbTimerTick() {
 void MainWindow::errorTimerTick() {
     //Check STemp
     qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
-    if(allParsedRecordsList.length() != 0) {
-        SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
-        double val = item.getDvalue();
-        if(val < (80 + 273)) {
-            errorIcon->show();
-            warningIcon->show();
-            warningLabel->setText("Waiting For The Heater To Warm Up");
-            warningLabel->show();
-        } else {
-            errorIcon->hide();
-            warningIcon->hide();
-            warningLabel->hide();
+    if(deviceProfile.getDevice_name()=="IAQ"||deviceProfile.getDevice_name()=="IAQ-PC"){
+        if(allParsedRecordsList.length() != 0) {
+            SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
+            double val = item.getDvalue();
+            if(val < (80 + 273)) {
+                errorIcon->show();
+                warningIcon->show();
+                warningLabel->setText("Waiting For The Heater To Warm Up");
+                warningLabel->show();
+            } else {
+                errorIcon->hide();
+                warningIcon->hide();
+                warningLabel->hide();
+            }
         }
     }
     /*cpuIcon->setText(getCpuUsage());

@@ -219,7 +219,7 @@ public:
 "border-radius:10px;"));
         xbutton = new QPushButton(Keypad);
         xbutton->setObjectName(QStringLiteral("xbutton"));
-        xbutton->setGeometry(QRect(182, 140, 35, 39));
+        xbutton->setGeometry(QRect(77, 140, 35, 39));
         xbutton->setFont(font1);
         xbutton->setStyleSheet(QLatin1String("background-image: url(:/images/empty.png);\n"
 "color: rgb(255, 255, 0);\n"

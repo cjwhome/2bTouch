@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         //w.setMinimumSize(screen_width-300, screen_height-250);
    // }
     QSplashScreen *splash = new QSplashScreen();
-    QPixmap pix(":/splash/pics/2btechlogo_small.jpg");
+    QPixmap pix(":/splash/pics/2B_Screen_v1.jpg");
 
     QString versionString;		//needed because too close to edge of screen
     

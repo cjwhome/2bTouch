@@ -105,11 +105,12 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-   // qDebug()<<"Received new line from serial: "<<retData;
+    //qDebug()<<"Received new line from serial: "<<data;
     //serialPort->flush();
     QString *retDataStr = new QString(data);
     retDataStr->remove('\r');
     QList<QString> list = retDataStr->split('\n');
+    //qDebug()<<"RetDataStr Length="<<list.length();
     for(int i = 0; i < list.length(); i++) {
         QString line = QString(list.at(i));
 

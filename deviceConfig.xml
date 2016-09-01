@@ -38,8 +38,8 @@
           <dataItem name="Tach1" type="Decimal" priority="5"/>
           <dataItem name="Tach2" type="Decimal" priority="6"/>
           <dataItem name="STemp" type="Decimal" priority="3"/>
-          <dataItem name="Date" type="DateTime" priority="7"/>
-          <dataItem name="Time" type="DateTime" priority="8"/>
+          <dataItem name="Date" type="DateTime"/>
+          <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
@@ -55,8 +55,8 @@
             <dataItem name="Tach1" type="Decimal" priority="5"/>
             <dataItem name="Tach2" type="Decimal" priority="6"/>
             <dataItem name="STemp" type="Decimal" priority="3"/>
-            <dataItem name="Date" type="DateTime" priority="7"/>
-            <dataItem name="Time" type="DateTime" priority="8"/>
+            <dataItem name="Date" type="DateTime" />
+            <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
@@ -68,10 +68,10 @@
             <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
             <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
             <dataItem name="Cell Press" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>
-            <dataItem name="PDV" type="Decimal" units="V" priority="4"/>
-            <dataItem name="Date" type="DateTime" priority="5"/>
-            <dataItem name="Time" type="DateTime" priority="6"/>
+            <dataItem name="PDV" type="Decimal" units="V" priority="3"/>
+            <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="4"/>
+            <dataItem name="Date" type="DateTime" />
+            <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
@@ -85,8 +85,8 @@
             <dataItem name="Cell Press" type="Decimal" units="Torr" priority="2"/>
             <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>
             <dataItem name="PDV" type="Decimal" units="V" priority="4"/>
-            <dataItem name="Date" type="DateTime" priority="5"/>
-            <dataItem name="Time" type="DateTime" priority="6"/>
+            <dataItem name="Date" type="DateTime" />
+            <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
@@ -99,17 +99,17 @@
             <dataItem name="NO" type="Decimal" units="ppb" priority="1"/>
             <dataItem name="NOx" type="Decimal" units="ppb" priority="2"/>
             <dataItem name="NO2 Zero" type="Integer" units="ppb" priority="3"/>
-            <dataItem name="NO2 Zero" type="Integer" units="ppb" priority="3"/>
-            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
-            <dataItem name="Cell Press" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="Cell Flow Rate" type="Integer" units="cc/min" priority="3"/>
-            <dataItem name="O3 Flow Rate" type="Decimal" units="cc/min" priority="3"/>
-            <dataItem name="PDVa" type="Decimal" units="V" priority="4"/>
-            <dataItem name="PDVg" type="Decimal" units="V" priority="4"/>
-            <dataItem name="Scrubber Temp" type="Decimal" units="C" priority="1"/>
-            <dataItem name="Date" type="DateTime" priority="5"/>
-            <dataItem name="Time" type="DateTime" priority="6"/>
-            <dataItem name="Measurement Mode" type="Integer" units="" priority="5"/>
+            <dataItem name="NO2 Zero" type="Integer" units="ppb" priority="4"/>
+            <dataItem name="Cell Temp" type="Decimal" units="C" priority="5"/>
+            <dataItem name="Cell Press" type="Decimal" units="Torr" priority="6"/>
+            <dataItem name="Cell Flow Rate" type="Integer" units="cc/min" priority="7"/>
+            <dataItem name="O3 Flow Rate" type="Decimal" units="cc/min" priority="8"/>
+            <dataItem name="PDVa" type="Decimal" units="V" priority="9"/>
+            <dataItem name="PDVg" type="Decimal" units="V" priority="10"/>
+            <dataItem name="Scrubber Temp" type="Decimal" units="C" priority="11"/>
+            <dataItem name="Date" type="DateTime" />
+            <dataItem name="Time" type="DateTime" />
+            <dataItem name="Measurement Mode" type="Integer" units="" priority="12"/>
           </dataItems>
         </dataFormat>
       </device>

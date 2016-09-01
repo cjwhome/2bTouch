@@ -797,6 +797,8 @@ void SettingsWidget::clearView() {
 void SettingsWidget::landingSubmit() {
     QString passTest = landingPassField->text();
     QString password = settings->value("Password", "password").toString();
+    qDebug()<<"Password = "<<password;
+    qDebug()<<"PassTest = "<<passTest;
     if(passTest == password) {
         showCal();
     } else {
