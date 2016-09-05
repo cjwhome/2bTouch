@@ -32,6 +32,7 @@ void SerialThread::run()
         while(!s_port->canReadLine()){
             msleep(100);
         }
+        qDebug()<<"Can read line in thread";
         tmp = s_port->readAll();
 
         s_port->flush();

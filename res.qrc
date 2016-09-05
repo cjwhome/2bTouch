@@ -3,6 +3,7 @@
         <file>pics/2B_Tech_Logo.jpg</file>
         <file>pics/2btechlogo_block.jpg</file>
         <file>pics/2btechlogo_small.jpg</file>
+        <file>pics/2B_Screen_v1.jpg</file>
     </qresource>
     <qresource prefix="/buttons">
         <file>pics/config.jpg</file>

@@ -49,7 +49,7 @@ public:
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
     void writeFile();
     void listFonts();
-
+    void i2c_test(void);
 
 
 

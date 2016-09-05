@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <linux/i2c-dev.h>
 
 class I : public QThread
 {
@@ -115,15 +120,16 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(topTimeLayout);
     verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
-    verticalLayout->addSpacing(55);
+    verticalLayout->addSpacing(45);
     verticalLayout->addWidget(horizontalFrame);
-    verticalLayout->addSpacing(5);
+    verticalLayout->addSpacing(2);
     buttonLayout->addWidget(homeButton);
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
 
     verticalLayout->addLayout(buttonLayout);
+    //verticalLayout->addSpacing(5);
 
 	
     data_point = QDateTime::currentDateTime().toTime_t();
@@ -144,7 +150,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     //showStats = new ShowStats();
     //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    statsWidget = new StatsWidget(this);
+    statsWidget = new StatsWidget(deviceProfile, this);
     statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
@@ -228,6 +234,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //statusRow->addWidget(cpuIcon);
     //statusRow->addWidget(diskSpaceIcon);
     //statusRow->addWidget(errorIcon);
+    //QString test("blah");
+    //serialHandler->write106(&test);
+    this->i2c_test();
 }
 
 MainWindow::~MainWindow()
@@ -254,30 +263,37 @@ void MainWindow::createDevice(){
         else if(serialDataItem.getName()=="Time")
             deviceProfile.setTime_position(i);
         else if(serialDataItem.getPriority()==0){
+
             deviceProfile.setMain_display_position(i);
             deviceProfile.setMain_display_units(serialDataItem.getUnits());
             deviceProfile.setMain_display_name(serialDataItem.getName());
         }else if(serialDataItem.getPriority()==1){
+
             deviceProfile.setDiagnosticA_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticA_name(serialDataItem.getName());
             deviceProfile.setDiagnosticA_position(i);
         }else if(serialDataItem.getPriority()==2){
+
             deviceProfile.setDiagnosticB_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticB_name(serialDataItem.getName());
             deviceProfile.setDiagnosticB_position(i);
         }else if(serialDataItem.getPriority()==3){
+
             deviceProfile.setDiagnosticC_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticC_name(serialDataItem.getName());
             deviceProfile.setDiagnosticC_position(i);
         }else if(serialDataItem.getPriority()==4){
+
             deviceProfile.setDiagnosticD_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticD_name(serialDataItem.getName());
             deviceProfile.setDiagnosticD_position(i);
         }else if(serialDataItem.getPriority()==5){
+
             deviceProfile.setDiagnosticE_units(serialDataItem.getUnits());
             deviceProfile.setDiagnosticE_name(serialDataItem.getName());
             deviceProfile.setDiagnosticE_position(i);
         } else if(serialDataItem.getPriority() == 6) {
+
             deviceProfile.setDiagnosticF_uints(serialDataItem.getUnits());
             deviceProfile.setDiagnosticF_name(serialDataItem.getName());
             deviceProfile.setDiagnosticF_position(i);
@@ -312,7 +328,9 @@ void MainWindow::writeData(const QByteArray &data)
 void MainWindow::readData()
 {
     if(serial->canReadLine()){
+
         QByteArray data = serial->readAll();
+
         newDataLine(data);
     }
 }
@@ -385,17 +403,29 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        data_point = QDateTime::currentDateTime().toTime_t();
-        x.insert(data_index,data_point);
-        y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
-        //t=x;                    //copy the vectors to order them to get high and low for range
-        //u=y;
-
-        x2.insert(data_index, data_point);
-        y2.insert(data_index, data_index);
-        data_index++;
-
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+
+        data_point = QDateTime::currentDateTime().toTime_t();
+
+
+        //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
+        if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
+            qDebug()<<"Maximum size reached";
+            x.removeFirst();
+            x.append(data_point);
+            y.removeFirst();
+            y.append(avg);
+        }else{
+            x.insert(data_index,data_point);
+            y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+            //t=x;                    //copy the vectors to order them to get high and low for range
+            //u=y;
+            data_index++;
+        }
+
+        //for(int i=0;i<y.size();i++){
+         //   qDebug()<<"y["<<i<<"]="<<y.at(i);
+        //}
 
         updateDisplay();
         qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
@@ -413,7 +443,8 @@ void MainWindow::updateAverage(double value) {
     QElapsedTimer debugTimer;
     debugTimer.start();
     int avgIndex = settings->value("Avg").toInt();
-    //qDebug()<<"Avg Index: "<<avgIndex;
+    avgIndex = 0;
+    qDebug()<<"Avg Index: "<<avgIndex;
     int avgDur;
     if (avgIndex == 0) {
         avgDur = 2;
@@ -426,7 +457,7 @@ void MainWindow::updateAverage(double value) {
     } else if (avgIndex == 4) {
         avgDur = 60 * 60;
     }
-    int avgCount = avgDur / 5;
+    int avgCount = avgDur / 2;
     if(avgCount < 1) {
         avgCount = 1;
     }
@@ -436,7 +467,7 @@ void MainWindow::updateAverage(double value) {
     if(curLength > avgCount) {
         //Average The List By Pairs Until It is Less Than The New Value
         while(avgList.length() > avgCount) {
-            //qDebug()<<"Consolidating Avg List";
+            qDebug()<<"Consolidating Avg List";
             QList<double> temp;
             for(int i = 0; i < (avgList.length() / 2); i++) {
                 double a = avgList.at(i);
@@ -457,7 +488,7 @@ void MainWindow::updateAverage(double value) {
         avgList = tempList;
     }
     avgList<<value;
-    //qDebug()<<"Avg List: "<<avgList;
+    qDebug()<<"Avg List: "<<avgList;
 
     double sum = 0;
     for(int i = 0; i < avgList.length(); i++) {
@@ -479,8 +510,11 @@ void MainWindow::updateDisplay(void){
         this->createFileName();
     }
     SerialDataItem tempSerialDataItem;
+
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
+
     current_value = avg;//tempSerialDataItem.getDvalue();
+
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
         main_label->setText("O<sub>3</sub>: ");
@@ -488,9 +522,9 @@ void MainWindow::updateDisplay(void){
          main_label->setText("NO<sub>2</sub>: ");
     }
 
-    //qDebug()<<"updateDisplay A: "<<debugTimer.elapsed();
 
     QString mesStr = QString::number(current_value);
+
     if(mesStr.contains(".")) {
         while(mesStr.at(mesStr.length() - 2) != '.') {
             mesStr = mesStr.mid(0, mesStr.length() - 1);
@@ -511,16 +545,15 @@ void MainWindow::updateDisplay(void){
     //qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
-    //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
-    //qDebug()<<"updateDisplay D: "<<debugTimer.elapsed();
+
     this->writeFile();
-    /*if(!y.isEmpty()){
+    if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
         displayGraph->setData(x, y);
         displayGraph->drawPlot();
     }else
-        qDebug()<<"No Data to Plot";*/
-    qDebug()<<"updateDisplay: "<<debugTimer.elapsed();
+        qDebug()<<"No Data to Plot";
+    //qDebug()<<"Here9";
 }
 
 void MainWindow::displayBigPlot(void){
@@ -603,6 +636,10 @@ void MainWindow::writeFile(void){
     if(currentFile.open(QIODevice::Append))
     {
         //qDebug()<<"Writing file: "<<currentFile.fileName();
+        if(!tempDLine.contains("\n")){
+            //qDebug()<<"Adding line feed carriage return";
+            tempDLine.append("\n");
+        }
         QTextStream stream(&currentFile);
         stream<<tempDLine;
         currentFile.close();
@@ -674,32 +711,7 @@ void MainWindow::errorTimerTick() {
     QElapsedTimer debugTimer;
     debugTimer.start();
     qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
-    //IAQ START
-    /*if(allParsedRecordsList.length() != 0) {
-        SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
-        double val = item.getDvalue();
-        if(val < (80 + 273)) {
-            errorIcon->show();
-            warningIcon->show();
-            warningLabel->setText("Waiting For The Heater To Warm Up");
-            warningLabel->show();
-        } else {
-            errorIcon->hide();
-            warningIcon->hide();
-            warningLabel->hide();
-        }
-    }*/
-    //IAQ END
-    qDebug()<<"errorTimerTick: "<<debugTimer.elapsed();
-    /*cpuIcon->setText(getCpuUsage());
-    QString spaceStr = getFreeSpace();
-    //qDebug()<<"Space: "<<spaceStr;
-    double space = spaceStr.toDouble();
-    if(space < 2000) {
-        diskSpaceIcon->show();
-    } else {
-        diskSpaceIcon->hide();
-    }*/
+
 }
 
 QString MainWindow::getCpuUsage() {
@@ -763,4 +775,16 @@ QString MainWindow::getFreeSpace() {
     qDebug()<<"Free Elapsed"<<freeTimer.elapsed();
     return QString::number(space);
 
+}
+
+void MainWindow::i2c_test(void){
+    int file;
+    char *filename = "/dev/i2c-1";
+    if ((file = open(filename, O_RDWR)) < 0) {
+        /* ERROR HANDLING: you can check errno to see what went wrong */
+        qDebug()<<"Failed to open the i2c bus";
+        return;
+    }else{
+        qDebug()<<"Opened the i2c bus";
+    }
 }

@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
-StatsWidget::StatsWidget(QWidget *parent) :
+StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::StatsWidget)
 {
@@ -49,9 +49,11 @@ StatsWidget::StatsWidget(QWidget *parent) :
     widgets<<widgetForAvg();
     widgets<<widgetForOne();
     widgets<<widgetForTwo();
-    //widgets<<widgetForThree();
-    widgets.at(currentIndex)->show();
 
+    if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
+        widgets<<widgetForThree();
+    }
+    widgets.at(currentIndex)->show();
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
 
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
@@ -229,14 +231,19 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     QList<SerialDataItem> curr = records->last();
 
     //Non Avg
+
     temp = records->last().at(profile->getMain_display_position());
+
     avgNonTitle->setText(profile->getMain_display_name()+": ");
+
     avgNonLabel->setText(QString::number(temp.getDvalue())+" "+profile->getMain_display_units());
 
     //One Hour
     QDateTime currentTimeStamp = records->last().at(profile->getDate_position()).getDateTime();
+
     bool found = false;
     int pos = records->length() - 1;
+
     while(!found && (pos > -1)) {
         QDateTime stamp = records->at(pos).at(profile->getDate_position()).getDateTime();
         double secs = stamp.secsTo(currentTimeStamp);
@@ -245,13 +252,16 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         }
         pos--;
     }
+
     double hourAvg = 0;
     for(int i = records->length() - 1; i > pos; i--) {
         hourAvg += records->at(i).at(profile->getMain_display_position()).getDvalue();
     }
     hourAvg /= ((records->length() - 1) - pos);
     avgHourTitle->setText("Hour Avg "+profile->getMain_display_name()+": ");
-    avgHourLabel->setText(shortenString(QString::number(hourAvg))+" "+profile->getMain_display_units());
+
+    avgHourLabel->setText(QString::number(hourAvg,'f',1)+" "+profile->getMain_display_units());
+
 
     //Eight Hours
     found = false;
@@ -269,14 +279,16 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
         eightAvg += records->at(i).at(profile->getMain_display_position()).getDvalue();
     }
     eightAvg /= ((records->length() - 1) - pos);
-    avgEightTitle->setText("8 Hour Avg "+profile->getMain_display_name()+": ");
-    avgEightLabel->setText(shortenString(QString::number(eightAvg))+" "+profile->getMain_display_units());
+
+    avgEightTitle->setText("Eight Hour Avg "+profile->getMain_display_name()+": ");
+    avgEightLabel->setText(QString::number(eightAvg,'f',1)+" "+profile->getMain_display_units());
 
     QString strVal;
     double val;
 
     //Diagnostic A - A
     val = curr.at(profile->getDiagnosticA_position()).getDvalue();
+
     //val -= 273;
     strVal = shortenString(QString::number(val));
     oneATitle->setText(profile->getDiagnosticA_name()+": ");
@@ -290,35 +302,46 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     //Diagnostic B - A
     val = curr.at(profile->getDiagnosticC_position()).getDvalue();
-    //IAQ
-    /*val -= 273;
-    if(val < 80) {
-        twoALabel->setStyleSheet(badStylesheet);
-    } else {
-        twoALabel->setStyleSheet(goodStylesheet);
-    }*/
-    strVal = shortenString(QString::number(val));
+
+    if(profile->getDevice_name()=="IAQ"||profile->getDevice_name()=="IAQ-PC"){
+        val -= 273;
+        if(val < 80) {
+            twoALabel->setStyleSheet(badStylesheet);
+        } else {
+            twoALabel->setStyleSheet(goodStylesheet);
+        }
+    }
+    //strVal = shortenString(QString::number(val));
+
     twoATitle->setText(profile->getDiagnosticC_name()+": ");
-    twoALabel->setText(strVal+" C"+profile->getDiagnosticC_units());
+    //twoALabel->setText(strVal+" C"+profile->getDiagnosticC_units());
+    twoALabel->setText(QString::number(val)+" "+profile->getDiagnosticC_units());
 
     //Diagnostic B - B
     val = curr.at(profile->getDiagnosticD_position()).getDvalue();
-    strVal = shortenString(QString::number(val));
+    //strVal = shortenString(QString::number(val));
     twoBTitle->setText(profile->getDiagnosticD_name()+": ");
-    twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
 
-    /*//Diagnostic C - A
-    val = curr.at(profile->getDiagnosticE_position()).getDvalue();
-    strVal = shortenString(QString::number(val));
-    threeATitle->setText(profile->getDiagnosticE_name()+": ");
-    threeALabel->setText(strVal+" "+profile->getDiagnosticE_units());
+    //twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
+    twoBLabel->setText(QString::number(val)+" "+profile->getDiagnosticD_units());
+    //qDebug()<<"stats13";
+    //qDebug()<<"Number of columns:"<<profile->getNumber_of_columns();
+    if(profile->getNumber_of_columns()>7){
+    //Diagnostic C - A
 
-    //Diagnostic C - B
-    val = curr.at(profile->getDiagnosticF_position()).getDvalue();
-    strVal = shortenString(QString::number(val));
-    threeBTitle->setText(profile->getDiagnosticF_name() + ": ");
-    threeBLabel->setText(strVal + " " + profile->getDiagnosticF_units());
-    qDebug()<<"setData: "<<debugTimer.elapsed();*/
+        //qDebug()<<"stats14";
+        val = curr.at(profile->getDiagnosticE_position()).getDvalue();
+        strVal = shortenString(QString::number(val));
+        threeATitle->setText(profile->getDiagnosticE_name()+": ");
+        threeALabel->setText(strVal+" "+profile->getDiagnosticE_units());
+    }
+    if(profile->getNumber_of_columns()>8){
+        //Diagnostic C - B
+        val = curr.at(profile->getDiagnosticF_position()).getDvalue();
+        strVal = shortenString(QString::number(val));
+        threeBTitle->setText(profile->getDiagnosticF_name() + ": ");
+        threeBLabel->setText(strVal + " " + profile->getDiagnosticF_units());
+    }
 }
 
 

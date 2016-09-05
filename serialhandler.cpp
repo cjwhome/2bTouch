@@ -37,6 +37,24 @@ void SerialHandler::writeSync(QString *dat) {
     }
 }
 
+
+void SerialHandler::write106(QString *dat){
+    QByteArray retData;
+    bool notDone = true;
+    QString sendChar("@");
+    qDebug()<<"writing to serial port";
+    while(notDone){
+        serialPort->write(sendChar.toUtf8().constData());
+        if(serialPort->bytesAvailable()){
+             retData = serialPort->readAll();
+             qDebug()<<"data bytes read:"<<retData;
+             if(retData.contains("%"))
+                 notDone = false;
+        }
+
+    }
+}
+
 void SerialHandler::writeAsync(QString *dat) {
     currentConnectionType = SerialHandler::Asynchronously;
     data = dat;
@@ -105,11 +123,12 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-   // qDebug()<<"Received new line from serial: "<<retData;
+    //qDebug()<<"Received new line from serial: "<<data;
     //serialPort->flush();
     QString *retDataStr = new QString(data);
     retDataStr->remove('\r');
     QList<QString> list = retDataStr->split('\n');
+    //qDebug()<<"RetDataStr Length="<<list.length();
     for(int i = 0; i < list.length(); i++) {
         QString line = QString(list.at(i));
 
