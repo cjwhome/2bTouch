@@ -43,6 +43,7 @@ public slots:
     void readData(QString data);
 
     void updateSettings();
+    void write106(QString *dat);
 
 private slots:
     void newConnection();

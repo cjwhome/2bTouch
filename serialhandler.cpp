@@ -37,6 +37,24 @@ void SerialHandler::writeSync(QString *dat) {
     }
 }
 
+
+void SerialHandler::write106(QString *dat){
+    QByteArray retData;
+    bool notDone = true;
+    QString sendChar("@");
+    qDebug()<<"writing to serial port";
+    while(notDone){
+        serialPort->write(sendChar.toUtf8().constData());
+        if(serialPort->bytesAvailable()){
+             retData = serialPort->readAll();
+             qDebug()<<"data bytes read:"<<retData;
+             if(retData.contains("%"))
+                 notDone = false;
+        }
+
+    }
+}
+
 void SerialHandler::writeAsync(QString *dat) {
     currentConnectionType = SerialHandler::Asynchronously;
     data = dat;

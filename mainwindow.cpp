@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <linux/i2c-dev.h>
 
 class I : public QThread
 {
@@ -115,15 +120,16 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(topTimeLayout);
     verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
-    verticalLayout->addSpacing(55);
+    verticalLayout->addSpacing(45);
     verticalLayout->addWidget(horizontalFrame);
-    verticalLayout->addSpacing(5);
+    verticalLayout->addSpacing(2);
     buttonLayout->addWidget(homeButton);
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
 
     verticalLayout->addLayout(buttonLayout);
+    //verticalLayout->addSpacing(5);
 
 	
     data_point = QDateTime::currentDateTime().toTime_t();
@@ -224,6 +230,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //statusRow->addWidget(cpuIcon);
     //statusRow->addWidget(diskSpaceIcon);
     //statusRow->addWidget(errorIcon);
+    //QString test("blah");
+    //serialHandler->write106(&test);
+    this->i2c_test();
 }
 
 MainWindow::~MainWindow()
@@ -381,14 +390,28 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        data_point = QDateTime::currentDateTime().toTime_t();
-        x.insert(data_index,data_point);
-        y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
-        t=x;                    //copy the vectors to order them to get high and low for range
-        u=y;
-        data_index++;
-
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+
+        data_point = QDateTime::currentDateTime().toTime_t();
+
+        //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
+        if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
+            qDebug()<<"Maximum size reached";
+            x.removeFirst();
+            x.append(data_point);
+            y.removeFirst();
+            y.append(avg);
+        }else{
+            x.insert(data_index,data_point);
+            y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+            //t=x;                    //copy the vectors to order them to get high and low for range
+            //u=y;
+            data_index++;
+        }
+
+        //for(int i=0;i<y.size();i++){
+         //   qDebug()<<"y["<<i<<"]="<<y.at(i);
+        //}
 
         updateDisplay();
         return true;
@@ -578,6 +601,10 @@ void MainWindow::writeFile(void){
     if(currentFile.open(QIODevice::Append))
     {
         //qDebug()<<"Writing file: "<<currentFile.fileName();
+        if(!tempDLine.contains("\n")){
+            //qDebug()<<"Adding line feed carriage return";
+            tempDLine.append("\n");
+        }
         QTextStream stream(&currentFile);
         stream<<tempDLine;
         currentFile.close();
@@ -727,4 +754,16 @@ QString MainWindow::getFreeSpace() {
     qDebug()<<"Free Elapsed"<<freeTimer.elapsed();
     return QString::number(space);
 
+}
+
+void MainWindow::i2c_test(void){
+    int file;
+    char *filename = "/dev/i2c-1";
+    if ((file = open(filename, O_RDWR)) < 0) {
+        /* ERROR HANDLING: you can check errno to see what went wrong */
+        qDebug()<<"Failed to open the i2c bus";
+        return;
+    }else{
+        qDebug()<<"Opened the i2c bus";
+    }
 }
