@@ -42,16 +42,17 @@ void SerialHandler::write106(QString *dat){
     QByteArray retData;
     bool notDone = true;
     QString sendChar("@");
-    qDebug()<<"writing to serial port";
+    //qDebug()<<"writing to serial port";
+
     while(notDone){
-        serialPort->write(sendChar.toUtf8().constData());
-        if(serialPort->bytesAvailable()){
+        if(serialPort->canReadLine()){
              retData = serialPort->readAll();
              qDebug()<<"data bytes read:"<<retData;
-             if(retData.contains("%"))
-                 notDone = false;
+             this->writeChar('%');
+             //if(retData.contains("@"))
+                notDone = false;
         }
-
+        qDebug()<<"fuck";
     }
 }
 
@@ -136,7 +137,10 @@ void SerialHandler::readData(QString data) {
 
         } else {
             if(line.length() < 10) {
+                char b = 't';
                 qDebug()<<"Received new line from serial: "<<line;
+                qDebug()<<"Slave bitch is ready for some settings";
+                this->writeChar(b);
             }
             if((line == "Settings") || (line == "\rSettings")) {
                //qDebug()<<"Waiting For Settings";
@@ -161,7 +165,7 @@ void SerialHandler::readData(QString data) {
             } else if(currentConnectionType == SerialHandler::Synchronously) {
                 //qDebug()<<"Sync Data";
                 handleSyncData(QString(line));
-            } else {
+            }else {
                 emit dataAvailable(line);
                 foreach(QTcpSocket *socket, netSockets) {
                     socket->write(line.toLatin1() + "\n\r");

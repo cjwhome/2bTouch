@@ -1,6 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
+//#include <glib.h>
+//#include <glib/gprintf.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -88,6 +96,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
     QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
 
+    QPushButton *test_button = new QPushButton("Test");
+    test_button->setFixedSize(buttonSize);
+    connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
+
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
@@ -127,6 +139,7 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
+    buttonLayout->addWidget(test_button);
 
     verticalLayout->addLayout(buttonLayout);
     //verticalLayout->addSpacing(5);
@@ -236,7 +249,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //statusRow->addWidget(errorIcon);
     //QString test("blah");
     //serialHandler->write106(&test);
-    this->i2c_test();
+    //this->i2c_test();
 }
 
 MainWindow::~MainWindow()
@@ -325,16 +338,16 @@ void MainWindow::writeData(const QByteArray &data)
 }
 
 
-void MainWindow::readData()
+/*void MainWindow::readData()
 {
     if(serial->canReadLine()){
-
+        qDebug()<<"read data";
         QByteArray data = serial->readAll();
 
         newDataLine(data);
     }
 }
-
+*/
 
 void MainWindow::handleError(QSerialPort::SerialPortError error)
 {
@@ -777,9 +790,15 @@ QString MainWindow::getFreeSpace() {
 
 }
 
+//so far, haven't been able to transfer data through this protocol, but need to use it to get the slave's attention that it is going to be sending bytes over the UART
 void MainWindow::i2c_test(void){
+
     int file;
     char *filename = "/dev/i2c-1";
+    char buf[10] = {0};
+    int errnumber=0;
+    buf[0] = 0x77;
+    //disconnect(serialHandler);
     if ((file = open(filename, O_RDWR)) < 0) {
         /* ERROR HANDLING: you can check errno to see what went wrong */
         qDebug()<<"Failed to open the i2c bus";
@@ -787,4 +806,19 @@ void MainWindow::i2c_test(void){
     }else{
         qDebug()<<"Opened the i2c bus";
     }
+    int addr = 0b00101000;          // The I2C address of the ADC
+    if (ioctl(file, I2C_SLAVE, addr) < 0) {
+        qDebug()<<"Failed to acquire bus access and/or talk to slave.\n";
+        /* ERROR HANDLING; you can check errno to see what went wrong */
+        return;
+    }else{
+        qDebug()<<"Aquired bus to talk with PIC";
+    }
+
+    QString test("blah");
+    errnumber = write(file,buf,1);
+    //serialHandler->write106(&test);
+    //connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
+
+
 }

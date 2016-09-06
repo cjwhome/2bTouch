@@ -49,7 +49,7 @@ public:
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
     void writeFile();
     void listFonts();
-    void i2c_test(void);
+
 
 
 
@@ -67,10 +67,11 @@ private slots:
     void displayStats(void);
     void displaySettings(void);
     void writeData(const QByteArray &data);
-    void readData();
+    //void readData();
     void handleError(QSerialPort::SerialPortError error);
     void closeSerialPort();
     void updateAverage(double value);
+    void i2c_test(void);
 
     void usbTimerTick();
     void errorTimerTick();
