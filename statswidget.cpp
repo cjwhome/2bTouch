@@ -8,7 +8,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     ui(new Ui::StatsWidget)
 {
     ui->setupUi(this);
-
+    //qDebug()<<"Building Stats Widget";
     QSize buttonSize(30, 30);
 
     homeButton = new QPushButton(this);
@@ -50,10 +50,14 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     widgets<<widgetForOne();
     widgets<<widgetForTwo();
 
-    if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
+    //if(profile.getNumber_of_columns()>8){
+        //qDebug()<<"Building widget for three";
         widgets<<widgetForThree();
-    }
+
+    //}
+
     widgets.at(currentIndex)->show();
+
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
 
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
@@ -62,6 +66,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     titleFont = QFont("Times serif", 20, 2);
 
     this->setStyleSheet(goodStylesheet);
+
 }
 
 void StatsWidget::leftPressed() {
@@ -324,12 +329,12 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     //twoBLabel->setText(strVal+" "+profile->getDiagnosticD_units());
     twoBLabel->setText(QString::number(val)+" "+profile->getDiagnosticD_units());
-    //qDebug()<<"stats13";
-    //qDebug()<<"Number of columns:"<<profile->getNumber_of_columns();
+    qDebug()<<"stats13";
+    qDebug()<<"Number of columns:"<<profile->getNumber_of_columns();
     if(profile->getNumber_of_columns()>7){
     //Diagnostic C - A
 
-        //qDebug()<<"stats14";
+       // qDebug()<<"stats14";
         val = curr.at(profile->getDiagnosticE_position()).getDvalue();
         strVal = shortenString(QString::number(val));
         threeATitle->setText(profile->getDiagnosticE_name()+": ");
@@ -337,6 +342,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     }
     if(profile->getNumber_of_columns()>8){
         //Diagnostic C - B
+     //   qDebug()<<"stats15";
         val = curr.at(profile->getDiagnosticF_position()).getDvalue();
         strVal = shortenString(QString::number(val));
         threeBTitle->setText(profile->getDiagnosticF_name() + ": ");

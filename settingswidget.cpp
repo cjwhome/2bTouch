@@ -43,6 +43,7 @@ void SettingsWidget::initializeViews() {
 
     titleFont = QFont("Times serif", 30, 4);
     labelFont = QFont("Times serif", 15, 2);
+    messageBoxFont = QFont("Times_serif", 10, 2);
 
     QWidget *landing = widgetForLanding();
     mainLayout->addWidget(landing);
@@ -134,7 +135,7 @@ QWidget* SettingsWidget::widgetForAvg() {
     avgVLayout = new QVBoxLayout(avgWidget);
     avgTitle = new QLabel("AVERAGING", avgWidget);
     avgRowOne = new QHBoxLayout(avgWidget);
-    avgTwoSecButton = new QPushButton("2 s", avgWidget);
+    avgTwoSecButton = new QPushButton("5 s", avgWidget);
     avgTenSecButton = new QPushButton("10 s", avgWidget);
     avgRowTwo = new QHBoxLayout(avgWidget);
     avgOneMinButton = new QPushButton("1 m", avgWidget);
@@ -876,7 +877,8 @@ void SettingsWidget::rOSubmitPressed() {
 
 void SettingsWidget::rOHelpPressed() {
     QMessageBox msg;
-    msg.setText("This is the text for the relay one help message");
+    msg.setFont(messageBoxFont);
+    msg.setText("**RELAY HELP**\n\nRelay will be CLOSED when O3 is less than LOW\nRelay will be OPEN when O3 is greater than HIGH");
     msg.exec();
 }
 

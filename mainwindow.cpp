@@ -236,7 +236,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //statusRow->addWidget(errorIcon);
     //QString test("blah");
     //serialHandler->write106(&test);
-    this->i2c_test();
+    //this->i2c_test();
 }
 
 MainWindow::~MainWindow()
@@ -247,7 +247,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(3);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -443,19 +443,33 @@ void MainWindow::updateAverage(double value) {
     QElapsedTimer debugTimer;
     debugTimer.start();
     int avgIndex = settings->value("Avg").toInt();
-    avgIndex = 0;
-    qDebug()<<"Avg Index: "<<avgIndex;
+    //avgIndex = 0;
+    //qDebug()<<"Avg Index: "<<avgIndex;
     int avgDur;
-    if (avgIndex == 0) {
-        avgDur = 2;
-    } else if (avgIndex == 1) {
-        avgDur = 10;
-    } else if (avgIndex == 2) {
-        avgDur = 60;
-    } else if (avgIndex == 3) {
-        avgDur = 60 * 15;
-    } else if (avgIndex == 4) {
-        avgDur = 60 * 60;
+    if(twobTechDevice.device_name == "IAQ" || twobTechDevice.device_name == "IAQ-PC"){
+        if (avgIndex == 0) {
+            avgDur = 1;
+        } else if (avgIndex == 1) {
+            avgDur = 4;
+        } else if (avgIndex == 2) {
+            avgDur = 24;
+        } else if (avgIndex == 3) {
+            avgDur = 24 * 15;
+        } else if (avgIndex == 4) {
+            avgDur = 24 * 60;
+        }
+    }else{
+        if (avgIndex == 0) {
+            avgDur = 2;
+        } else if (avgIndex == 1) {
+            avgDur = 10;
+        } else if (avgIndex == 2) {
+            avgDur = 60;
+        } else if (avgIndex == 3) {
+            avgDur = 60 * 15;
+        } else if (avgIndex == 4) {
+            avgDur = 60 * 60;
+        }
     }
     int avgCount = avgDur / 2;
     if(avgCount < 1) {
@@ -467,7 +481,7 @@ void MainWindow::updateAverage(double value) {
     if(curLength > avgCount) {
         //Average The List By Pairs Until It is Less Than The New Value
         while(avgList.length() > avgCount) {
-            qDebug()<<"Consolidating Avg List";
+            //qDebug()<<"Consolidating Avg List";
             QList<double> temp;
             for(int i = 0; i < (avgList.length() / 2); i++) {
                 double a = avgList.at(i);
@@ -488,7 +502,7 @@ void MainWindow::updateAverage(double value) {
         avgList = tempList;
     }
     avgList<<value;
-    qDebug()<<"Avg List: "<<avgList;
+    //qDebug()<<"Avg List: "<<avgList;
 
     double sum = 0;
     for(int i = 0; i < avgList.length(); i++) {
@@ -496,7 +510,7 @@ void MainWindow::updateAverage(double value) {
     }
     avg = sum / avgList.length();
 
-    qDebug()<<"updateAverage: "<<debugTimer.elapsed();
+    //qDebug()<<"updateAverage: "<<debugTimer.elapsed();
 }
 
 void MainWindow::updateDisplay(void){

@@ -47,6 +47,7 @@ private:
     QVBoxLayout *mainLayout;
     QFont titleFont;
     QFont labelFont;
+    QFont messageBoxFont;
     QSize buttonSize;
     QString regButtonStyle;
     QString selButtonStyle;

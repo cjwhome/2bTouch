@@ -19,7 +19,7 @@ class StatsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit StatsWidget( DeviceProfile profile,QWidget *parent = 0);
+    explicit StatsWidget(DeviceProfile profile, QWidget *parent = 0);
     ~StatsWidget();
 
 private:
