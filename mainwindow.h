@@ -72,6 +72,7 @@ private slots:
     void closeSerialPort();
     void updateAverage(double value);
     void i2c_test(void);
+    void aboutPressed(void);
 
     void usbTimerTick();
     void errorTimerTick();

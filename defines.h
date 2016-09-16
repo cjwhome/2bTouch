@@ -2,7 +2,11 @@
 #define DEFINES_H
 
 
-#define APP_VERSION "1.0"
+#define MAJOR 1
+#define MINOR 1
+#define REVISION 1
+#define BUILD 1
+
 #define APP_NAME "2BTouch"
 
 #define MINIMUM_BIG_SCREEN_WIDTH 800	//usefull for determining if using embedded system screen

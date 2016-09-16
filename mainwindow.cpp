@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
+#include <QTextEdit>
 //#include <glib.h>
 //#include <glib/gprintf.h>
 #include <errno.h>
@@ -14,6 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
+#include "defines.h"
 
 class I : public QThread
 {
@@ -69,12 +71,14 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setFixedSize(buttonSize);
 
 
-    QPushButton *homeButton = new QPushButton();
-    QPixmap homePixmap(":/buttons/pics/home-icon.gif");
-    QIcon homeButtonIcon(homePixmap);
-    homeButton->setIcon(homeButtonIcon);
-    homeButton->setIconSize(QSize(35,31));
-    homeButton->setFixedSize(buttonSize);
+    QPushButton *aboutButton = new QPushButton();
+    QPixmap aboutPixmap(":/buttons/pics/about2B.gif");
+    QIcon aboutButtonIcon(aboutPixmap);
+    aboutButton->setIcon(aboutButtonIcon);
+    aboutButton->setIconSize(QSize(35,31));
+    aboutButton->setFixedSize(buttonSize);
+    connect(aboutButton, SIGNAL(clicked()), this, SLOT(aboutPressed()));
+    //univStyle = "QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
 
 
     graph_button = new QPushButton();
@@ -96,9 +100,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
     QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
 
-    QPushButton *test_button = new QPushButton("Test");
-    test_button->setFixedSize(buttonSize);
-    connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
+   // QPushButton *test_button = new QPushButton("Test");
+   // test_button->setFixedSize(buttonSize);
+   // connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
 
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
@@ -135,11 +139,11 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addSpacing(45);
     verticalLayout->addWidget(horizontalFrame);
     verticalLayout->addSpacing(2);
-    buttonLayout->addWidget(homeButton);
+    buttonLayout->addWidget(aboutButton);
     buttonLayout->addWidget(configure_button);
     buttonLayout->addWidget(graph_button);
     buttonLayout->addWidget(stats_button);
-    buttonLayout->addWidget(test_button);
+    //buttonLayout->addWidget(test_button);
 
     verticalLayout->addLayout(buttonLayout);
     //verticalLayout->addSpacing(5);
@@ -789,6 +793,23 @@ QString MainWindow::getFreeSpace() {
     return QString::number(space);
 
 }
+
+void MainWindow::aboutPressed() {
+        QMessageBox msg;
+
+
+        QString messageString("2B Technologies, Inc.\n" + QString::fromStdString(APP_NAME) + " 2016\n"+ "Version:" + QString::number(MAJOR) + "." + QString::number(MINOR) + "." + QString::number(REVISION) + "." + QString::number(BUILD));
+
+        msg.setText(messageString);
+        msg.exec();
+       /* QTextEdit* help=new QTextEdit();
+
+        help->setWindowFlags(Qt::Window);
+       help->setReadOnly(true);
+       help->append("<h1>About</h1>2B Technologies, Inc.<br/> 2B Touch Version 1.1001<br/>www.twobtech.com");
+       help->show();*/
+}
+
 
 //so far, haven't been able to transfer data through this protocol, but need to use it to get the slave's attention that it is going to be sending bytes over the UART
 void MainWindow::i2c_test(void){

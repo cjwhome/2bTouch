@@ -42,15 +42,15 @@ int main(int argc, char *argv[])
     QString versionString;		//needed because too close to edge of screen
     
     versionString.append(APP_NAME);
-    versionString.append("\nVersion ");
-    versionString.append(APP_VERSION);
+    //versionString.append("\nVersion ");
+    //versionString.append(APP_VERSION);
 
     splash->setPixmap(pix);
     splash->show();
-    //Qt::Alignment topleft = Qt::AlignLeft | Qt::AlignTop;
-    Qt::Alignment bottomright = Qt::AlignRight | Qt::AlignBottom;
+    Qt::Alignment topleft = Qt::AlignLeft | Qt::AlignTop;
+    //Qt::Alignment bottomright = Qt::AlignRight | Qt::AlignBottom;
     //splash->showMessage(versionString, bottomright, Qt::black);
-    splash->showMessage(versionString, bottomright, Qt::black);
+    splash->showMessage(versionString, topleft, Qt::black);
     //splash->showMessage(ipString, topleft, Qt::black);
 
     I::sleep(3);
