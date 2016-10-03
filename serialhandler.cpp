@@ -139,7 +139,11 @@ void SerialHandler::readData(QString data) {
             if(line.length() < 10) {
                 char b = 't';
                 qDebug()<<"Received new line from serial: "<<line;
-                qDebug()<<"Slave bitch is ready for some settings";
+
+                if(line.contains('@')){
+                    this->sendSetCommandString();
+                    qDebug()<<"Sent slave bitch new setting";
+                }
                 this->writeChar(b);
             }
             if((line == "Settings") || (line == "\rSettings")) {
@@ -229,4 +233,12 @@ void SerialHandler::newConnection() {
     netSockets<<socket;
     connect(socket, SIGNAL(readyRead()), this, SLOT(netDataReady()));
     socket->write(QByteArray("Connected!\n\r"));
+}
+
+void SerialHandler::setCommandString(QString command){
+    commandString = command;
+}
+
+void SerialHandler::sendSetCommandString(void){
+    serialPort->write(QString(commandString).toLocal8Bit().constData(), commandString.size());
 }

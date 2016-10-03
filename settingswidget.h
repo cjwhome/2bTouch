@@ -48,6 +48,7 @@ private:
     QFont titleFont;
     QFont labelFont;
     QSize buttonSize;
+    QSize questionButtonSize;
     QString regButtonStyle;
     QString selButtonStyle;
     QString univStyle;
@@ -196,7 +197,7 @@ private:
     QSettings *settings;
 
     TwobTechDevice device;
-
+    bool passwordOK;
 private slots:
     void initializeViews();
     void homePressed();

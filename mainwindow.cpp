@@ -100,9 +100,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
     QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
 
-   // QPushButton *test_button = new QPushButton("Test");
-   // test_button->setFixedSize(buttonSize);
-   // connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
+    //QPushButton *test_button = new QPushButton("Test");
+    //test_button->setFixedSize(buttonSize);
+    //connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
 
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
@@ -694,7 +694,10 @@ void MainWindow::listFonts(void){
 }
 
 void MainWindow::sendMsg(QString msg) {
-    serialHandler->writeSync(new QString(msg));
+    qDebug()<<"Send message:"<<msg;
+    serialHandler->setCommandString(msg);
+    this->i2c_test();
+    //serialHandler->writeSync(new QString(msg));
 }
 
 void MainWindow::usbTimerTick() {
@@ -836,8 +839,11 @@ void MainWindow::i2c_test(void){
         qDebug()<<"Aquired bus to talk with PIC";
     }
 
-    QString test("blah");
+    //QString test("blah");
     errnumber = write(file,buf,1);
+    //serialHandler->setCommandString("a00002");    //set averaging to 2
+    //serialHandler->setCommandString("t123456");
+
     //serialHandler->write106(&test);
     //connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
 

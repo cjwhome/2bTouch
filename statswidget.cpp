@@ -9,7 +9,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSize buttonSize(30, 30);
+    QSize buttonSize(40, 40);
 
     homeButton = new QPushButton(this);
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
@@ -37,7 +37,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     connect(right, SIGNAL(released()), this, SLOT(rightPresed()));
 
     widgetSize = QSize(380, 277);
-    placeHolder = new QWidget(this);
+    placeHolder = new QWidget();
     placeHolder->setFixedSize(widgetSize);
     widgetGeo = QRect(50, 0, 380, 277);
 
@@ -197,7 +197,7 @@ QWidget* StatsWidget::widgetForTwo() {
 
 QWidget* StatsWidget::widgetForThree() {
     if(!threeWidget) {
-        threeWidget = new QWidget(this);
+        threeWidget = new QWidget();
         threeVLayout = new QVBoxLayout(threeWidget);
         threeARow = new QHBoxLayout(threeWidget);
         threeATitle = new QLabel("Three A", threeWidget);

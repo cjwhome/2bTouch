@@ -26,6 +26,7 @@ public:
         Finished
     };
     SerialHandler::Types currentConnectionType;
+    void setCommandString(QString command);
 
 signals:
     void finished();
@@ -44,6 +45,7 @@ public slots:
 
     void updateSettings();
     void write106(QString *dat);
+    void sendSetCommandString(void);
 
 private slots:
     void newConnection();
@@ -66,6 +68,8 @@ private:
     //void dataReady();
     void handleSyncData(QString retData);
     int syncIndex;
+
+    QString commandString;
 
     QSettings *settings;
     bool gettingSettings;

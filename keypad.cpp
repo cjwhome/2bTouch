@@ -110,7 +110,7 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
 
     connect( ui->numbutton_4,SIGNAL(clicked()),this,SLOT(boardchange()));
 
-    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard-Line.png);");
+    setStyleSheet("background-image: url(:/keyboard/keyboard/Touch-Keyboard-white-Line.png);");
     //setStyleSheet(":/keyboard/keyboard/Touch-Keyboard-white.png");
 
 

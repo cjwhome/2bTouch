@@ -17,6 +17,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     XmlDeviceReader *reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
     device = reader->getADevice(3);
+    passwordOK = false;
 }
 
 SettingsWidget::~SettingsWidget()
@@ -27,7 +28,8 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
 
-    buttonSize = QSize(35, 31);
+    buttonSize = QSize(45, 41);
+    questionButtonSize = QSize(35,31);
     this->setStyleSheet("QPushButton { border: none; }");
 
     univStyle = "QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
@@ -69,6 +71,7 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingVLayout->addWidget(landingPassTitle);
     landingPassRow->addWidget(landingPassPrompt);
     landingPassRow->addWidget(landingPassField);
+    landingPassRow->addSpacing(25);
     landingVLayout->addLayout(landingPassRow);
     landingVLayout->addWidget(landingPassSubmit);
     landingVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
@@ -199,8 +202,8 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     QIcon icon(pixmap);
     rOHelpButton = new QPushButton(rOWidget);
     rOHelpButton->setIcon(icon);
-    rOHelpButton->setFixedSize(buttonSize);
-    rOHelpButton->setIconSize(buttonSize);
+    rOHelpButton->setFixedSize(questionButtonSize);
+    rOHelpButton->setIconSize(questionButtonSize);
     //Styling
     relayOneTitle->setFont(titleFont);
     relayOneTitle->setAlignment(Qt::AlignHCenter);
@@ -251,8 +254,8 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     rTTitle = new QLabel("RELAY TWO", rTWidget);
     rTHelpButton = new QPushButton(rTWidget);
     rTHelpButton->setIcon(QIcon(":/buttons/pics/help-icon.png"));
-    rTHelpButton->setFixedSize(buttonSize);
-    rTHelpButton->setIconSize(buttonSize);
+    rTHelpButton->setFixedSize(questionButtonSize);
+    rTHelpButton->setIconSize(questionButtonSize);
     rTModeHLayout = new QHBoxLayout(rTWidget);
     rTModeLabel = new QLabel("Mode: ", rTWidget);
     rTOzoneButton = new QPushButton("Ozone", rTWidget);
@@ -799,8 +802,9 @@ void SettingsWidget::landingSubmit() {
     QString password = settings->value("Password", "password").toString();
     qDebug()<<"Password = "<<password;
     qDebug()<<"PassTest = "<<passTest;
-    if(passTest == password) {
+    if(passTest == password||passwordOK) {
         showCal();
+        passwordOK = true;
     } else {
         QMessageBox msg;
         msg.setText("Incorrect Password");
@@ -809,7 +813,7 @@ void SettingsWidget::landingSubmit() {
 }
 
 void SettingsWidget::calSubmitReleased() {
-    QString calMsg = "c:"+calOffsetField->text();
+    QString calMsg = "z:"+calOffsetField->text();
     sendMessage(calMsg);
     settings->setValue("Zero", calOffsetField->text());
 
