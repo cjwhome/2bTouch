@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    qDebug()<<"Start of setup window";
     started_file = false;
     //this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
@@ -264,7 +264,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(3);
+    twobTechDevice = xmlDeviceReader->getADevice(5);
 
     deviceProfile.setDevice_name(twobTechDevice.device_name);
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -329,6 +329,7 @@ void MainWindow::setupSerial(){
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
     QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
+    qDebug()<<"Setup Serial port";
 }
 
 void MainWindow::closeSerialPort()
@@ -549,7 +550,7 @@ void MainWindow::updateDisplay(void){
     } else {
        mesStr.append(".0");
     }
-    //qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
+    qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
 
     main_measurement_display->setText(mesStr);
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
@@ -559,7 +560,7 @@ void MainWindow::updateDisplay(void){
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
-    //qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
+    qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
 
@@ -570,7 +571,7 @@ void MainWindow::updateDisplay(void){
         displayGraph->drawPlot();
     }else
         qDebug()<<"No Data to Plot";
-    //qDebug()<<"Here9";
+    qDebug()<<"Here9";
 }
 
 void MainWindow::displayBigPlot(void){

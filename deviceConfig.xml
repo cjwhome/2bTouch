@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <devices>
+        <device name="POMnoLog"
+                portName="ttyUSB0"
+                baudRate="19200"
+                parity="None"
+                dataBits="8"
+                stopBits="One"
+                enableWeather="false"
+                enableUpload="false"
+                enableGPS="true">
+           <dataFormat>
+            <dataItems>
+              <dataItem name="O3" type="Decimal" />
+              <dataItem name="Cell Temp" type="Decimal" />
+              <dataItem name="Cell Pressure" type="Decimal" />
+              <dataItem name="PDV" type="Decimal"/>
+              <dataItem name="BattV" type="Decimal" />
+              <dataItem name="Latitude" type="Decimal" />
+              <dataItem name="Longitude" type="Decimal" />
+              <dataItem name="Altitude" type="Decimal" />
+              <dataItem name="GPSquality" type="Integer" />
+              <dataItem name="Date" type="DateTime" />
+              <dataItem name="Time" type="DateTime" />
+            </dataItems>
+          </dataFormat>
+        </device>
       <device name="POM"
-              portName="COM1"
+              portName="ttyUSB0"
               baudRate="19200"
               parity="None"
               dataBits="8"
