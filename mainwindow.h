@@ -116,6 +116,7 @@ private:
 	double start_time_seconds;
     double main_display_value;
     bool started_file;
+    int deviceNumber;
 
     XmlDeviceReader* xmlDeviceReader;
     TwobTechDevice twobTechDevice;

@@ -31,6 +31,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     qDebug()<<"Start of setup window";
+    /*if(arguments.size()>1){
+            qDebug()<<"device number:"<<arguments[1];
+            QString deviceNumString = arguments[1];
+            deviceNumber = deviceNumString.toInt();
+            if(arguments.size()>2){
+                qDebug()<<"IP Address:"<<arguments[2];
+                QString ipAddressString = arguments.at(2);
+            }
+    }*/
+
     started_file = false;
     //this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
@@ -69,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     configure_button->setIcon(configButtonIcon);
     configure_button->setIconSize(QSize(35,31));
     configure_button->setFixedSize(buttonSize);
-
+    qDebug()<<"1";
 
     QPushButton *aboutButton = new QPushButton();
     QPixmap aboutPixmap(":/buttons/pics/about2B.gif");
@@ -90,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     graph_button->setFixedSize(buttonSize);
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
-
+qDebug()<<"2";
     QPushButton *stats_button = new QPushButton();
     QPixmap statsPixmap(":/buttons/pics/stats-icon.gif");
     QIcon statsButtonIcon(statsPixmap);
@@ -103,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //QPushButton *test_button = new QPushButton("Test");
     //test_button->setFixedSize(buttonSize);
     //connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
-
+qDebug()<<"3";
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
@@ -114,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) :
     main_measurement_display->setFont(labelFont);
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
-
+qDebug()<<"4";
     topTimeLayout->addSpacing(400);
     //topTimeLayout->addWidget(current_date);
     //topTimeLayout->addSpacing(150);
@@ -148,33 +158,33 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addLayout(buttonLayout);
     //verticalLayout->addSpacing(5);
 
-	
+qDebug()<<"5";
     data_point = QDateTime::currentDateTime().toTime_t();
     data_index = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
-
+qDebug()<<"5.1";
     displayGraph = new DisplayGraph();
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
     connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
-
+qDebug()<<"5.2";
 
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     //showStats = new ShowStats();
     //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    statsWidget = new StatsWidget(deviceProfile, this);
-    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+    //statsWidget = new StatsWidget(deviceProfile, this);
+    //statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    //connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
 
     settingsView = new SettingsView();
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
-
+qDebug()<<"5.3";
     settingsWidget = new SettingsWidget();
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
@@ -183,7 +193,7 @@ MainWindow::MainWindow(QWidget *parent) :
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
-
+qDebug()<<"6";
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
@@ -202,7 +212,7 @@ MainWindow::MainWindow(QWidget *parent) :
     usbIcon->setGeometry(15, 20, 20, 20);
     usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
-
+qDebug()<<"7";
     usbTimer = new QTimer(this);
     connect(usbTimer, SIGNAL(timeout()), this, SLOT(usbTimerTick()));
     usbTimer->start(5000);
@@ -246,7 +256,7 @@ MainWindow::MainWindow(QWidget *parent) :
     errorTimer= new QTimer(this);
     connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
     errorTimer->start(2000);
-
+qDebug()<<"8";
     //statusRow->addWidget(usbIcon);
     //statusRow->addWidget(cpuIcon);
     //statusRow->addWidget(diskSpaceIcon);
@@ -562,7 +572,7 @@ void MainWindow::updateDisplay(void){
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
     qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
-    statsWidget->setData(&allParsedRecordsList, &deviceProfile);
+    //statsWidget->setData(&allParsedRecordsList, &deviceProfile);
 
     this->writeFile();
     if(!y.isEmpty()){

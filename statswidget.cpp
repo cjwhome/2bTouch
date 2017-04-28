@@ -9,6 +9,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     QSize buttonSize(40, 40);
 
     homeButton = new QPushButton(this);
@@ -44,18 +45,22 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     mainLayout->addWidget(left);
     mainLayout->addWidget(placeHolder);
     mainLayout->addWidget(right);
-
+//qDebug()<<"statswidget 5";
     currentIndex = 0;
     widgets<<widgetForAvg();
     widgets<<widgetForOne();
     widgets<<widgetForTwo();
-
+//qDebug()<<"statswidget 6";
     if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
         widgets<<widgetForThree();
+        qDebug()<<"statswidget iaq";
     }
-    widgets.at(currentIndex)->show();
+    qDebug()<<"CurrentIndex:"<<currentIndex;
+    //widgets.at(currentIndex)->show();
+    widgets.at(0)->show();
+    qDebug()<<"statswidget 7";
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
-
+qDebug()<<"statswidget 8";
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
     badStylesheet = "QLabel { font-size: 25px; color: red; }";
 
@@ -95,7 +100,9 @@ void StatsWidget::homePressed() {
 }
 
 QWidget* StatsWidget::widgetForAvg() {
+    qDebug()<<"widget for avg";
     if(!avgWidget) {
+        qDebug()<<"avg widget";
         avgWidget = new QWidget(this);
         avgVLayout = new QVBoxLayout(avgWidget);
         avgNonRow = new QHBoxLayout(avgWidget);
