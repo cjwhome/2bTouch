@@ -338,7 +338,7 @@ void MainWindow::setupSerial(){
     serialHandler = new SerialHandler(thread);
     //serialHandler->writeSync(new QString("test"));
     connect(serialHandler, SIGNAL(dataAvailable(QString)), this, SLOT(newDataLine(QString)));
-    QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
+   //QTimer::singleShot(2000, serialHandler, SLOT(updateSettings()));
     qDebug()<<"Setup Serial port";
 }
 

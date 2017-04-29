@@ -124,8 +124,9 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-    //qDebug()<<"Received new line from serial: "<<data;
-    //serialPort->flush();
+    qDebug()<<"Received new line from serial: "<<data;
+    serialPort->flush();
+    serialPort->clear();
     QString *retDataStr = new QString(data);
     retDataStr->remove('\r');
     QList<QString> list = retDataStr->split('\n');
@@ -140,13 +141,13 @@ void SerialHandler::readData(QString data) {
                 char b = 't';
                 qDebug()<<"Received new line from serial: "<<line;
 
-                if(line.contains('@')){
+                /*if(line.contains('@')){
                     this->sendSetCommandString();
                     qDebug()<<"Sent slave bitch new setting";
                 }
-                this->writeChar(b);
+                this->writeChar(b);*/
             }
-            if((line == "Settings") || (line == "\rSettings")) {
+            /*if((line == "Settings") || (line == "\rSettings")) {
                //qDebug()<<"Waiting For Settings";
                 gettingSettings = true;
             } else if((gettingSettings) && (line.length() > 1)) {
@@ -169,12 +170,12 @@ void SerialHandler::readData(QString data) {
             } else if(currentConnectionType == SerialHandler::Synchronously) {
                 //qDebug()<<"Sync Data";
                 handleSyncData(QString(line));
-            }else {
+            }else {*/
                 emit dataAvailable(line);
                 foreach(QTcpSocket *socket, netSockets) {
                     socket->write(line.toLatin1() + "\n\r");
                 }
-            }
+           // }
         }
     }
 }
