@@ -20,21 +20,10 @@ SerialHandler::SerialHandler(QThread *thr, QObject *parent) : QObject(parent) {
 }
 
 void SerialHandler::writeSync(QString *dat) {
-    if(dat == QString("v")) {
-        updateSettings();
-    } else {
-        dataList<<dat;
-        if(currentConnectionType == SerialHandler::Synchronously) {
-            qDebug()<<"Data operation already in process, adding to queue";
-        } else {
-            qDebug()<<"Writing Sync";
-            currentConnectionType = SerialHandler::Synchronously;
-            data = dat;
-            syncIndex = 0;
-            serialPort->write(QString('<').toLocal8Bit().constData());
-            //serialPort->write(QString("<").toLatin1().toStdString().c_str(), 1);
-        }
-    }
+
+
+    //serialPort->write('');
+
 }
 
 
@@ -52,7 +41,7 @@ void SerialHandler::write106(QString *dat){
              //if(retData.contains("@"))
                 notDone = false;
         }
-        qDebug()<<"fuck";
+
     }
 }
 
@@ -110,9 +99,14 @@ void SerialHandler::netDataReady() {
 
     QString *data = new QString(socket->readAll());
     QList<QString> list = data->split('\n');
+    int i = 0;
     foreach(QString command, list) {
         qDebug()<<"Received New Line From TCP: "<<command;
-        writeSync(new QString(command));
+        QByteArray blah = command.toLatin1();
+        const char *blah_const = blah.data();
+        this->writeChar(*blah_const);
+        i++;
+        //writeSync(new QString(command));
     }
 }
 
@@ -124,7 +118,7 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-    qDebug()<<"Received new line from serial: "<<data;
+    //qDebug()<<"Received new line from serial: "<<data;
     serialPort->flush();
     serialPort->clear();
     QString *retDataStr = new QString(data);
@@ -139,7 +133,7 @@ void SerialHandler::readData(QString data) {
         } else {
             if(line.length() < 10) {
                 char b = 't';
-                qDebug()<<"Received new line from serial: "<<line;
+                //qDebug()<<"Received new line from serial: "<<line;
 
                 /*if(line.contains('@')){
                     this->sendSetCommandString();

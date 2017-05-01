@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     graph_button->setFixedSize(buttonSize);
 
     connect(graph_button, SIGNAL(clicked()), this, SLOT(displayBigPlot()));
-qDebug()<<"2";
+
     QPushButton *stats_button = new QPushButton();
     QPixmap statsPixmap(":/buttons/pics/stats-icon.gif");
     QIcon statsButtonIcon(statsPixmap);
@@ -113,7 +113,7 @@ qDebug()<<"2";
     //QPushButton *test_button = new QPushButton("Test");
     //test_button->setFixedSize(buttonSize);
     //connect(test_button, SIGNAL(clicked()), this, SLOT(i2c_test()));
-qDebug()<<"3";
+
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
@@ -124,7 +124,7 @@ qDebug()<<"3";
     main_measurement_display->setFont(labelFont);
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
-qDebug()<<"4";
+
     topTimeLayout->addSpacing(400);
     //topTimeLayout->addWidget(current_date);
     //topTimeLayout->addSpacing(150);
@@ -158,21 +158,21 @@ qDebug()<<"4";
     verticalLayout->addLayout(buttonLayout);
     //verticalLayout->addSpacing(5);
 
-qDebug()<<"5";
+
     data_point = QDateTime::currentDateTime().toTime_t();
     data_index = 0;
 	start_time_seconds = 10000000000;		//give it a maximum start time so it is never less than the time read
 
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
-qDebug()<<"5.1";
+
     displayGraph = new DisplayGraph();
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
-    connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
+    //connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
 
-    connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
-qDebug()<<"5.2";
+    //connect(displayGraph, SIGNAL(userClearedPlot()), this, SLOT(clearPlotData()));
+
 
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     //showStats = new ShowStats();
@@ -184,7 +184,7 @@ qDebug()<<"5.2";
     settingsView = new SettingsView();
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(configure_button, SIGNAL(clicked()), this, SLOT(displaySettings()));
-qDebug()<<"5.3";
+
     settingsWidget = new SettingsWidget();
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
@@ -193,7 +193,7 @@ qDebug()<<"5.3";
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
-qDebug()<<"6";
+
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
@@ -212,7 +212,7 @@ qDebug()<<"6";
     usbIcon->setGeometry(15, 20, 20, 20);
     usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
-qDebug()<<"7";
+
     usbTimer = new QTimer(this);
     connect(usbTimer, SIGNAL(timeout()), this, SLOT(usbTimerTick()));
     usbTimer->start(5000);
@@ -256,7 +256,7 @@ qDebug()<<"7";
     errorTimer= new QTimer(this);
     connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
     errorTimer->start(2000);
-qDebug()<<"8";
+
     //statusRow->addWidget(usbIcon);
     //statusRow->addWidget(cpuIcon);
     //statusRow->addWidget(diskSpaceIcon);
@@ -379,12 +379,13 @@ void MainWindow::newDataLine(QString dLine){
     debugTimer.start();
 
     if(parseDataLine(dLine)){
-        displayGraph->setData(x, y);
-        displayGraph->setData2(x2, y2);
+        //displayGraph->setData(x, y);
+        //displayGraph->setData2(x2, y2);
+        qDebug()<<"Parsed data line";
         emit validDataReady();
     }
 
-    qDebug()<<"newDataLine: "<<debugTimer.elapsed();
+    //qDebug()<<"newDataLine: "<<debugTimer.elapsed();
 }
 
 
@@ -431,13 +432,13 @@ bool MainWindow::parseDataLine(QString dLine){
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
         }
 
-        updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+        //updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
 
         data_point = QDateTime::currentDateTime().toTime_t();
 
 
         //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
-        if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
+        /*if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
             qDebug()<<"Maximum size reached";
             x.removeFirst();
             x.append(data_point);
@@ -449,14 +450,74 @@ bool MainWindow::parseDataLine(QString dLine){
             //t=x;                    //copy the vectors to order them to get high and low for range
             //u=y;
             data_index++;
-        }
+        }*/
 
         //for(int i=0;i<y.size();i++){
          //   qDebug()<<"y["<<i<<"]="<<y.at(i);
         //}
 
         updateDisplay();
-        qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
+        //qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
+        return true;
+
+
+    }if(fields.length()==deviceProfile.getNumber_of_columns()+1){
+        qDebug()<<"Logging is detected";
+        QList<SerialDataItem> parsedDataRecord;       //create an list of parsed data to append to the list of all parsed records
+        for(int a=1;a<deviceProfile.getNumber_of_columns()+1;a++){
+            SerialDataItem serialDataItem;
+            if(a!=deviceProfile.getDate_position()||a!=deviceProfile.getTime_position()){
+                serialDataItem.setDvalue(fields[a].toDouble());
+            }
+            parsedDataRecord.append(serialDataItem);
+            //qDebug()<<"field["<<a;
+            //qDebug()<<"]="<<fields.at(a);
+        }
+
+        tempDate = QDateTime::fromString(fields[deviceProfile.getDate_position()+1]+fields[deviceProfile.getTime_position()+1], "dd/MM/yyhh:mm:ss");
+        if(tempDate.date().year()<2000)
+            tempDate = tempDate.addYears(100);      //only if century is not part of the format
+        //qDebug()<<"Tempdate:"<<tempDate;
+        SerialDataItem serialDataItemb;
+        serialDataItemb.setDateTime(tempDate);
+        parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
+
+        if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS){
+
+            allParsedRecordsList.append(parsedDataRecord);
+        }else{
+
+            allParsedRecordsList.removeFirst();
+            allParsedRecordsList.append(parsedDataRecord);
+            qDebug()<<"Maxed out the qlist size, removing first element and adding";
+        }
+
+        updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+
+        data_point = QDateTime::currentDateTime().toTime_t();
+
+
+        //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
+        /*if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
+            qDebug()<<"Maximum size reached";
+            x.removeFirst();
+            x.append(data_point);
+            y.removeFirst();
+            y.append(avg);
+        }else{
+            x.insert(data_index,data_point);
+            y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
+            //t=x;                    //copy the vectors to order them to get high and low for range
+            //u=y;
+            data_index++;
+        }*/
+
+        //for(int i=0;i<y.size();i++){
+         //   qDebug()<<"y["<<i<<"]="<<y.at(i);
+        //}
+
+        updateDisplay();
+        //qDebug()<<"parseDataLine: "<<debugTimer.elapsed();
         return true;
 
 
@@ -542,6 +603,7 @@ void MainWindow::updateDisplay(void){
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
 
     current_value = avg;//tempSerialDataItem.getDvalue();
+    qDebug()<<"Current measurement for "<<tempSerialDataItem.getName()<<" is "<<current_value<<" "<<tempSerialDataItem.getUnits();
 
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
@@ -562,25 +624,20 @@ void MainWindow::updateDisplay(void){
     }
     qDebug()<<"updateDisplay B: "<<debugTimer.elapsed();
 
-    main_measurement_display->setText(mesStr);
-    main_units_label->setText(" "+deviceProfile.getMain_display_units());
+    //main_measurement_display->setText(mesStr);
+    //main_units_label->setText(" "+deviceProfile.getMain_display_units());
 
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
 
-    current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
-    settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
-    settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
-    qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
+    //current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
+    //settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
+    //settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
+    //qDebug()<<"updateDisplay C: "<<debugTimer.elapsed();
 
     //statsWidget->setData(&allParsedRecordsList, &deviceProfile);
 
     this->writeFile();
-    if(!y.isEmpty()){
-        //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
-        displayGraph->setData(x, y);
-        displayGraph->drawPlot();
-    }else
-        qDebug()<<"No Data to Plot";
+
     qDebug()<<"Here9";
 }
 
@@ -640,7 +697,7 @@ void MainWindow::createFileName(void){
         //qDebug()<<"found usb mounted at path:"<<fileWriter.getUsbPath();
         dataPath = fileWriter.getFull_data_path();
     } else {
-        dataPath = "/"+deviceProfile.getDevice_name() + "/";
+        dataPath = "/var/www/html/"+deviceProfile.getDevice_name() + "/";
         QDir dir(dataPath);
         if(!dir.exists()) {
             QDir().mkdir(dataPath);
@@ -673,7 +730,7 @@ void MainWindow::writeFile(void){
         currentFile.close();
     }
 
-    qDebug()<<"writeFile: "<<debugTimer.elapsed();
+    //qDebug()<<"writeFile: "<<debugTimer.elapsed();
 }
 
 

@@ -1,39 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <devices>
-        <device name="POMnoLog"
-                portName="ttyUSB0"
-                baudRate="19200"
-                parity="None"
-                dataBits="8"
-                stopBits="One"
-                enableWeather="false"
-                enableUpload="false"
-                enableGPS="true">
-           <dataFormat>
-            <dataItems>
-              <dataItem name="O3" type="Decimal" />
-              <dataItem name="Cell Temp" type="Decimal" />
-              <dataItem name="Cell Pressure" type="Decimal" />
-              <dataItem name="PDV" type="Decimal"/>
-              <dataItem name="BattV" type="Decimal" />
-              <dataItem name="Latitude" type="Decimal" />
-              <dataItem name="Longitude" type="Decimal" />
-              <dataItem name="Altitude" type="Decimal" />
-              <dataItem name="GPSquality" type="Integer" />
-              <dataItem name="Date" type="DateTime" />
-              <dataItem name="Time" type="DateTime" />
-            </dataItems>
-          </dataFormat>
-        </device>
       <device name="POM"
               portName="ttyUSB0"
-              baudRate="19200"
-              parity="None"
-              dataBits="8"
-              stopBits="One"
-              enableWeather="false"
-              enableUpload="false"
-              enableGPS="true">
+              baudRate="19200">
          <dataFormat>
           <dataItems>
             <dataItem name="Log Number" type="Integer" />
@@ -51,43 +20,9 @@
           </dataItems>
         </dataFormat>
       </device>
-      <device name="IAQ"
-              portName="ttyAMA0"
-              baudRate="9600">
-        <dataFormat>
-          <dataItems>
-          <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
-          <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
-          <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
-          <dataItem name="PDV" type="Integer" priority="4"/>
-          <dataItem name="Tach1" type="Decimal" priority="5"/>
-          <dataItem name="Tach2" type="Decimal" priority="6"/>
-          <dataItem name="STemp" type="Decimal" priority="3"/>
-          <dataItem name="Date" type="DateTime"/>
-          <dataItem name="Time" type="DateTime" />
-          </dataItems>
-        </dataFormat>
-      </device>
-      <device name="IAQ-PC"
+      <device name="106"
               portName="ttyUSB0"
               baudRate="2400">
-        <dataFormat>
-          <dataItems>
-            <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
-            <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
-            <dataItem name="Cell Pressure" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="PDV" type="Integer" priority="4"/>
-            <dataItem name="Tach1" type="Decimal" priority="5"/>
-            <dataItem name="Tach2" type="Decimal" priority="6"/>
-            <dataItem name="STemp" type="Decimal" priority="3"/>
-            <dataItem name="Date" type="DateTime" />
-            <dataItem name="Time" type="DateTime" />
-          </dataItems>
-        </dataFormat>
-      </device>
-      <device name="106-L"
-              portName="ttyAMA0"
-              baudRate="9600">
         <dataFormat>
           <dataItems>
             <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
@@ -100,7 +35,7 @@
           </dataItems>
         </dataFormat>
       </device>
-      <device name="106-L-PC"
+      <device name="202/205"
               portName="ttyUSB0"
               baudRate="2400">
         <dataFormat>
@@ -108,16 +43,15 @@
             <dataItem name="O3" type="Decimal" units="ppb" priority="0"/>
             <dataItem name="Cell Temp" type="Decimal" units="C" priority="1"/>
             <dataItem name="Cell Press" type="Decimal" units="Torr" priority="2"/>
-            <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="3"/>
-            <dataItem name="PDV" type="Decimal" units="V" priority="4"/>
+            <dataItem name="Flow Rate" type="Integer" units="cc/min" priority="4"/>
             <dataItem name="Date" type="DateTime" />
             <dataItem name="Time" type="DateTime" />
           </dataItems>
         </dataFormat>
       </device>
       <device name="405"
-              portName="ttyAMA0"
-              baudRate="9600">
+              portName="ttyUSB0"
+              baudRate="2400">
         <dataFormat>
           <dataItems>
             <dataItem name="NO2" type="Decimal" units="ppb" priority="0"/>
