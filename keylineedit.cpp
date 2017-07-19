@@ -1,8 +1,11 @@
 #include "keylineedit.h"
 #include <QEvent>
+#include <QDebug>
 
-KeyLineEdit::KeyLineEdit(QWidget *parent)
+KeyLineEdit::KeyLineEdit(QString currentString, QWidget *parent)
 {
+    qDebug()<<"currentString to keypad:"<<currentString;
+    this->setText(currentString);
     keypad = new Keypad(this, false, parent);
 
     trigger = new QPushButton(this);

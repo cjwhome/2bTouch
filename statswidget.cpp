@@ -8,7 +8,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSize buttonSize(30, 30);
+    QSize buttonSize(40, 40);
 
     homeButton = new QPushButton(this);
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
@@ -47,11 +47,16 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     currentIndex = 0;
     widgets<<widgetForAvg();
     widgets<<widgetForOne();
+    //qDebug()<<"before widget for two";
+
     widgets<<widgetForTwo();
-    if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
+    //qDebug()<<"device name:"<<profile.getDevice_name();
+    //if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
+       // qDebug()<<"Widget for three";
         widgets<<widgetForThree();
 
-    }
+    //}
+
     widgets.at(currentIndex)->show();
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
 
@@ -95,6 +100,7 @@ void StatsWidget::homePressed() {
 
 QWidget* StatsWidget::widgetForAvg() {
     if(!avgWidget) {
+       // qDebug()<<"Avg widget setup";
         avgWidget = new QWidget(this);
         avgVLayout = new QVBoxLayout(avgWidget);
         avgNonRow = new QHBoxLayout(avgWidget);
@@ -134,6 +140,7 @@ QWidget* StatsWidget::widgetForAvg() {
 
 QWidget* StatsWidget::widgetForOne() {
     if(!oneWidget) {
+        //qDebug()<<"One widget setup";
         oneWidget = new QWidget(this);
         oneVLayout = new QVBoxLayout(oneWidget);
         oneARow = new QHBoxLayout(oneWidget);
@@ -164,7 +171,9 @@ QWidget* StatsWidget::widgetForOne() {
 }
 
 QWidget* StatsWidget::widgetForTwo() {
-    if(!twoWidget) {
+    //qDebug()<<"before if in widgetfortwo";
+    //if(!twoWidget) {
+        qDebug()<<"Two widget setup";
         twoWidget = new QWidget(this);
         twoVLayout = new QVBoxLayout(twoWidget);
         twoARow = new QHBoxLayout(twoWidget);
@@ -190,12 +199,13 @@ QWidget* StatsWidget::widgetForTwo() {
         twoBTitle->setFont(titleFont);
         twoBLabel->setFont(titleFont);
         twoWidget->hide();
-    }
+    //}
     return twoWidget;
 }
 
 QWidget* StatsWidget::widgetForThree() {
     if(!threeWidget) {
+        //qDebug()<<"Three widget setup";
         threeWidget = new QWidget(this);
         threeVLayout = new QVBoxLayout(threeWidget);
         threeARow = new QHBoxLayout(threeWidget);
@@ -279,7 +289,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     QString strVal;
     double val;
-
+   // qDebug()<<"Diagnostics start:";
     //Diagnostic A - A
     val = curr.at(profile->getDiagnosticA_position()).getDvalue();
 
@@ -287,28 +297,31 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     strVal = shortenString(QString::number(val));
     oneATitle->setText(profile->getDiagnosticA_name()+": ");
     oneALabel->setText(strVal+" "+profile->getDiagnosticA_units());
-
+    //qDebug()<<"Diagnostics 1";
     //Diagnostic A - B
     val = curr.at(profile->getDiagnosticB_position()).getDvalue();
     strVal = shortenString(QString::number(val));
     oneBTitle->setText(profile->getDiagnosticB_name()+": ");
     oneBLabel->setText(strVal+" "+profile->getDiagnosticB_units());
-
+    //qDebug()<<"Diagnostics 2";
     //Diagnostic B - A
     val = curr.at(profile->getDiagnosticC_position()).getDvalue();
+    //qDebug()<<"Value:"<<val;
     if(profile->getDevice_name()=="IAQ"||profile->getDevice_name()=="IAQ-PC"){
         val -= 273;
         if(val < 80) {
             twoALabel->setStyleSheet(badStylesheet);
         } else {
+            //qDebug()<<"good stylesheet";
             twoALabel->setStyleSheet(goodStylesheet);
         }
     }
+    //qDebug()<<"after if profile";
     //strVal = shortenString(QString::number(val));
     twoATitle->setText(profile->getDiagnosticC_name()+": ");
     //twoALabel->setText(strVal+" C"+profile->getDiagnosticC_units());
     twoALabel->setText(QString::number(val)+" "+profile->getDiagnosticC_units());
-
+//qDebug()<<"Diagnostics 3";
     //Diagnostic B - B
     val = curr.at(profile->getDiagnosticD_position()).getDvalue();
     //strVal = shortenString(QString::number(val));
@@ -317,16 +330,19 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
     twoBLabel->setText(QString::number(val)+" "+profile->getDiagnosticD_units());
     //qDebug()<<"stats13";
 //anything past here will kill the 106-L
-    //qDebug()<<"Number of columns:"<<profile->getNumber_of_columns();
+   //qDebug()<<"Number of columns:"<<profile->getNumber_of_columns();
+   // qDebug()<<"Diagnostics 4";
     if(profile->getNumber_of_columns()>7){
     //Diagnostic C - A
 
         //qDebug()<<"stats14";
         val = curr.at(profile->getDiagnosticE_position()).getDvalue();
+       // qDebug()<<"Vale:"<<val;
         strVal = shortenString(QString::number(val));
         threeATitle->setText(profile->getDiagnosticE_name()+": ");
         threeALabel->setText(strVal+" "+profile->getDiagnosticE_units());
     }
+   // qDebug()<<"Diagnostics 5";
  if(profile->getNumber_of_columns()>8){
     //Diagnostic C - B
     val = curr.at(profile->getDiagnosticF_position()).getDvalue();

@@ -25,3 +25,13 @@ void TwobTechDevice::setBaud_rate(int value)
     baud_rate = value;
 }
 
+QString TwobTechDevice::getDevice_name() const
+{
+    return device_name;
+}
+
+void TwobTechDevice::setDevice_name(const QString &value)
+{
+    device_name = value;
+}
+

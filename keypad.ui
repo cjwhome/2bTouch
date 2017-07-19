@@ -972,11 +972,24 @@ border-radius:10px;</string>
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
-     <width>451</width>
+     <width>161</width>
      <height>23</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>10</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use Keypad to enter new value</string>
    </property>
   </widget>
   <zorder>vbutton</zorder>
@@ -1018,6 +1031,7 @@ border-radius:10px;</string>
   <zorder>numbutton_4</zorder>
   <zorder>qbutton</zorder>
   <zorder>lineEdit</zorder>
+  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -68,7 +68,7 @@ void XmlDeviceReader::processDevice() {
     foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
         if (attr.name().toString() == QLatin1String("name")) {
 
-            twobTechDevice.device_name = attr.value().toString();
+            twobTechDevice.setDevice_name(attr.value().toString());
             //qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
         }else if(attr.name().toString() == QLatin1String("portName")){
             //qDebug()<<"Using port:"<<attr.value().toString();

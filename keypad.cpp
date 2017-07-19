@@ -1,7 +1,8 @@
 #include "keypad.h"
 #include "ui_keypad.h"
+#include <QDebug>
 
-Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
+Keypad::Keypad(QLineEdit *line, bool tgl,QWidget *parent) :
         QDialog(parent,Qt::FramelessWindowHint),
     ui(new Ui::Keypad)
 {
@@ -13,9 +14,9 @@ Keypad::Keypad(QLineEdit *line,bool tgl,QWidget *parent) :
     toggle = false;     //change this to true if want to set all first characters to uppercase
 
     t1= false;
-
+   // qDebug()<<"Line:"<<line->text();
     pad_edit=line;
-    //ui->lineEdit = pad_edit;
+    ui->lineEdit->setText(line->text());
 
     if(toggle)
 

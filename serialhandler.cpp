@@ -21,7 +21,7 @@ SerialHandler::SerialHandler(QThread *thr, QObject *parent) : QObject(parent) {
 
 void SerialHandler::writeSync(QString *dat) {
     if(dat == QString("v")) {
-        updateSettings();
+        //updateSettings();
     } else {
         dataList<<dat;
         if(currentConnectionType == SerialHandler::Synchronously) {
@@ -38,7 +38,7 @@ void SerialHandler::writeSync(QString *dat) {
 }
 
 
-void SerialHandler::write106(QString *dat){
+/*void SerialHandler::write106(QString *dat){
     QByteArray retData;
     bool notDone = true;
     QString sendChar("@");
@@ -53,7 +53,7 @@ void SerialHandler::write106(QString *dat){
         }
 
     }
-}
+}*/
 
 void SerialHandler::writeAsync(QString *dat) {
     currentConnectionType = SerialHandler::Asynchronously;
@@ -123,7 +123,7 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-    //qDebug()<<"Received new line from serial: "<<data;
+    qDebug()<<"Top received new line from serial: "<<data;
     //serialPort->flush();
     QString *retDataStr = new QString(data);
     retDataStr->remove('\r');
@@ -210,12 +210,12 @@ void SerialHandler::updateSettings() {
         writeAsync(new QString("v"));
         settings->setValue("InitSettings", 1);
     } else {
-        writeSync(new QString("c:" + settings->value("Zero").toString()));
-        writeSync(new QString("a:" + settings->value("Avg").toString()));
-        writeSync(new QString("v:" + settings->value("VOut").toString()));
-        writeSync(new QString("l:" + settings->value("Rel1On").toString()));
-        writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
-        writeSync(new QString("s:" + settings->value("Slope").toString()));
+        //writeSync(new QString("c:" + settings->value("Zero").toString()));
+        //writeSync(new QString("a:" + settings->value("Avg").toString()));
+        //writeSync(new QString("v:" + settings->value("VOut").toString()));
+        //writeSync(new QString("l:" + settings->value("Rel1On").toString()));
+        //writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
+        //writeSync(new QString("s:" + settings->value("Slope").toString()));
     }
 
 }

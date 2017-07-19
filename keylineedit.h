@@ -11,7 +11,7 @@
 class KeyLineEdit : public QLineEdit
 {
 public:
-    KeyLineEdit(QWidget *parent = 0);
+    KeyLineEdit(QString currentString, QWidget *parent = 0);
 
 private:
     Keypad *keypad;

@@ -99,7 +99,13 @@ MainWindow::MainWindow(QWidget *parent) :
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
 
-    topTimeLayout->addSpacing(400);
+    warningLabel = new QLabel("Warming Up", this);
+    warningLabel->setGeometry(35, 190, 400, 20);
+    warningLabel->setMinimumWidth(100);
+    warningLabel->setAlignment(Qt::AlignCenter);
+
+    topTimeLayout->addWidget(warningLabel);
+    topTimeLayout->addSpacing(300);
     //topTimeLayout->addWidget(current_date);
     //topTimeLayout->addSpacing(150);
     topTimeLayout->addWidget(current_time);
@@ -121,6 +127,9 @@ MainWindow::MainWindow(QWidget *parent) :
     verticalLayout->addSpacing(20);
     verticalLayout->addLayout(measurementDisplayLayoutArea);
     verticalLayout->addSpacing(45);
+    //verticalLayout->addSpacing(10);
+   // verticalLayout->addWidget(warningLabel);
+   // verticalLayout->addSpacing(10);
     verticalLayout->addWidget(horizontalFrame);
     verticalLayout->addSpacing(2);
     buttonLayout->addWidget(homeButton);
@@ -150,9 +159,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     //showStats = new ShowStats();
     //showStats->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    statsWidget = new StatsWidget(deviceProfile, this);
-    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+
 
     settingsView = new SettingsView();
     settingsView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
@@ -160,8 +167,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     settingsWidget = new SettingsWidget();
     settingsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(sendMsg(QString)));
+    connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(on_sendMsg(QString)));
     //connect(settingsWidget, SIGNAL(sendAMsg(QString*)), serialHandler, SLOT(writeAsync(QString*)));
+
+
 
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
@@ -170,7 +179,14 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
+    statsWidget = new StatsWidget(deviceProfile, this);
+    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+    //qDebug()<<"After stats widget creation";
+
     setupSerial();
+
+
 
     msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
     this->setStyleSheet(msgBoxStyle);
@@ -182,7 +198,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon icon(pixmap);
     usbIcon = new QPushButton(this);
     usbIcon->setIcon(icon);
-    usbIcon->setGeometry(15, 20, 20, 20);
+    //usbIcon->setGeometry(15, 20, 20, 20);
+    usbIcon->setGeometry(35, 20, 40, 20);
     usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
 
@@ -190,37 +207,36 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(usbTimer, SIGNAL(timeout()), this, SLOT(usbTimerTick()));
     usbTimer->start(5000);
 
-    QPixmap errorPix(":/icons/pics/error-icon.png");
+    /*QPixmap errorPix(":/icons/pics/error-icon.png");
     QIcon eIc(errorPix);
     errorIcon = new QPushButton(this);
     errorIcon->setIcon(eIc);
     errorIcon->setGeometry(100, 20, 20, 20);
     errorIcon->setFixedSize(QSize(20, 20));
-    errorIcon->setIconSize(QSize(20, 20));
+    errorIcon->setIconSize(QSize(20, 20));*/
 
-    cpuIcon = new QPushButton(this);
-    cpuIcon->setGeometry(35, 20, 40, 20);
-    cpuIcon->setFixedSize(QSize(40, 20));
-    cpuIcon->setText(getCpuUsage());
+    //cpuIcon = new QPushButton(this);
+    //cpuIcon->setGeometry(35, 20, 40, 20);
+    //cpuIcon->setFixedSize(QSize(40, 20));
+    //cpuIcon->setText(getCpuUsage());
 
-    QPixmap diskPix(":/icons/pics/disk-error-icon.png");
-    QIcon diskIc(diskPix);
-    diskSpaceIcon = new QPushButton(this);
-    diskSpaceIcon->setIcon(diskIc);
-    diskSpaceIcon->setGeometry(75, 20, 20, 20);
-    diskSpaceIcon->setFixedSize(QSize(20, 20));
-    diskSpaceIcon->setIconSize(QSize(20, 20));
+    //QPixmap diskPix(":/icons/pics/disk-error-icon.png");
+    //QIcon diskIc(diskPix);
+   // diskSpaceIcon = new QPushButton(this);
+   // diskSpaceIcon->setIcon(diskIc);
+   // diskSpaceIcon->setGeometry(75, 20, 20, 20);
+   // diskSpaceIcon->setFixedSize(QSize(20, 20));
+   // diskSpaceIcon->setIconSize(QSize(20, 20));
 
-    warningIcon = new QPushButton(this);
+   /* warningIcon = new QPushButton(this);
     warningIcon->setIcon(eIc);
     warningIcon->setGeometry(15, 190, 20, 20);
-    warningIcon->setIconSize(QSize(20, 20));
+    warningIcon->setIconSize(QSize(20, 20));*/
 
-    warningLabel = new QLabel("Default Text", this);
-    warningLabel->setGeometry(35, 190, 400, 20);
 
-    warningIcon->hide();
-    warningLabel->hide();
+
+   // warningIcon->hide();
+   // warningLabel->hide();
 
     errorTimer= new QTimer(this);
     connect(errorTimer, SIGNAL(timeout()), this, SLOT(errorTimerTick()));
@@ -232,7 +248,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //statusRow->addWidget(errorIcon);
     //QString test("blah");
     //serialHandler->write106(&test);
-    this->i2c_test();
+    //this->i2c_test();
 }
 
 MainWindow::~MainWindow()
@@ -243,9 +259,9 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(3);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
-    deviceProfile.setDevice_name(twobTechDevice.device_name);
+    deviceProfile.setDevice_name(twobTechDevice.getDevice_name());
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
     deviceProfile.setBaud_rate(twobTechDevice.getBaud_rate());
     //qDebug()<<"Device Profile name: "<<deviceProfile.getDevice_name();
@@ -298,7 +314,7 @@ void MainWindow::createDevice(){
     }
     qDebug()<<"Finished Profile Setup";
     deviceProfile.setNumber_of_columns(i);
-    //qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
+    qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
 
 }
 
@@ -373,11 +389,13 @@ bool MainWindow::parseDataLine(QString dLine){
         }
 
         tempDate = QDateTime::fromString(fields[deviceProfile.getDate_position()]+fields[deviceProfile.getTime_position()], "dd/MM/yyhh:mm:ss");
+
         if(tempDate.date().year()<2000)
             tempDate = tempDate.addYears(100);      //only if century is not part of the format
 
         SerialDataItem serialDataItemb;
         serialDataItemb.setDateTime(tempDate);
+
         parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
 
         if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS){
@@ -491,8 +509,8 @@ void MainWindow::updateDisplay(void){
 
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
 
-    current_value = avg;//tempSerialDataItem.getDvalue();
-
+    //current_value = avg;//tempSerialDataItem.getDvalue();
+current_value = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
         main_label->setText("O<sub>3</sub>: ");
@@ -512,13 +530,14 @@ void MainWindow::updateDisplay(void){
 
     main_measurement_display->setText(mesStr);
     main_units_label->setText(" "+deviceProfile.getMain_display_units());
-
+    //qDebug()<<"date position:"<<deviceProfile.getDate_position();
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
-
+//qDebug()<<"Current time:"<<tempSerialDataItem.getDateTime().toString("dd/mm/yy");
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
+
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
-
+    //qDebug()<<"Before statswidget";
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
      //qDebug()<<"Here9";
     //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
@@ -636,7 +655,8 @@ void MainWindow::listFonts(void){
     }
 }
 
-void MainWindow::sendMsg(QString msg) {
+void MainWindow::on_sendMsg(QString msg) {
+    qDebug()<<"Slot from send message";
     serialHandler->writeSync(new QString(msg));
 }
 
@@ -671,14 +691,15 @@ void MainWindow::errorTimerTick() {
             SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
             double val = item.getDvalue();
             if(val < (80 + 273)) {
-                errorIcon->show();
-                warningIcon->show();
-                warningLabel->setText("Waiting For The Heater To Warm Up");
-                warningLabel->show();
+                //errorIcon->show();
+                //warningIcon->show();
+                warningLabel->setText("Status: Warming up");
+                //warningLabel->show();
             } else {
-                errorIcon->hide();
-                warningIcon->hide();
-                warningLabel->hide();
+                //errorIcon->hide();
+                //warningIcon->hide();
+                //warningLabel->hide();
+                warningLabel->setText("Status: OK");
             }
         }
     }

@@ -58,7 +58,7 @@ signals:
 
 public slots:
     void clearPlotData();
-    void sendMsg(QString msg);
+    void on_sendMsg(QString msg);
     
 private slots:
     void newDataLine(QString dLine);

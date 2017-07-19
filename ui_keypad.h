@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 
@@ -62,6 +63,7 @@ public:
     QPushButton *numbutton_3;
     QPushButton *numbutton_4;
     QLineEdit *lineEdit;
+    QLabel *label;
 
     void setupUi(QDialog *Keypad)
     {
@@ -342,7 +344,10 @@ public:
 "border-radius:10px;"));
         lineEdit = new QLineEdit(Keypad);
         lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        lineEdit->setGeometry(QRect(10, 10, 451, 23));
+        lineEdit->setGeometry(QRect(20, 10, 161, 23));
+        label = new QLabel(Keypad);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(200, 10, 261, 21));
         vbutton->raise();
         zbutton->raise();
         cbutton->raise();
@@ -382,6 +387,7 @@ public:
         numbutton_4->raise();
         qbutton->raise();
         lineEdit->raise();
+        label->raise();
 
         retranslateUi(Keypad);
 
@@ -429,6 +435,7 @@ public:
         question->setText(QApplication::translate("Keypad", "A", 0));
         numbutton_3->setText(QApplication::translate("Keypad", "A", 0));
         numbutton_4->setText(QApplication::translate("Keypad", "A", 0));
+        label->setText(QApplication::translate("Keypad", "Use Keypad to enter new value", 0));
     } // retranslateUi
 
 };

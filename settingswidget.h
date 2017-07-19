@@ -78,7 +78,7 @@ private:
     //Keypad *calOffPad;
 
     //Averaging
-    QWidget *avgWidget;
+   /* QWidget *avgWidget;
     QVBoxLayout *avgVLayout;
     QLabel *avgTitle;
     QHBoxLayout *avgRowOne;
@@ -87,7 +87,7 @@ private:
     QHBoxLayout *avgRowTwo;
     QPushButton *avgOneMinButton;
     QPushButton *avgOneHourButton;
-    QIcon *avgIcon;
+    QIcon *avgIcon;*/
 
     //Relay One
     QWidget *rOWidget;
@@ -109,7 +109,7 @@ private:
     QMessageBox::StandardButton rOHelpBox;
 
     //Relay Two
-    QWidget *rTWidget;
+   /* QWidget *rTWidget;
     QVBoxLayout *rTVLayout;
     QLabel *rTTitle;
     QPushButton *rTHelpButton;
@@ -120,7 +120,7 @@ private:
     QPushButton *rTDiagnosticsButton;
     QLabel *rTCompLabel;
     QPushButton *rTDiagnosticButtons[3][2];
-    QMessageBox *rTHelp;
+    QMessageBox *rTHelp;*/
 
     //Voltage
     QWidget *voltWidget;
@@ -206,19 +206,19 @@ private slots:
     //Calibration
     void calSubmitReleased();
     //Avergaing
-    void twoSecPressed();
+    /*void twoSecPressed();
     void tenSecPressed();
     void oneMinPressed();
-    void oneHourPressed();
+    void oneHourPressed();*/
     //Relay One
     //void rOLowPressed();
     //void rOHighPressed();
     void rOSubmitPressed();
     void rOHelpPressed();
     //Relay Two
-    void rTOzonePresed();
+   /* void rTOzonePresed();
     void rTDiagnosticsPressed();
-    void rTHelpPressed();
+    void rTHelpPressed();*/
     //Volt
     void voltSubmitPressed();
     //Files
@@ -235,9 +235,9 @@ private slots:
 
     QWidget* widgetForLanding();
     QWidget* widgetForCal();
-    QWidget* widgetForAvg();
+    //QWidget* widgetForAvg();
     QWidget* widgetForRelayOne();
-    QWidget* widgetForRelayTwo();
+    //QWidget* widgetForRelayTwo();
     QWidget* widgetForVoltage();
     QWidget* widgetForFiles();
     QWidget* widgetForDate();
@@ -245,9 +245,9 @@ private slots:
     QWidget* widgetForPassChange();
 
     void showCal();
-    void showAvg();
+    //void showAvg();
     void showRO();
-    void showRT();
+    //void showRT();
     void showVolt();
     void showFiles();
     void showDate();

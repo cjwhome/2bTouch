@@ -10,7 +10,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
-
+    qDebug()<<"before initializing views";
     initializeViews();
     settings = new QSettings("2B Technologies", "2B Touch");
 
@@ -46,6 +46,8 @@ void SettingsWidget::initializeViews() {
 
     QWidget *landing = widgetForLanding();
     mainLayout->addWidget(landing);
+    qDebug()<<"initialize views in settings widget";
+
 }
 
 QWidget* SettingsWidget::widgetForLanding() {
@@ -55,7 +57,10 @@ QWidget* SettingsWidget::widgetForLanding() {
     landingPassTitle = new QLabel("SETTINGS", landingWidget);
     landingPassRow = new QHBoxLayout(landingWidget);
     landingPassPrompt = new QLabel("Password: ", landingWidget);
-    landingPassField = new KeyLineEdit(landingWidget);
+    landingPassPrompt->setMaximumWidth(150);
+    QString pass;
+    landingPassField = new KeyLineEdit(pass,landingWidget);
+    landingPassField->setMaximumWidth(100);
     landingPassSubmit = new QPushButton(landingWidget);
     landingPassSubmit->setText("GO");
     //TODO: ICON
@@ -91,10 +96,21 @@ QWidget* SettingsWidget::widgetForCal() {
     calTitle = new QLabel("CALIBRATION");
     calSlopeRow = new QHBoxLayout(calWidget);
     calSlopeLabel = new QLabel("Slope: ");
-    calSlopeField = new KeyLineEdit(calWidget);
+    calSlopeLabel->setMaximumWidth(100);
+    qDebug()<<"before slopestring";
+    QString slopeString;
+    slopeString.append(settings->value("Slope").toString());
+    qDebug()<<"after appending";
+    calSlopeField = new KeyLineEdit(slopeString, calWidget);
+    qDebug()<<"after making keylineedit";
+    calSlopeField->setMaximumWidth(50);
     calOffsetRow= new QHBoxLayout(calWidget);
     calOffsetLabel= new QLabel("Offset: ");
-    calOffsetField = new KeyLineEdit(calWidget);
+    calOffsetLabel->setMaximumWidth(100);
+    QString offsetString;
+    offsetString.append(settings->value("Zero").toString());
+    calOffsetField = new KeyLineEdit(offsetString, calWidget);
+    calOffsetField->setMaximumWidth(50);
     calSubmit = new QPushButton("SAVE", calWidget);
     //Styling
     calTitle->setFont(titleFont);
@@ -128,7 +144,7 @@ QWidget* SettingsWidget::widgetForCal() {
     return calWidget;
 }
 
-QWidget* SettingsWidget::widgetForAvg() {
+/*QWidget* SettingsWidget::widgetForAvg() {
     //Averaging
     avgWidget = new QWidget(this);
     avgVLayout = new QVBoxLayout(avgWidget);
@@ -178,19 +194,28 @@ QWidget* SettingsWidget::widgetForAvg() {
     homeButton->setParent(avgWidget);
 
     return avgWidget;
-}
+}*/
 
 QWidget* SettingsWidget::widgetForRelayOne() {
     //RelayOne
     rOWidget = new QWidget(this);
     rOVLayout = new QVBoxLayout(rOWidget);
-    relayOneTitle = new QLabel("RELAY ONE", rOWidget);
+    relayOneTitle = new QLabel("RELAY", rOWidget);
     rOLowRow = new QHBoxLayout(rOWidget);
     rOLowLabel = new QLabel("↓LOW", rOWidget);
-    rOLowField = new KeyLineEdit(rOWidget);
+    QString lowString;
+
+    lowString.append(settings->value("RelOn").toString());
+    rOLowField = new KeyLineEdit(lowString,rOWidget);
+    rOLowField->setMaximumWidth(50);
+    rOLowLabel->setMaximumWidth(100);
     rOHighRow = new QHBoxLayout(rOWidget);
     rOHighLabel = new QLabel("HIGH↑", rOWidget);
-    rOHighField = new KeyLineEdit(rOWidget);
+    rOHighLabel->setMaximumWidth(100);
+    QString highString;
+    highString.append(settings->value("RelOff").toString());
+    rOHighField = new KeyLineEdit(highString,rOWidget);
+    rOHighField->setMaximumWidth(50);
     rOSubmitButton = new QPushButton("SAVE", rOWidget);
     //rORow = new QHBoxLayout(rOWidget);
     //rOLowButton = new QPushButton("↓LOW", rOWidget);
@@ -228,11 +253,11 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     connect(rOSubmitButton, SIGNAL(released()), this, SLOT(rOSubmitPressed()));
     connect(rOHelpButton, SIGNAL(released()), this, SLOT(rOHelpPressed()));
 
-    float low = settings->value("Rel1On").toFloat();
+    float low = settings->value("RelOn").toFloat();
     low = low / 10;
     rOLowField->setText(QString::number(low));
 
-    float high = settings->value("Rel1Off").toFloat();
+    float high = settings->value("RelOff").toFloat();
     high = high / 10;
     rOHighField->setText(QString::number(high));
 
@@ -244,7 +269,7 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     return rOWidget;
 }
 
-QWidget* SettingsWidget::widgetForRelayTwo() {
+/*QWidget* SettingsWidget::widgetForRelayTwo() {
     //Relay Two
     rTWidget = new QWidget(this);
     rTVLayout = new QVBoxLayout(rTWidget);
@@ -284,7 +309,7 @@ QWidget* SettingsWidget::widgetForRelayTwo() {
     homeButton->setParent(rTWidget);
 
     return rTWidget;
-}
+}*/
 
 QWidget* SettingsWidget::widgetForVoltage() {
     //Voltage
@@ -292,8 +317,12 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltVLayout = new QVBoxLayout(voltWidget);
     voltTitle = new QLabel("ANALOG OUTPUT", voltWidget);
     voltVoltLabel = new QLabel("2.5 V & 20 mA", voltWidget);
+    voltVoltLabel->setMaximumWidth(250);
     voltPPBRow = new QHBoxLayout(voltWidget);
-    voltPPBField = new KeyLineEdit(voltWidget);
+    QString voltString;
+    voltString.append(settings->value("VOut").toString());
+    voltPPBField = new KeyLineEdit(voltString,voltWidget);
+    voltPPBField->setMaximumWidth(50);
     voltPPBLabel = new QLabel("ppb", voltWidget);
     voltSubmitButton = new QPushButton("SAVE", voltWidget);
     //Styling
@@ -303,7 +332,8 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     //Voltage - Fill Layout
     voltVLayout->addWidget(voltTitle);
-    voltVLayout->addWidget(voltVoltLabel);
+    //voltVLayout->addWidget(voltVoltLabel);
+    voltPPBRow->addWidget(voltVoltLabel);
     voltPPBRow->addWidget(voltPPBField);
     voltPPBRow->addWidget(voltPPBLabel);
     voltVLayout->addLayout(voltPPBRow);
@@ -340,7 +370,7 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesTable->setShowGrid(false);
 
     QStringList extFilter("*.csv");
-    QDir currentDir = QDir("/"+device.device_name);
+    QDir currentDir = QDir("/"+device.getDevice_name());
     QStringList list = currentDir.entryList(extFilter);
     for(int i = 0; i < list.length(); i++) {
         QTableWidgetItem *fileNameItem = new QTableWidgetItem(list.at(i));
@@ -348,7 +378,7 @@ QWidget* SettingsWidget::widgetForFiles() {
         filesTable->insertRow(row);
         filesTable->setItem(row, 0, fileNameItem);
 
-        QFileInfo fileInfo("/"+device.device_name+"/"+list.at(i));
+        QFileInfo fileInfo("/"+device.getDevice_name()+"/"+list.at(i));
         QString date = fileInfo.created().toString("MM/dd/yy");
         QTableWidgetItem *dateItem = new QTableWidgetItem(date);
         filesTable->setItem(row, 1, dateItem);
@@ -388,10 +418,14 @@ QWidget* SettingsWidget::widgetForDate() {
     dateTitle = new QLabel("DATE & TIME", dateWidget);
     dateDateRow = new QHBoxLayout(dateWidget);
     dateDateLabel = new QLabel("Date (DDMMYY): ", dateWidget);
-    dateDateField = new KeyLineEdit(dateWidget);
+    QString dateString;
+    dateString.append("DDMMYY");
+    dateDateField = new KeyLineEdit(dateString,dateWidget);
     dateTimeRow = new QHBoxLayout(dateWidget);
     dateTimeLabel = new QLabel("Time (HHMMSS): ", dateWidget);
-    dateTimeField = new KeyLineEdit(dateWidget);
+    QString timeString;
+    timeString.append("HHMMSS");
+    dateTimeField = new KeyLineEdit(timeString,dateWidget);
     dateSubmitButton = new QPushButton("SAVE", dateWidget);
 
     dateTitle->setFont(titleFont);
@@ -468,7 +502,9 @@ QWidget* SettingsWidget::widgetForNet() {
 
         connPassRow = new QHBoxLayout(connWidget);
         connPassTitle = new QLabel("Password: ", connWidget);
-        connPassField = new KeyLineEdit(connWidget);
+        QString passString;
+        passString.append("****");
+        connPassField = new KeyLineEdit(passString,connWidget);
         connSubmitButton = new QPushButton("Connect", connWidget);
 
         connVLayout->addWidget(connTitle);
@@ -496,10 +532,12 @@ QWidget* SettingsWidget::widgetForPassChange() {
     cpTitle = new QLabel("PASSWORD", cpWidget);
     cpPassRow = new QHBoxLayout(cpWidget);
     cpPassLabel = new QLabel("Password: ", cpWidget);
-    cpPassText = new KeyLineEdit(cpWidget);
+    QString passString;
+    passString.append("****");
+    cpPassText = new KeyLineEdit(passString,cpWidget);
     cpConfRow = new QHBoxLayout(cpWidget);
     cpConfirmLabel = new QLabel("Confirm: ", cpWidget);
-    cpConfText = new KeyLineEdit(cpWidget);
+    cpConfText = new KeyLineEdit(passString,cpWidget);
     cpSaveButton = new QPushButton("SAVE", cpWidget);
     //Styling
     cpTitle->setFont(titleFont);
@@ -538,6 +576,7 @@ void SettingsWidget::homePressed() {
 
 void SettingsWidget::showCal() {
     clearView();
+    qDebug()<<"in show cal before making widget";
     QWidget *cal = widgetForCal();
 
     QPushButton *left = new QPushButton(cal);
@@ -546,7 +585,8 @@ void SettingsWidget::showCal() {
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showAvg()));
+    //connect(right, SIGNAL(released()), this, SLOT(showAvg()));
+    connect(right, SIGNAL(released()), this, SLOT(showRO()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -564,7 +604,7 @@ void SettingsWidget::showCal() {
     mainLayout->addWidget(w);
 }
 
-void SettingsWidget::showAvg() {
+/*void SettingsWidget::showAvg() {
     clearView();
     QWidget *avg = widgetForAvg();
 
@@ -590,7 +630,7 @@ void SettingsWidget::showAvg() {
 
     homeButton->setParent(w);
     mainLayout->addWidget(w);
-}
+}*/
 
 void SettingsWidget::showRO() {
     clearView();
@@ -598,7 +638,8 @@ void SettingsWidget::showRO() {
 
     QPushButton *left = new QPushButton(ro);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showAvg()));
+    //connect(left, SIGNAL(released()), this, SLOT(showAvg()));
+    connect(left, SIGNAL(released()), this, SLOT(showCal()));
 
     QPushButton *right = new QPushButton(ro);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -620,7 +661,7 @@ void SettingsWidget::showRO() {
     mainLayout->addWidget(w);
 }
 
-void SettingsWidget::showRT() {
+/*void SettingsWidget::showRT() {
     clearView();
     QWidget *rt = widgetForRelayTwo();
 
@@ -646,7 +687,7 @@ void SettingsWidget::showRT() {
 
     homeButton->setParent(w);
     mainLayout->addWidget(w);
-}
+}*/
 
 void SettingsWidget::showVolt() {
     clearView();
@@ -795,6 +836,7 @@ void SettingsWidget::clearView() {
 }
 
 void SettingsWidget::landingSubmit() {
+
     QString passTest = landingPassField->text();
     QString password = settings->value("Password", "password").toString();
     qDebug()<<"Password = "<<password;
@@ -818,7 +860,7 @@ void SettingsWidget::calSubmitReleased() {
     settings->setValue("Slope", calSlopeField->text());
 }
 
-void SettingsWidget::twoSecPressed() {
+/*void SettingsWidget::twoSecPressed() {
     sendMessage("a:0");
     settings->setValue("Avg", "0");
     avgTwoSecButton->setStyleSheet(selButtonStyle);
@@ -852,7 +894,7 @@ void SettingsWidget::oneHourPressed() {
     avgTenSecButton->setStyleSheet(regButtonStyle);
     avgOneMinButton->setStyleSheet(regButtonStyle);
     avgOneHourButton->setStyleSheet(selButtonStyle);
-}
+}*/
 
 /*void SettingsWidget::rOLowPressed() {
     sendMessage("o:a");
@@ -865,22 +907,22 @@ void SettingsWidget::rOHighPressed() {
 void SettingsWidget::rOSubmitPressed() {
     float lowf = rOLowField->text().toFloat();
     QString low = QString::number(lowf * 10);
-    settings->setValue("Rel1On", low);
+    settings->setValue("RelOn", low);
     sendMessage("l:"+low);
 
     float highf = rOHighField->text().toFloat();
     QString high = QString::number(highf * 10);
-    settings->setValue("Rel1Off", high);
+    settings->setValue("RelOff", high);
     sendMessage("h:"+high);
 }
 
 void SettingsWidget::rOHelpPressed() {
     QMessageBox msg;
-    msg.setText("This is the text for the relay one help message");
+    msg.setText("LOW is the O3 in ppb that the relay will remain ON until. HIGH is the O3 in ppb that the relay will turn OFF.");
     msg.exec();
 }
 
-void SettingsWidget::rTOzonePresed()  {
+/*void SettingsWidget::rTOzonePresed()  {
     sendMessage("t:a");
 }
 
@@ -892,7 +934,7 @@ void SettingsWidget::rTHelpPressed() {
     QMessageBox msg;
     msg.setText("This is the text for the relay two help message");
     msg.exec();
-}
+}*/
 
 void SettingsWidget::voltSubmitPressed() {
     QString msg = "v:"+voltPPBField->text();
@@ -901,15 +943,15 @@ void SettingsWidget::voltSubmitPressed() {
 
 void SettingsWidget::copyAllPressed() {
     QStringList extFilter("*.csv");
-    QDir currentDir = QDir("/"+device.device_name);
+    QDir currentDir = QDir("/"+device.getDevice_name());
     QStringList list = currentDir.entryList(extFilter);
     FileWriter fileWriter;
-    fileWriter.createDataFolder(device.device_name);
+    fileWriter.createDataFolder(device.getDevice_name());
     QString filePath = fileWriter.getFull_data_path();
     qDebug()<<filePath;
     bool success = true;
     for(int i = 0; i < list.length(); i++) {
-        QString src = "/"+device.device_name+"/"+list.at(i);
+        QString src = "/"+device.getDevice_name()+"/"+list.at(i);
         QString dest = filePath+list.at(i);
         qDebug()<<src;
         qDebug()<<dest;
@@ -931,12 +973,12 @@ void SettingsWidget::copyAllPressed() {
 
 void SettingsWidget::copySelectedPressed() {
     FileWriter fileWriter;
-    fileWriter.createDataFolder(device.device_name);
+    fileWriter.createDataFolder(device.getDevice_name());
     QString filePath = fileWriter.getFull_data_path();
 
     bool success = true;
     for(int i = 0; i < filesTable->selectedItems().length(); i++) {
-        QString src = "/"+ device.device_name + "/" + filesTable->selectedItems().at(i)->text();
+        QString src = "/"+ device.getDevice_name() + "/" + filesTable->selectedItems().at(i)->text();
         QString dest = filePath+"/"+filesTable->selectedItems().at(i)->text();
         if (QFile::copy(src, dest)) {
             qDebug()<<"Data copied successfully";
@@ -965,11 +1007,11 @@ void SettingsWidget::deleteAllPressed() {
             return;
         case QMessageBox::Ok:
             QStringList extFilter("*.csv");
-            QDir currentDir = QDir("/"+device.device_name);
+            QDir currentDir = QDir("/"+device.getDevice_name());
             QStringList list = currentDir.entryList(extFilter);
 
             for(int i = 0; i < list.length(); i++) {
-                QString src = "/" + device.device_name + "/" + list.at(i);
+                QString src = "/" + device.getDevice_name() + "/" + list.at(i);
                 QFile file(src);
                 file.remove();
             }
@@ -989,7 +1031,7 @@ void SettingsWidget::deleteSelectedPressed() {
             return;
         case QMessageBox::Ok:
             for(int i = 0; i < filesTable->selectedItems().length(); i++) {
-                QString src = "/" + device.device_name + "/" + filesTable->selectedItems().at(i)->text();
+                QString src = "/" + device.getDevice_name() + "/" + filesTable->selectedItems().at(i)->text();
                 QFile file(src);
                 file.remove();
             }
