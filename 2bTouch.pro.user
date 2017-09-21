@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.5.1, 2017-07-18T10:57:56. -->
+<!-- Written by QtCreator 3.5.1, 2017-09-19T17:25:28. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -8,7 +8,7 @@
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
-  <value type="int">2</value>
+  <value type="int">0</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.EditorSettings</variable>
@@ -239,8 +239,8 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">2bTouch</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/craig/Documents/2bTouch-GitTest/2bTouch/2bTouch.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">2bTouch2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/craig/QtProjects/2bTouch/2bTouch.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">2bTouch.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
@@ -549,15 +549,15 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">RemoteLinux.DirectUploadStep</value>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedFiles">
+       <value type="QString">/home/craig/Documents/2bTouch-IAQ/armadillo/2bTouch</value>
+       <value type="QString">/home/craig/Documents/2bTouch-IAQ/armadillo/2bTouch</value>
        <value type="QString">/home/craig/QtProjects/2bTouch/2bTouch</value>
-       <value type="QString">/home/craig/Documents/2bTouch-IAQ/armadillo/2bTouch</value>
-       <value type="QString">/home/craig/Documents/2bTouch-IAQ/armadillo/2bTouch</value>
        <value type="QString">/home/craig/Documents/2bTouch-GitTest/build-2bTouch-Armadillo-Build/2bTouch</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedHosts">
-       <value type="QString">10.0.5.146</value>
-       <value type="QString">10.0.5.146</value>
        <value type="QString">10.0.5.127</value>
+       <value type="QString">10.0.5.146</value>
+       <value type="QString">10.0.5.146</value>
        <value type="QString">10.0.5.146</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedRemotePaths">
@@ -573,9 +573,9 @@
        <value type="QString"></value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedTimes">
-       <value type="QDateTime">2016-09-01T16:20:45</value>
-       <value type="QDateTime">2016-07-29T15:15:34</value>
        <value type="QDateTime">2016-07-27T16:04:34</value>
+       <value type="QDateTime">2016-07-29T15:15:34</value>
+       <value type="QDateTime">2016-09-01T16:20:45</value>
        <value type="QDateTime">2016-07-18T16:34:36</value>
       </valuelist>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.IgnoreMissingFiles">false</value>

@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    //play_jingle();
     started_file = false;
     //this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
@@ -259,7 +259,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(2);
 
     deviceProfile.setDevice_name(twobTechDevice.getDevice_name());
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -787,4 +787,25 @@ void MainWindow::i2c_test(void){
     }else{
         qDebug()<<"Opened the i2c bus";
     }
+}
+
+void MainWindow::play_jingle(void){
+    //check if sound file exists
+
+    QString file_path = "/jingle.wav";
+    if(!QDir(file_path).exists()){
+        qDebug()<<"Could not find file";
+    }else{
+
+        QString prog = "/bin/bash";//shell
+
+        QStringList arguments;
+
+
+        arguments << "-c" << "aplay " + file_path;
+        QProcess *process = new QProcess();
+        process->start(prog , arguments);
+        //process->waitForFinished();
+    }
+
 }

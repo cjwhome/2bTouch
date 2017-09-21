@@ -45,19 +45,20 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     mainLayout->addWidget(right);
 
     currentIndex = 0;
-    widgets<<widgetForAvg();
+    //widgets<<widgetForAvg();
     widgets<<widgetForOne();
-    //qDebug()<<"before widget for two";
+    qDebug()<<"before widget for two";
 
     widgets<<widgetForTwo();
     //qDebug()<<"device name:"<<profile.getDevice_name();
     //if(profile.getDevice_name()=="IAQ"||profile.getDevice_name()=="IAQ-PC"){
-       // qDebug()<<"Widget for three";
+        qDebug()<<"Widget for three";
         widgets<<widgetForThree();
 
     //}
-
+    qDebug()<<"Before showing first widget";
     widgets.at(currentIndex)->show();
+    qDebug()<<"after showing first widget";
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
 
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
@@ -66,6 +67,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     titleFont = QFont("Times serif", 20, 2);
 
     this->setStyleSheet(goodStylesheet);
+    qDebug()<<"after setstylesheet";
 }
 
 void StatsWidget::leftPressed() {
@@ -139,8 +141,9 @@ QWidget* StatsWidget::widgetForAvg() {
 }
 
 QWidget* StatsWidget::widgetForOne() {
-    if(!oneWidget) {
-        //qDebug()<<"One widget setup";
+    qDebug()<<"One widget setup before";
+    //if(!oneWidget) {
+        qDebug()<<"One widget setup";
         oneWidget = new QWidget(this);
         oneVLayout = new QVBoxLayout(oneWidget);
         oneARow = new QHBoxLayout(oneWidget);
@@ -166,7 +169,7 @@ QWidget* StatsWidget::widgetForOne() {
         oneBTitle->setFont(titleFont);
         oneBLabel->setFont(titleFont);
         oneWidget->hide();
-    }
+    //}
     return oneWidget;
 }
 
@@ -205,7 +208,7 @@ QWidget* StatsWidget::widgetForTwo() {
 
 QWidget* StatsWidget::widgetForThree() {
     if(!threeWidget) {
-        //qDebug()<<"Three widget setup";
+        qDebug()<<"Three widget setup";
         threeWidget = new QWidget(this);
         threeVLayout = new QVBoxLayout(threeWidget);
         threeARow = new QHBoxLayout(threeWidget);
@@ -230,6 +233,7 @@ QWidget* StatsWidget::widgetForThree() {
         threeALabel->setFont(titleFont);
         threeWidget->hide();
     }
+    qDebug()<<"Leaving widget for three";
     return threeWidget;
 }
 

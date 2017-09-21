@@ -196,6 +196,7 @@ private:
     QSettings *settings;
 
     TwobTechDevice device;
+    bool firstTimeViewed;
 
 private slots:
     void initializeViews();
@@ -233,7 +234,7 @@ private slots:
     //Change Password
     void changePassPressed();
 
-    QWidget* widgetForLanding();
+    void widgetForLanding();
     QWidget* widgetForCal();
     //QWidget* widgetForAvg();
     QWidget* widgetForRelayOne();

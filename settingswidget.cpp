@@ -10,13 +10,18 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
+    firstTimeViewed = true;
+     settings = new QSettings("2B Technologies", "2B Touch");
     qDebug()<<"before initializing views";
     initializeViews();
-    settings = new QSettings("2B Technologies", "2B Touch");
+
+
 
     XmlDeviceReader *reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
     device = reader->getADevice(1);
+
+
 }
 
 SettingsWidget::~SettingsWidget()
@@ -44,49 +49,44 @@ void SettingsWidget::initializeViews() {
     titleFont = QFont("Times serif", 30, 4);
     labelFont = QFont("Times serif", 15, 2);
 
-    QWidget *landing = widgetForLanding();
-    mainLayout->addWidget(landing);
+    widgetForLanding();
+
+    //mainLayout->addWidget(landing);
+
     qDebug()<<"initialize views in settings widget";
 
 }
 
-QWidget* SettingsWidget::widgetForLanding() {
-    //Landing Page - Create Objects
-    landingWidget = new QWidget(this);
-    landingVLayout = new QVBoxLayout(landingWidget);
-    landingPassTitle = new QLabel("SETTINGS", landingWidget);
-    landingPassRow = new QHBoxLayout(landingWidget);
-    landingPassPrompt = new QLabel("Password: ", landingWidget);
-    landingPassPrompt->setMaximumWidth(150);
-    QString pass;
-    landingPassField = new KeyLineEdit(pass,landingWidget);
-    landingPassField->setMaximumWidth(100);
-    landingPassSubmit = new QPushButton(landingWidget);
-    landingPassSubmit->setText("GO");
-    //TODO: ICON
-    //Landing Page - Style Layout
-    landingPassTitle->setFont(titleFont);
-    landingPassTitle->setAlignment(Qt::AlignHCenter);
-    landingPassPrompt->setFont(labelFont);
-    //landingPassField->setEchoMode(QLineEdit::Password);
-    landingPassSubmit->setFixedHeight(30);
-    //Landing Page - Fill Layout
-    landingVLayout->addWidget(landingPassTitle);
-    landingPassRow->addWidget(landingPassPrompt);
-    landingPassRow->addWidget(landingPassField);
-    landingVLayout->addLayout(landingPassRow);
-    landingVLayout->addWidget(landingPassSubmit);
-    landingVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-    landingWidget->setLayout(landingVLayout);
-    //Landing Page - Connect Buttons
-    connect(landingPassSubmit, SIGNAL(released()), this, SLOT(landingSubmit()));
+void SettingsWidget::widgetForLanding() {
 
-    homeButton->setParent(landingWidget);
-    landingWidget->setStyleSheet(univStyle);
 
-    //landingPad = new Keypad(landingPassField, false, landingWidget);
 
-    return landingWidget;
+        QWidget *cal = widgetForCal();
+
+        QPushButton *left = new QPushButton(cal);
+        left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
+        connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
+
+        QPushButton *right = new QPushButton(cal);
+        right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
+        connect(right, SIGNAL(released()), this, SLOT(showAvg()));
+
+        right->setFixedSize(buttonSize);
+        right->setIconSize(buttonSize);
+        left->setFixedSize(buttonSize);
+        left->setIconSize(buttonSize);
+
+        QHBoxLayout *layout = new QHBoxLayout();
+        layout->addWidget(left);
+        layout->addWidget(cal);
+        layout->addWidget(right);
+        QWidget *w = new QWidget();
+        w->setLayout(layout);
+
+        homeButton->setParent(w);
+        mainLayout->addWidget(w);
+
+
 }
 
 QWidget* SettingsWidget::widgetForCal() {
@@ -575,13 +575,15 @@ void SettingsWidget::homePressed() {
 }
 
 void SettingsWidget::showCal() {
-    clearView();
+
+     clearView();
+
     qDebug()<<"in show cal before making widget";
     QWidget *cal = widgetForCal();
 
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
+    connect(left, SIGNAL(released()), this, SLOT(showNet()));
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -783,7 +785,7 @@ void SettingsWidget::showNet() {
 
     QPushButton *right = new QPushButton(widget);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showPassChange()));
+    connect(right, SIGNAL(released()), this, SLOT(showCal()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -1193,6 +1195,6 @@ void SettingsWidget::netDisButtonPressed() {
 void SettingsWidget::invalidate() {
     clearView();
 
-    QWidget *landing = widgetForLanding();
+    QWidget *landing = widgetForCal();
     mainLayout->addWidget(landing);
 }

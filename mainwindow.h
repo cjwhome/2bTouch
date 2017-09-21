@@ -133,6 +133,7 @@ private:
     QTimer *errorTimer;
 
     QString msgBoxStyle;
+    void play_jingle(void);
 };
 
 #endif // MAINWINDOW_H
