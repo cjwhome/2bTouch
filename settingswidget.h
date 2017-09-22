@@ -115,19 +115,7 @@ private:
     int relayOneHighValue;
     QCheckBox *rOLowCheckBox;
     QCheckBox *rOHighCheckBox;
-    //Relay Two
-   /* QWidget *rTWidget;
-    QVBoxLayout *rTVLayout;
-    QLabel *rTTitle;
-    QPushButton *rTHelpButton;
-    QHBoxLayout *rTModeHLayout;
-    QLabel *rTModeLabel;
-    QPushButton *rTOzoneButton;
-    QLabel *rTDiagnosticsLabel;
-    QPushButton *rTDiagnosticsButton;
-    QLabel *rTCompLabel;
-    QPushButton *rTDiagnosticButtons[3][2];
-    QMessageBox *rTHelp;*/
+
 
     //Voltage
     QWidget *voltWidget;
@@ -166,6 +154,36 @@ private:
     KeyLineEdit *dateTimeField;
     //Keypad *dateTimePad;
     QPushButton *dateSubmitButton;
+    QPushButton *dayTenButton;
+    QPushButton *dayButton;
+    QPushButton *monthButton;
+    QPushButton *monthTenButton;
+    QPushButton *yearButton;
+    QPushButton *yearTenButton;
+    QPushButton *hourTenButton;
+    QPushButton *hourButton;
+    QPushButton *minButton;
+    QPushButton *minTenButton;
+    QPushButton *secButton;
+    QPushButton *secTenButton;
+
+    QPushButton *increaseDTButton;
+    QPushButton *decreaseDTButton;
+    int dayTenValue;
+    int dayValue;
+    int monthTenValue;
+    int monthValue;
+    int yearTenValue;
+    int yearValue;
+
+    int hourTenValue;
+    int hourValue;
+    int minTenValue;
+    int minValue;
+    int secTenValue;
+    int secValue;
+
+
 
     //Network - Display IP
     QWidget *netWidget;
@@ -186,19 +204,6 @@ private:
     //Keypad *connPassPad;
     QPushButton *connSubmitButton;
 
-    //Change Password
-    QWidget *cpWidget;
-    QVBoxLayout *cpVLayout;
-    QLabel *cpTitle;
-    QHBoxLayout *cpPassRow;
-    QLabel *cpPassLabel;
-    KeyLineEdit *cpPassText;
-    QHBoxLayout *cpConfRow;
-    QLabel *cpConfirmLabel;
-    KeyLineEdit *cpConfText;
-    QPushButton *cpSaveButton;
-    //Keypad *cpPassPad;
-    //Keypad *cpConfPad;
 
     QSettings *settings;
 
@@ -210,7 +215,7 @@ private slots:
     void homePressed();
 
     //Landing
-    void landingSubmit();
+    //void landingSubmit();
     //Calibration
     void calSubmitReleased();
     void on_calIncreasePressed();
@@ -236,13 +241,15 @@ private slots:
     void deleteSelectedPressed();
     //Date and Time
     void dateSubmitPressed();
+    void on_increaseDTButtonPressed();
+    void on_decreaseDTButtonPressed();
+
     //Network
     void netDisButtonPressed();
     void connSubmitPressed();
-    //Change Password
-    void changePassPressed();
 
-    void widgetForLanding();
+
+
     QWidget* widgetForCal();
     //QWidget* widgetForAvg();
     QWidget* widgetForRelayOne();
@@ -251,7 +258,7 @@ private slots:
     QWidget* widgetForFiles();
     QWidget* widgetForDate();
     QWidget* widgetForNet();
-    QWidget* widgetForPassChange();
+
 
     void showCal();
     //void showAvg();
@@ -261,7 +268,7 @@ private slots:
     void showFiles();
     void showDate();
     void showNet();
-    void showPassChange();
+    void widgetForLanding();
 
     void clearView();
 

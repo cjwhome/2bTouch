@@ -106,7 +106,7 @@ QWidget* SettingsWidget::widgetForCal() {
     //calSlopeField = new KeyLineEdit(slopeString, calWidget);
     calSlopeField = new QLabel();
     calSlopeField->setAlignment(Qt::AlignLeft);
-    calSlopeField->setText(QString::number(slopeValue/100, 'g', 3));
+    calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
     //calSlopeField->setText("blah");
     //qDebug()<<"after making keylineedit";
     calSlopeField->setMaximumWidth(100);
@@ -298,47 +298,6 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     return rOWidget;
 }
 
-/*QWidget* SettingsWidget::widgetForRelayTwo() {
-    //Relay Two
-    rTWidget = new QWidget(this);
-    rTVLayout = new QVBoxLayout(rTWidget);
-    rTTitle = new QLabel("RELAY TWO", rTWidget);
-    rTHelpButton = new QPushButton(rTWidget);
-    rTHelpButton->setIcon(QIcon(":/buttons/pics/help-icon.png"));
-    rTHelpButton->setFixedSize(buttonSize);
-    rTHelpButton->setIconSize(buttonSize);
-    rTModeHLayout = new QHBoxLayout(rTWidget);
-    rTModeLabel = new QLabel("Mode: ", rTWidget);
-    rTOzoneButton = new QPushButton("Ozone", rTWidget);
-    rTDiagnosticsButton = new QPushButton("Diagnostics", rTWidget);
-    rTDiagnosticsLabel = new QLabel("Diagnostic Testing Components:");
-    //TODO: Create Diagnostic Testing Buttons
-    //Styling
-    rTTitle->setFont(titleFont);
-    rTTitle->setAlignment(Qt::AlignHCenter);
-    rTHelpButton->setGeometry(320, 15, 31, 30);
-    rTModeLabel->setFont(labelFont);
-    rTDiagnosticsLabel->setFont(labelFont);
-    rTVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-    //Relay Two - Fill Layout
-    rTVLayout->addWidget(rTTitle);
-    rTModeHLayout->addWidget(rTModeLabel);
-    rTModeHLayout->addWidget(rTOzoneButton);
-    rTModeHLayout->addWidget(rTDiagnosticsButton);
-    rTVLayout->addLayout(rTModeHLayout);
-    rTVLayout->addWidget(rTDiagnosticsLabel);
-    rTWidget->setLayout(rTVLayout);
-    rTWidget->setStyleSheet(univStyle);
-    //TODO: Fill Diagnostic Buttons
-    //Relay Two - Connect Buttons
-    connect(rTOzoneButton, SIGNAL(released()), this, SLOT(rTOzonePresed()));
-    connect(rTDiagnosticsButton, SIGNAL(released()), this, SLOT(rTDiagnosticsPressed()));
-    connect(rTHelpButton, SIGNAL(released()), this, SLOT(rTHelpPressed()));
-
-    homeButton->setParent(rTWidget);
-
-    return rTWidget;
-}*/
 
 QWidget* SettingsWidget::widgetForVoltage() {
     //Voltage
@@ -446,38 +405,142 @@ QWidget* SettingsWidget::widgetForDate() {
     dateVLayout = new QVBoxLayout(dateWidget);
     dateTitle = new QLabel("DATE & TIME", dateWidget);
     dateDateRow = new QHBoxLayout(dateWidget);
-    dateDateLabel = new QLabel("Date (DDMMYY): ", dateWidget);
+    dateDateLabel = new QLabel("(DDMMYY): ", dateWidget);
     QString dateString;
-    dateString.append("DDMMYY");
-    dateDateField = new KeyLineEdit(dateString,dateWidget);
-    dateTimeRow = new QHBoxLayout(dateWidget);
-    dateTimeLabel = new QLabel("Time (HHMMSS): ", dateWidget);
-    QString timeString;
-    timeString.append("HHMMSS");
-    dateTimeField = new KeyLineEdit(timeString,dateWidget);
-    dateSubmitButton = new QPushButton("SAVE", dateWidget);
+    dateString.append(settings->value("Date").toString());
+    qDebug()<<"Current Date:"<<dateString;
 
+    dateTimeRow = new QHBoxLayout(dateWidget);
+    dateTimeLabel = new QLabel("(HHMMSS): ", dateWidget);
+    QString timeString;
+    timeString.append(settings->value("Time").toString());
+    qDebug()<<"Current Time:"<<timeString;
+
+    dateSubmitButton = new QPushButton("SAVE", dateWidget);
+    dayTenButton = new QPushButton("D", dateWidget);
+    dayTenButton->setText(dateString[0] + "");
+    dayButton = new QPushButton("D", dateWidget);
+    dayButton->setText(dateString[1] + "");
+    dayTenButton->setCheckable(true);
+    dayButton->setCheckable(true);
+    monthTenButton = new QPushButton("M", dateWidget);
+    monthTenButton->setText(dateString[2] + "");
+    monthTenButton->setCheckable(true);
+    monthButton = new QPushButton("M", dateWidget);
+    monthButton->setText(dateString[3] + "");
+    monthButton->setCheckable(true);
+    yearTenButton = new QPushButton("Y", dateWidget);
+    yearTenButton->setText(dateString[4] + "");
+    yearButton = new QPushButton("Y", dateWidget);
+    yearButton->setText(dateString[5] + "");
+    yearTenButton->setCheckable(true);
+    yearButton->setCheckable(true);
+
+    hourTenButton = new QPushButton("h", dateWidget);
+    hourTenButton->setText(timeString[0] + "");
+    hourButton = new QPushButton("h", dateWidget);
+    hourButton->setText(timeString[1] + "");
+    hourTenButton->setCheckable(true);
+    hourButton->setCheckable(true);
+    minTenButton = new QPushButton("m", dateWidget);
+    minTenButton->setText(timeString[2] + "");
+    minButton = new QPushButton("m", dateWidget);
+    minButton->setText(timeString[3] + "");
+    minTenButton->setCheckable(true);
+    minButton->setCheckable(true);
+    secTenButton = new QPushButton("s", dateWidget);
+    secTenButton->setText(timeString[4] + "");
+    secButton = new QPushButton("s", dateWidget);
+    secButton->setText(timeString[5] + "");
+    secTenButton->setCheckable(true);
+    secButton->setCheckable(true);
+    QButtonGroup *dtButtonGroup = new QButtonGroup();
+    dtButtonGroup->addButton(dayTenButton);
+    dtButtonGroup->addButton(dayButton);
+    dtButtonGroup->addButton(monthTenButton);
+    dtButtonGroup->addButton(monthButton);
+    dtButtonGroup->addButton(yearTenButton);
+    dtButtonGroup->addButton(yearButton);
+
+    dtButtonGroup->addButton(hourTenButton);
+    dtButtonGroup->addButton(hourButton);
+    dtButtonGroup->addButton(minTenButton);
+    dtButtonGroup->addButton(minButton);
+    dtButtonGroup->addButton(secTenButton);
+    dtButtonGroup->addButton(secButton);
+
+
+
+    increaseDTButton = new QPushButton("+", dateWidget);
+    decreaseDTButton = new QPushButton("-", dateWidget);
+
+    //style
     dateTitle->setFont(titleFont);
     dateTitle->setAlignment(Qt::AlignHCenter);
     dateDateLabel->setFont(labelFont);
     dateTimeLabel->setFont(labelFont);
     dateVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    monthTenButton->setFont(labelFont);
+    monthButton->setFont(labelFont);
+    dayTenButton->setFont(labelFont);
+    dayButton->setFont(labelFont);
+    yearTenButton->setFont(labelFont);
+    yearButton->setFont(labelFont);
 
+    hourTenButton->setFont(labelFont);
+    hourButton->setFont(labelFont);
+    minTenButton->setFont(labelFont);
+    minButton->setFont(labelFont);
+    secTenButton->setFont(labelFont);
+    secButton->setFont(labelFont);
+
+
+    //lay it out
+    QLabel *forwardSlash = new QLabel("/");
+    QLabel *forwardSlash2 = new QLabel("/");
+    QLabel *colon = new QLabel(":");
+    QLabel *colon2 = new QLabel(":");
+    QLabel *space = new QLabel(" ");
+    QLabel *space2 = new QLabel(" ");
+    forwardSlash->setFont(labelFont);
+    forwardSlash2->setFont(labelFont);
+    colon->setFont(labelFont);
+    colon2->setFont(labelFont);
+    space->setFont(labelFont);
+    space2->setFont(labelFont);
     dateVLayout->addWidget(dateTitle);
     dateDateRow->addWidget(dateDateLabel);
-    dateDateRow->addWidget(dateDateField);
+    dateDateRow->addWidget(dayTenButton);
+    dateDateRow->addWidget(dayButton);
+    dateDateRow->addWidget(forwardSlash);
+    dateDateRow->addWidget(monthTenButton);
+    dateDateRow->addWidget(monthButton);
+    dateDateRow->addWidget(forwardSlash2);
+    dateDateRow->addWidget(yearTenButton);
+    dateDateRow->addWidget(yearButton);
+    dateDateRow->addWidget(space);
+    dateDateRow->addWidget(increaseDTButton);
+
+   // dateDateRow->addWidget(dateDateField);
     dateVLayout->addLayout(dateDateRow);
     dateTimeRow->addWidget(dateTimeLabel);
-    dateTimeRow->addWidget(dateTimeField);
+    dateTimeRow->addWidget(hourTenButton);
+    dateTimeRow->addWidget(hourButton);
+    dateTimeRow->addWidget(colon);
+    dateTimeRow->addWidget(minTenButton);
+    dateTimeRow->addWidget(minButton);
+    dateTimeRow->addWidget(colon2);
+    dateTimeRow->addWidget(secTenButton);
+    dateTimeRow->addWidget(secButton);
+    dateTimeRow->addWidget(space2);
+    dateTimeRow->addWidget(decreaseDTButton);
     dateVLayout->addLayout(dateTimeRow);
     dateVLayout->addWidget(dateSubmitButton);
     dateWidget->setStyleSheet(univStyle);
+    dateWidget->setStyleSheet("QPushButton:checked { background-color: lightgreen; }");
 
-    dateDateField->setText(settings->value("Date").toString());
-    //dateDatePad = new Keypad(dateDateField, false, dateWidget);
-    dateTimeField->setText(settings->value("Time").toString());
-    //dateTimePad = new Keypad(dateTimeField, false, dateWidget);
-
+    connect(increaseDTButton, SIGNAL(pressed()), this, SLOT(on_increaseDTButtonPressed()));
+    connect(decreaseDTButton, SIGNAL(pressed()), this, SLOT(on_decreaseDTButtonPressed()));
     connect(dateSubmitButton, SIGNAL(released()), this, SLOT(dateSubmitPressed()));
 
     return dateWidget;
@@ -555,48 +618,7 @@ QWidget* SettingsWidget::widgetForNet() {
     return widget;
 }
 
-QWidget* SettingsWidget::widgetForPassChange() {
-    cpWidget = new QWidget(this);
-    cpVLayout = new QVBoxLayout(cpWidget);
-    cpTitle = new QLabel("PASSWORD", cpWidget);
-    cpPassRow = new QHBoxLayout(cpWidget);
-    cpPassLabel = new QLabel("Password: ", cpWidget);
-    QString passString;
-    passString.append("****");
-    cpPassText = new KeyLineEdit(passString,cpWidget);
-    cpConfRow = new QHBoxLayout(cpWidget);
-    cpConfirmLabel = new QLabel("Confirm: ", cpWidget);
-    cpConfText = new KeyLineEdit(passString,cpWidget);
-    cpSaveButton = new QPushButton("SAVE", cpWidget);
-    //Styling
-    cpTitle->setFont(titleFont);
-    cpTitle->setAlignment(Qt::AlignHCenter);
-    cpPassLabel->setFont(labelFont);
-    //cpPassText->setEchoMode(QLineEdit::Password);
-    cpConfirmLabel->setFont(labelFont);
-    //cpConfText->setEchoMode(QLineEdit::Password);
-    cpVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
-    cpVLayout->addWidget(cpTitle);
-    cpPassRow->addWidget(cpPassLabel);
-    cpPassRow->addWidget(cpPassText);
-    cpVLayout->addLayout(cpPassRow);
-    cpConfRow->addWidget(cpConfirmLabel);
-    cpConfRow->addWidget(cpConfText);
-    cpVLayout->addLayout(cpConfRow);
-    cpVLayout->addWidget(cpSaveButton);
-    cpWidget->setLayout(cpVLayout);
-    cpWidget->setStyleSheet(univStyle);
-
-    connect(cpSaveButton, SIGNAL(released()), this, SLOT(changePassPressed()));
-
-    homeButton->setParent(cpWidget);
-
-    //cpPassPad = new Keypad(cpPassText, false, cpWidget);
-    //cpConfPad = new Keypad(cpConfText, false, cpWidget);
-
-    return cpWidget;
-}
 
 void SettingsWidget::homePressed() {
     //invalidate();
@@ -635,33 +657,7 @@ void SettingsWidget::showCal() {
     mainLayout->addWidget(w);
 }
 
-/*void SettingsWidget::showAvg() {
-    clearView();
-    QWidget *avg = widgetForAvg();
 
-    QPushButton *left = new QPushButton(avg);
-    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showCal()));
-
-    QPushButton *right = new QPushButton(avg);
-    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showRO()));
-
-    right->setFixedSize(buttonSize);
-    right->setIconSize(buttonSize);
-    left->setFixedSize(buttonSize);
-    left->setIconSize(buttonSize);
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(left);
-    layout->addWidget(avg);
-    layout->addWidget(right);
-    QWidget *w = new QWidget();
-    w->setLayout(layout);
-
-    homeButton->setParent(w);
-    mainLayout->addWidget(w);
-}*/
 
 void SettingsWidget::showRO() {
     clearView();
@@ -692,33 +688,7 @@ void SettingsWidget::showRO() {
     mainLayout->addWidget(w);
 }
 
-/*void SettingsWidget::showRT() {
-    clearView();
-    QWidget *rt = widgetForRelayTwo();
 
-    QPushButton *left = new QPushButton(rt);
-    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showRO()));
-
-    QPushButton *right = new QPushButton(rt);
-    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showVolt()));
-
-    right->setFixedSize(buttonSize);
-    right->setIconSize(buttonSize);
-    left->setFixedSize(buttonSize);
-    left->setIconSize(buttonSize);
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(left);
-    layout->addWidget(rt);
-    layout->addWidget(right);
-    QWidget *w = new QWidget();
-    w->setLayout(layout);
-
-    homeButton->setParent(w);
-    mainLayout->addWidget(w);
-}*/
 
 void SettingsWidget::showVolt() {
     clearView();
@@ -832,33 +802,7 @@ void SettingsWidget::showNet() {
     mainLayout->addWidget(w);
 }
 
-void SettingsWidget::showPassChange() {
-    clearView();
-    QWidget *files = widgetForPassChange();
 
-    QPushButton *left = new QPushButton(files);
-    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showNet()));
-
-    QPushButton *right = new QPushButton(files);
-    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showCal()));
-
-    right->setFixedSize(buttonSize);
-    right->setIconSize(buttonSize);
-    left->setFixedSize(buttonSize);
-    left->setIconSize(buttonSize);
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(left);
-    layout->addWidget(files);
-    layout->addWidget(right);
-    QWidget *w = new QWidget();
-    w->setLayout(layout);
-
-    homeButton->setParent(w);
-    mainLayout->addWidget(w);
-}
 
 void SettingsWidget::clearView() {
     QWidget *widget = mainLayout->itemAt(0)->widget();
@@ -866,20 +810,7 @@ void SettingsWidget::clearView() {
     widget->deleteLater();
 }
 
-void SettingsWidget::landingSubmit() {
 
-    QString passTest = landingPassField->text();
-    QString password = settings->value("Password", "password").toString();
-    qDebug()<<"Password = "<<password;
-    qDebug()<<"PassTest = "<<passTest;
-    if(passTest == password) {
-        showCal();
-    } else {
-        QMessageBox msg;
-        msg.setText("Incorrect Password");
-        msg.exec();
-    }
-}
 
 void SettingsWidget::calSubmitReleased() {
     QMessageBox msg;
@@ -904,7 +835,8 @@ void SettingsWidget::on_calIncreasePressed(){
         slopeValue++;
         if(slopeValue > MAX_SLOPE_VALUE)
             slopeValue = MIN_SLOPE_VALUE;
-        calSlopeField->setText(QString::number(slopeValue/100, 'g', 2));
+        calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
+
         settings->setValue("Slope", slopeValue);
     }else if(offsetCheckBox->isChecked()){
         calOffsetField->setStyleSheet("QLabel { color : gray; }");
@@ -922,7 +854,9 @@ void SettingsWidget::on_calDecreasePressed(){
         slopeValue--;
         if(slopeValue < MIN_SLOPE_VALUE)
             slopeValue = MAX_SLOPE_VALUE;
-        calSlopeField->setText(QString::number(slopeValue/100, 'g', 2));
+        calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
+
+
         settings->setValue("Slope", slopeValue);
     }else if(offsetCheckBox->isChecked()){
         calOffsetField->setStyleSheet("QLabel { color : gray; }");
@@ -986,49 +920,7 @@ void SettingsWidget::on_relayHighCheckBoxPressed(){
     rOLowCheckBox->setChecked(false);
 }
 
-/*void SettingsWidget::twoSecPressed() {
-    sendMessage("a:0");
-    settings->setValue("Avg", "0");
-    avgTwoSecButton->setStyleSheet(selButtonStyle);
-    avgTenSecButton->setStyleSheet(regButtonStyle);
-    avgOneMinButton->setStyleSheet(regButtonStyle);
-    avgOneHourButton->setStyleSheet(regButtonStyle);
-}
 
-void SettingsWidget::tenSecPressed() {
-    sendMessage("a:1");
-    settings->setValue("Avg", "1");
-    avgTwoSecButton->setStyleSheet(regButtonStyle);
-    avgTenSecButton->setStyleSheet(selButtonStyle);
-    avgOneMinButton->setStyleSheet(regButtonStyle);
-    avgOneHourButton->setStyleSheet(regButtonStyle);
-}
-
-void SettingsWidget::oneMinPressed() {
-    sendMessage("a:2");
-    settings->setValue("Avg", "2");
-    avgTwoSecButton->setStyleSheet(regButtonStyle);
-    avgTenSecButton->setStyleSheet(regButtonStyle);
-    avgOneMinButton->setStyleSheet(selButtonStyle);
-    avgOneHourButton->setStyleSheet(regButtonStyle);
-}
-
-void SettingsWidget::oneHourPressed() {
-    sendMessage("a:4");
-    settings->setValue("Avg", "4");
-    avgTwoSecButton->setStyleSheet(regButtonStyle);
-    avgTenSecButton->setStyleSheet(regButtonStyle);
-    avgOneMinButton->setStyleSheet(regButtonStyle);
-    avgOneHourButton->setStyleSheet(selButtonStyle);
-}*/
-
-/*void SettingsWidget::rOLowPressed() {
-    sendMessage("o:a");
-}
-
-void SettingsWidget::rOHighPressed() {
-    sendMessage("o:b");
-}*/
 
 void SettingsWidget::rOSubmitPressed() {
 
@@ -1054,23 +946,221 @@ void SettingsWidget::rOHelpPressed() {
     msg.exec();
 }
 
-/*void SettingsWidget::rTOzonePresed()  {
-    sendMessage("t:a");
-}
-
-void SettingsWidget::rTDiagnosticsPressed() {
-    sendMessage("t:b");
-}
-
-void SettingsWidget::rTHelpPressed() {
-    QMessageBox msg;
-    msg.setText("This is the text for the relay two help message");
-    msg.exec();
-}*/
 
 void SettingsWidget::voltSubmitPressed() {
     QString msg = "v:"+voltPPBField->text();
     sendMessage(msg);
+}
+
+
+void SettingsWidget::on_increaseDTButtonPressed(){
+    if(dayTenButton->isChecked()){
+
+        dayTenValue++;
+        if(dayTenValue==3){
+            if(dayValue > 1)
+                dayTenValue = 0;
+        }else if(dayTenValue > 3){
+            dayTenValue = 0;
+        }
+        dayTenButton->setText(QString::number(dayTenValue));
+
+    }else if(dayButton->isChecked()){
+        dayValue++;
+        if(dayTenValue==3){
+            if(dayValue > 1)
+                dayValue = 0;
+        }else if(dayValue > 9){
+            dayValue = 0;
+        }
+        dayButton->setText(QString::number(dayValue));
+
+
+    }else if(monthTenButton->isChecked()){
+        monthTenValue++;
+        if(monthTenValue > 1){
+              monthTenValue = 0;
+        }
+        monthTenButton->setText(QString::number(monthTenValue));
+
+    }else if(monthButton->isChecked()){
+        monthValue++;
+        if(monthTenValue==1){
+            if(monthValue > 2)
+                monthValue = 0;
+        }else if(monthValue > 9){
+            monthValue = 0;
+        }
+        monthButton->setText(QString::number(monthValue));
+
+    }else if(yearTenButton->isChecked()){
+        yearTenValue++;
+        if(yearTenValue > 9){
+            yearTenValue = 0;
+        }
+        yearTenButton->setText(QString::number(yearTenValue));
+
+
+    }else if(yearButton->isChecked()){
+        yearValue++;
+        if(yearValue > 9){
+            yearValue = 0;
+        }
+        yearButton->setText(QString::number(yearValue));
+
+    }else if(hourTenButton->isChecked()){
+
+        hourTenValue++;
+        if(hourTenValue==2){
+            if(hourValue > 4)
+                hourTenValue = 0;
+        }else if(hourTenValue > 2){
+            hourTenValue = 0;
+        }
+        hourTenButton->setText(QString::number(hourTenValue));
+
+    }else if(hourButton->isChecked()){
+        hourValue++;
+        if(hourTenValue==2){
+            if(hourValue > 4)
+                hourValue = 0;
+        }else if(hourValue > 9){
+            hourValue = 0;
+        }
+        hourButton->setText(QString::number(hourValue));
+
+
+    }else if(minTenButton->isChecked()){
+        minTenValue++;
+        if(minTenValue > 6){
+              minTenValue = 0;
+        }
+        minTenButton->setText(QString::number(minTenValue));
+
+    }else if(minButton->isChecked()){
+        minValue++;
+        if(minValue > 9){
+            minValue = 0;
+        }
+        minButton->setText(QString::number(minValue));
+
+    }else if(secTenButton->isChecked()){
+        secTenValue++;
+        if(secTenValue > 6){
+            secTenValue = 0;
+        }
+        secTenButton->setText(QString::number(secTenValue));
+
+
+    }else if(secButton->isChecked()){
+        secValue++;
+        if(secValue > 9){
+            secValue = 0;
+        }
+        secButton->setText(QString::number(secValue));
+
+    }
+}
+
+void SettingsWidget::on_decreaseDTButtonPressed(){
+    if(dayTenButton->isChecked()){
+
+        dayTenValue--;
+        if(dayTenValue==3){
+            if(dayValue < 0)
+                dayTenValue = 1;
+        }else if(dayTenValue < 0){
+            dayTenValue = 3;
+        }
+        dayTenButton->setText(QString::number(dayTenValue));
+    }else if(dayButton->isChecked()){
+        dayValue--;
+        if(dayTenValue==3){
+            if(dayValue < 0)
+                dayValue = 1;
+        }else if(dayValue < 0){
+            dayValue = 9;
+        }
+        dayButton->setText(QString::number(dayValue));
+    }else if(monthTenButton->isChecked()){
+        monthTenValue--;
+        if(monthTenValue < 0){
+              monthTenValue = 1;
+        }
+        monthTenButton->setText(QString::number(monthTenValue));
+    }else if(monthButton->isChecked()){
+        monthValue--;
+        if(monthTenValue==1){
+            if(monthValue < 0)
+                monthValue = 2;
+        }else if(monthValue < 0){
+            monthValue = 9;
+        }
+        monthButton->setText(QString::number(monthValue));
+    }else if(yearTenButton->isChecked()){
+        yearTenValue--;
+        if(yearTenValue < 0){
+            yearTenValue = 9;
+        }
+        yearTenButton->setText(QString::number(yearTenValue));
+    }else if(yearButton->isChecked()){
+        yearValue--;
+        if(yearValue < 0){
+            yearValue = 9;
+        }
+        yearButton->setText(QString::number(yearValue));
+    }else if(hourTenButton->isChecked()){
+
+        hourTenValue--;
+        if(hourTenValue==2){
+            if(hourValue < 0)
+                hourTenValue = 3;
+        }else if(hourTenValue < 0){
+            hourTenValue = 2;
+        }
+        hourTenButton->setText(QString::number(hourTenValue));
+
+    }else if(hourButton->isChecked()){
+        hourValue--;
+        if(hourTenValue==2){
+            if(hourValue < 0)
+                hourValue = 3;
+        }else if(hourValue < 0){
+            hourValue = 9;
+        }
+        hourButton->setText(QString::number(hourValue));
+
+
+    }else if(minTenButton->isChecked()){
+        minTenValue--;
+        if(minTenValue < 0){
+              minTenValue = 6;
+        }
+        minTenButton->setText(QString::number(minTenValue));
+
+    }else if(minButton->isChecked()){
+        minValue--;
+        if(minValue < 0){
+            minValue = 9;
+        }
+        minButton->setText(QString::number(minValue));
+
+    }else if(secTenButton->isChecked()){
+        secTenValue--;
+        if(secTenValue < 0){
+            secTenValue = 6;
+        }
+        secTenButton->setText(QString::number(secTenValue));
+
+
+    }else if(secButton->isChecked()){
+        secValue--;
+        if(secValue < 0){
+            secValue = 9;
+        }
+        secButton->setText(QString::number(secValue));
+
+    }
 }
 
 void SettingsWidget::copyAllPressed() {
@@ -1175,10 +1265,18 @@ void SettingsWidget::deleteSelectedPressed() {
 }
 
 void SettingsWidget::dateSubmitPressed() {
-    QString dateMsg = "d:" + dateDateField->text();
+    QString dateString = dayTenButton->text() + dayButton->text() + monthTenButton->text() + monthButton->text() + yearTenButton->text() + yearButton->text();
+    qDebug()<<"DateString:"<<dateString;
+    settings->setValue("Date", dateString);
+
+    QString timeString = hourTenButton->text() + hourButton->text() + minTenButton->text() + minButton->text() + secTenButton->text() + secButton->text();
+    qDebug()<<"TimeString:"<<timeString;
+    settings->setValue("Time", timeString);
+
+    QString dateMsg = "d:" + dateString;
     sendMessage(dateMsg);
 
-    QString timeMsg = "t:" + dateTimeField->text();
+    QString timeMsg = "t:" + timeString;
     sendMessage(timeMsg);
 }
 
@@ -1214,20 +1312,6 @@ void SettingsWidget::sendMessage(QString msg) {
     emit sendMsg(msg);
 }
 
-void SettingsWidget::changePassPressed() {
-    QString pass1 = cpPassText->text();
-    QString pass2 = cpConfText->text();
-    if(pass1 == pass2) {
-        settings->setValue("Password", pass1);
-        QMessageBox msg;
-        msg.setText("Password Changed");
-        msg.exec();
-    } else {
-        QMessageBox msg;
-        msg.setText("Passwords Do Not Match");
-        msg.exec();
-    }
-}
 
 QString SettingsWidget::checkNetwork() {
     QNetworkInterface wlan0 = QNetworkInterface::interfaceFromName("wlan0");
