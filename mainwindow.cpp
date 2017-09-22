@@ -259,7 +259,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(2);
+    twobTechDevice = xmlDeviceReader->getADevice(1);
 
     deviceProfile.setDevice_name(twobTechDevice.getDevice_name());
     deviceProfile.setCom_port(twobTechDevice.getCom_port());

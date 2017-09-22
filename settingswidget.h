@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QIcon>
+#include <QCheckBox>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -19,6 +20,13 @@
 #include "filewriter.h"
 #include "keypad.h"
 #include "keylineedit.h"
+
+#define MAX_RELAY_VALUE 1000
+#define MIN_RELAY_VALUE 0
+#define MIN_SLOPE_VALUE 50
+#define MAX_SLOPE_VALUE 150
+#define MIN_OFFSET_VALUE -30
+#define MAX_OFFSET_VALUE 30
 
 namespace Ui {
 class SettingsWidget;
@@ -69,25 +77,19 @@ private:
     QLabel *calTitle;
     QHBoxLayout *calSlopeRow;
     QLabel *calSlopeLabel;
-    KeyLineEdit *calSlopeField;
+    QLabel *calSlopeField;
     QHBoxLayout *calOffsetRow;
     QLabel *calOffsetLabel;
-    KeyLineEdit *calOffsetField;
+    QLabel *calOffsetField;
     QPushButton *calSubmit;
-    //Keypad *calSlopePad;
-    //Keypad *calOffPad;
 
-    //Averaging
-   /* QWidget *avgWidget;
-    QVBoxLayout *avgVLayout;
-    QLabel *avgTitle;
-    QHBoxLayout *avgRowOne;
-    QPushButton *avgTwoSecButton;
-    QPushButton *avgTenSecButton;
-    QHBoxLayout *avgRowTwo;
-    QPushButton *avgOneMinButton;
-    QPushButton *avgOneHourButton;
-    QIcon *avgIcon;*/
+    QPushButton *calIncreaseButton;
+    QPushButton *calDecreaseButton;
+    float slopeValue;
+    int offsetValue;
+    QCheckBox *slopeCheckBox;
+    QCheckBox *offsetCheckBox;
+
 
     //Relay One
     QWidget *rOWidget;
@@ -95,11 +97,11 @@ private:
     QLabel *relayOneTitle;
     QHBoxLayout *rOLowRow;
     QLabel *rOLowLabel;
-    KeyLineEdit *rOLowField;
+    QLabel *rOLowField;
     //Keypad *rOLowPad;
     QHBoxLayout *rOHighRow;
     QLabel *rOHighLabel;
-    KeyLineEdit *rOHighField;
+    QLabel *rOHighField;
     //Keypad *rOHighPad;
     QPushButton *rOSubmitButton;
     //QHBoxLayout *rORow;
@@ -107,7 +109,12 @@ private:
     //QPushButton *rOHighButton;
     QPushButton *rOHelpButton;
     QMessageBox::StandardButton rOHelpBox;
-
+    QPushButton *relayIncreaseButton;
+    QPushButton *relayDecreaseButton;
+    int relayOneLowValue;
+    int relayOneHighValue;
+    QCheckBox *rOLowCheckBox;
+    QCheckBox *rOHighCheckBox;
     //Relay Two
    /* QWidget *rTWidget;
     QVBoxLayout *rTVLayout;
@@ -206,16 +213,17 @@ private slots:
     void landingSubmit();
     //Calibration
     void calSubmitReleased();
-    //Avergaing
-    /*void twoSecPressed();
-    void tenSecPressed();
-    void oneMinPressed();
-    void oneHourPressed();*/
-    //Relay One
-    //void rOLowPressed();
-    //void rOHighPressed();
+    void on_calIncreasePressed();
+    void on_calDecreasePressed();
+    void on_slopeCheckBoxPressed();
+    void on_offsetCheckBoxPressed();
+
     void rOSubmitPressed();
     void rOHelpPressed();
+    void on_relayIncreasePressed();
+    void on_relayDecreasePressed();
+    void on_relayLowCheckBoxPressed();
+    void on_relayHighCheckBoxPressed();
     //Relay Two
    /* void rTOzonePresed();
     void rTDiagnosticsPressed();

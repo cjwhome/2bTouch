@@ -10,7 +10,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
-    firstTimeViewed = true;
+
      settings = new QSettings("2B Technologies", "2B Touch");
     qDebug()<<"before initializing views";
     initializeViews();
@@ -47,7 +47,7 @@ void SettingsWidget::initializeViews() {
     selButtonStyle = "background-color: #002266; color: #ffffff";
 
     titleFont = QFont("Times serif", 30, 4);
-    labelFont = QFont("Times serif", 15, 2);
+    labelFont = QFont("Times serif", 20, 3);
 
     widgetForLanding();
 
@@ -65,11 +65,11 @@ void SettingsWidget::widgetForLanding() {
 
         QPushButton *left = new QPushButton(cal);
         left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-        connect(left, SIGNAL(released()), this, SLOT(showPassChange()));
+        connect(left, SIGNAL(released()), this, SLOT(showNet()));
 
         QPushButton *right = new QPushButton(cal);
         right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-        connect(right, SIGNAL(released()), this, SLOT(showAvg()));
+        connect(right, SIGNAL(released()), this, SLOT(showRO()));
 
         right->setFixedSize(buttonSize);
         right->setIconSize(buttonSize);
@@ -97,126 +97,131 @@ QWidget* SettingsWidget::widgetForCal() {
     calSlopeRow = new QHBoxLayout(calWidget);
     calSlopeLabel = new QLabel("Slope: ");
     calSlopeLabel->setMaximumWidth(100);
-    qDebug()<<"before slopestring";
-    QString slopeString;
-    slopeString.append(settings->value("Slope").toString());
-    qDebug()<<"after appending";
-    calSlopeField = new KeyLineEdit(slopeString, calWidget);
-    qDebug()<<"after making keylineedit";
-    calSlopeField->setMaximumWidth(50);
+    calSlopeLabel->setAlignment(Qt::AlignLeft);
+    slopeCheckBox = new QCheckBox();
+    slopeCheckBox->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
+    //qDebug()<<"before slopestring";
+    slopeValue = settings->value("Slope").toFloat();
+    //qDebug()<<"after appending";
+    //calSlopeField = new KeyLineEdit(slopeString, calWidget);
+    calSlopeField = new QLabel();
+    calSlopeField->setAlignment(Qt::AlignLeft);
+    calSlopeField->setText(QString::number(slopeValue/100, 'g', 3));
+    //calSlopeField->setText("blah");
+    //qDebug()<<"after making keylineedit";
+    calSlopeField->setMaximumWidth(100);
     calOffsetRow= new QHBoxLayout(calWidget);
     calOffsetLabel= new QLabel("Offset: ");
     calOffsetLabel->setMaximumWidth(100);
-    QString offsetString;
-    offsetString.append(settings->value("Zero").toString());
-    calOffsetField = new KeyLineEdit(offsetString, calWidget);
+    calOffsetLabel->setAlignment(Qt::AlignLeft);
+    offsetCheckBox = new QCheckBox();
+    offsetCheckBox->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
+
+    calOffsetField = new QLabel();
+    calOffsetField->setText(QString::number(offsetValue));
+
     calOffsetField->setMaximumWidth(50);
+    calOffsetField->setAlignment(Qt::AlignLeft);
     calSubmit = new QPushButton("SAVE", calWidget);
+    calIncreaseButton = new QPushButton("+");
+    calDecreaseButton = new QPushButton("-");
+
     //Styling
     calTitle->setFont(titleFont);
     calTitle->setAlignment(Qt::AlignHCenter);
     calSlopeLabel->setFont(labelFont);
     calOffsetLabel->setFont(labelFont);
+    calSlopeField->setFont(labelFont);
+    calOffsetField->setFont(labelFont);
     calSubmit->setFixedHeight(30);
     calVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    calIncreaseButton->setStyleSheet("color: blue;");
+    calDecreaseButton->setStyleSheet("color: blue;");
+    calIncreaseButton->setFont(labelFont);
+    calDecreaseButton->setFont(labelFont);
+    slopeCheckBox->setChecked(true);
+
     //Calibration - Fill Layout
     calVLayout->addWidget(calTitle);
     calSlopeRow->addWidget(calSlopeLabel);
     calSlopeRow->addWidget(calSlopeField);
+    calSlopeRow->addWidget(slopeCheckBox);
+    calSlopeRow->addSpacing(10);
+    calSlopeRow->addWidget(calIncreaseButton);
     calVLayout->addLayout(calSlopeRow);
     calOffsetRow->addWidget(calOffsetLabel);
     calOffsetRow->addWidget(calOffsetField);
+    calOffsetRow->addWidget(offsetCheckBox);
+    calOffsetRow->addSpacing(10);
+    calOffsetRow->addWidget(calDecreaseButton);
     calVLayout->addLayout(calOffsetRow);
     calVLayout->addWidget(calSubmit);
     calWidget->setLayout(calVLayout);
     calWidget->setStyleSheet(univStyle);
     //Calibration - Connect Buttons
     connect(calSubmit, SIGNAL(released()), this, SLOT(calSubmitReleased()));
+    connect(calIncreaseButton, SIGNAL(released()), this, SLOT(on_calIncreasePressed()));
+    connect(calDecreaseButton, SIGNAL(released()), this, SLOT(on_calDecreasePressed()));
+    connect(slopeCheckBox, SIGNAL(released()),this, SLOT(on_slopeCheckBoxPressed()));
+    connect(offsetCheckBox, SIGNAL(released()),this, SLOT(on_offsetCheckBoxPressed()));
 
     homeButton->setParent(calWidget);
 
     calOffsetField->setText(settings->value("Zero").toString());
     calSlopeField->setText(settings->value("Slope").toString());
 
+    calIncreaseButton->setAutoRepeat(true);
+    calDecreaseButton->setAutoRepeat(true);
     //calSlopePad = new Keypad(calSlopeField, false, calWidget);
     //calOffPad = new Keypad(calOffsetField, false, calWidget);
 
     return calWidget;
 }
 
-/*QWidget* SettingsWidget::widgetForAvg() {
-    //Averaging
-    avgWidget = new QWidget(this);
-    avgVLayout = new QVBoxLayout(avgWidget);
-    avgTitle = new QLabel("AVERAGING", avgWidget);
-    avgRowOne = new QHBoxLayout(avgWidget);
-    avgTwoSecButton = new QPushButton("2 s", avgWidget);
-    avgTenSecButton = new QPushButton("10 s", avgWidget);
-    avgRowTwo = new QHBoxLayout(avgWidget);
-    avgOneMinButton = new QPushButton("1 m", avgWidget);
-    avgOneHourButton = new QPushButton("1 hr", avgWidget);
-    //TODO: ICON
-    //Styling
-    avgTitle->setFont(titleFont);
-    avgTitle->setAlignment(Qt::AlignHCenter);
-    avgTwoSecButton->setFixedSize(60, 60);
-    avgTenSecButton->setFixedSize(60, 60);
-    avgOneMinButton->setFixedSize(60, 60);
-    avgOneHourButton->setFixedSize(60, 60);
-    avgVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-    //Aveaging - Fill Layout
-    avgVLayout->addWidget(avgTitle);
-    avgRowOne->addWidget(avgTwoSecButton);
-    avgRowOne->addWidget(avgTenSecButton);
-    avgVLayout->addLayout(avgRowOne);
-    avgRowTwo->addWidget(avgOneMinButton);
-    avgRowTwo->addWidget(avgOneHourButton);
-    avgVLayout->addLayout(avgRowTwo);
-    avgWidget->setLayout(avgVLayout);
-    avgWidget->setStyleSheet(univStyle);
-    //AVeraging - Connect Buttons
-    connect(avgTwoSecButton, SIGNAL(released()),this, SLOT(twoSecPressed()));
-    connect(avgTenSecButton, SIGNAL(released()),this, SLOT(tenSecPressed()));
-    connect(avgOneMinButton, SIGNAL(released()),this, SLOT(oneMinPressed()));
-    connect(avgOneHourButton, SIGNAL(released()),this, SLOT(oneHourPressed()));
 
-    int selButton = settings->value("Avg").toInt();
-    if (selButton == 0) {
-        avgTwoSecButton->setStyleSheet(selButtonStyle);
-    } else if (selButton == 1) {
-        avgTenSecButton->setStyleSheet(selButtonStyle);
-    } else if (selButton == 2) {
-        avgOneMinButton->setStyleSheet(selButtonStyle);
-    } else if (selButton == 4) {
-        avgOneHourButton->setStyleSheet(selButtonStyle);
-    }
-
-    homeButton->setParent(avgWidget);
-
-    return avgWidget;
-}*/
 
 QWidget* SettingsWidget::widgetForRelayOne() {
+
+
     //RelayOne
     rOWidget = new QWidget(this);
     rOVLayout = new QVBoxLayout(rOWidget);
     relayOneTitle = new QLabel("RELAY", rOWidget);
     rOLowRow = new QHBoxLayout(rOWidget);
     rOLowLabel = new QLabel("↓LOW", rOWidget);
+    rOLowLabel->setMinimumWidth(100);
+    rOLowLabel->setAlignment(Qt::AlignLeft);
+    relayOneLowValue = settings->value("RelOn").toInt();
     QString lowString;
 
-    lowString.append(settings->value("RelOn").toString());
-    rOLowField = new KeyLineEdit(lowString,rOWidget);
-    rOLowField->setMaximumWidth(50);
-    rOLowLabel->setMaximumWidth(100);
+    lowString.append(QString::number(relayOneLowValue));
+
+    rOLowField = new QLabel();
+    rOLowField->setText(lowString);
+    rOLowField->setMinimumWidth(75);
+    rOLowField->setAlignment(Qt::AlignLeft);
+    rOLowCheckBox = new QCheckBox(rOWidget);
+    rOLowCheckBox->setChecked(true);
+    rOHighCheckBox = new QCheckBox(rOWidget);
+    rOHighCheckBox->setChecked(false);
+    rOLowCheckBox->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
+    rOHighCheckBox->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
+
+   // rOLowField->setMaximumWidth(50);
+    rOLowLabel->setMinimumWidth(100);
+    rOLowLabel->setAlignment(Qt::AlignLeft);
     rOHighRow = new QHBoxLayout(rOWidget);
     rOHighLabel = new QLabel("HIGH↑", rOWidget);
-    rOHighLabel->setMaximumWidth(100);
+    rOHighLabel->setMinimumWidth(100);
     QString highString;
-    highString.append(settings->value("RelOff").toString());
-    rOHighField = new KeyLineEdit(highString,rOWidget);
-    rOHighField->setMaximumWidth(50);
+    relayOneHighValue = settings->value("RelOff").toInt();
+    highString.append(QString::number(relayOneHighValue));
+    rOHighField = new QLabel();
+    rOHighField->setText(highString);
+    rOHighField->setMinimumWidth(75);
+    rOHighField->setAlignment(Qt::AlignLeft);
     rOSubmitButton = new QPushButton("SAVE", rOWidget);
+
     //rORow = new QHBoxLayout(rOWidget);
     //rOLowButton = new QPushButton("↓LOW", rOWidget);
     //rOHighButton = new QPushButton("HIGH↑", rOWidget);
@@ -226,9 +231,24 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rOHelpButton->setIcon(icon);
     rOHelpButton->setFixedSize(buttonSize);
     rOHelpButton->setIconSize(buttonSize);
+
+    relayIncreaseButton = new QPushButton("+");
+    relayDecreaseButton = new QPushButton("-");
+    relayIncreaseButton->setStyleSheet("color: blue;");
+    relayDecreaseButton->setStyleSheet("color: blue;");
+
     //Styling
     relayOneTitle->setFont(titleFont);
     relayOneTitle->setAlignment(Qt::AlignHCenter);
+    rOLowLabel->setFont(labelFont);
+    rOHighLabel->setFont(labelFont);
+    rOLowField->setFont(labelFont);
+    rOSubmitButton->setFont(labelFont);
+
+
+    rOHighField->setFont(labelFont);
+    relayDecreaseButton->setFont(labelFont);
+    relayIncreaseButton->setFont(labelFont);
     //rOLowButton->setFixedHeight(60);
     //rOHighButton->setFixedHeight(60);
     rOVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
@@ -236,15 +256,23 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     rOVLayout->addWidget(relayOneTitle);
     rOLowRow->addWidget(rOLowLabel);
     rOLowRow->addWidget(rOLowField);
+    rOLowRow->addWidget(rOLowCheckBox);
+    rOLowRow->addWidget(relayIncreaseButton);
+
     rOVLayout->addLayout(rOLowRow);
     rOHighRow->addWidget(rOHighLabel);
     rOHighRow->addWidget(rOHighField);
+    rOHighRow->addWidget(rOHighCheckBox);
+    rOHighRow->addSpacing(10);
+    rOHighRow->addWidget(relayDecreaseButton);
     rOVLayout->addLayout(rOHighRow);
     rOVLayout->addWidget(rOSubmitButton);
     //rORow->addWidget(rOLowButton);
     //rORow->addWidget(rOHighButton);
     //rOVLayout->addLayout(rORow);
     rOHelpButton->setGeometry(320, 15, 30, 30);
+    relayIncreaseButton->setMinimumSize(30,30);
+    relayDecreaseButton->setMinimumSize(30,30);
     rOWidget->setLayout(rOVLayout);
     rOWidget->setStyleSheet(univStyle);
     //Relay One - Connect Buttons
@@ -252,14 +280,15 @@ QWidget* SettingsWidget::widgetForRelayOne() {
     //connect(rOHighButton, SIGNAL(released()), this, SLOT(rOHighPressed()));
     connect(rOSubmitButton, SIGNAL(released()), this, SLOT(rOSubmitPressed()));
     connect(rOHelpButton, SIGNAL(released()), this, SLOT(rOHelpPressed()));
+    connect(relayIncreaseButton, SIGNAL(released()), this, SLOT(on_relayIncreasePressed()));
+    connect(relayDecreaseButton, SIGNAL(released()), this, SLOT(on_relayDecreasePressed()));
+    connect(rOLowCheckBox, SIGNAL(released()),this, SLOT(on_relayLowCheckBoxPressed()));
+    connect(rOHighCheckBox, SIGNAL(released()),this, SLOT(on_relayHighCheckBoxPressed()));
 
-    float low = settings->value("RelOn").toFloat();
-    low = low / 10;
-    rOLowField->setText(QString::number(low));
 
-    float high = settings->value("RelOff").toFloat();
-    high = high / 10;
-    rOHighField->setText(QString::number(high));
+    relayIncreaseButton->setAutoRepeat(true);
+    relayDecreaseButton->setAutoRepeat(true);
+
 
    //rOLowPad = new Keypad(rOLowField, false, rOWidget);
     //rOHighPad / new Keypad(rOHighField,false, rOWidget);
@@ -570,13 +599,13 @@ QWidget* SettingsWidget::widgetForPassChange() {
 }
 
 void SettingsWidget::homePressed() {
-    invalidate();
+    //invalidate();
     close();
 }
 
 void SettingsWidget::showCal() {
 
-     clearView();
+    clearView();
 
     qDebug()<<"in show cal before making widget";
     QWidget *cal = widgetForCal();
@@ -853,6 +882,12 @@ void SettingsWidget::landingSubmit() {
 }
 
 void SettingsWidget::calSubmitReleased() {
+    QMessageBox msg;
+    msg.setText("The new Slope and Zero settings are now saved.");
+    msg.exec();
+
+    calSlopeField->setStyleSheet("QLabel { color : black; }");
+    calOffsetField->setStyleSheet("QLabel { color : black; }");
     QString calMsg = "c:"+calOffsetField->text();
     sendMessage(calMsg);
     settings->setValue("Zero", calOffsetField->text());
@@ -860,6 +895,95 @@ void SettingsWidget::calSubmitReleased() {
     QString slopeMsg = "s:"+calSlopeField->text();
     sendMessage(slopeMsg);
     settings->setValue("Slope", calSlopeField->text());
+}
+
+
+void SettingsWidget::on_calIncreasePressed(){
+    if(slopeCheckBox->isChecked()){
+        calSlopeField->setStyleSheet("QLabel { color : gray; }");
+        slopeValue++;
+        if(slopeValue > MAX_SLOPE_VALUE)
+            slopeValue = MIN_SLOPE_VALUE;
+        calSlopeField->setText(QString::number(slopeValue/100, 'g', 2));
+        settings->setValue("Slope", slopeValue);
+    }else if(offsetCheckBox->isChecked()){
+        calOffsetField->setStyleSheet("QLabel { color : gray; }");
+        offsetValue++;
+        if(offsetValue > MAX_OFFSET_VALUE)
+            offsetValue = MIN_OFFSET_VALUE;
+        calOffsetField->setText(QString::number(offsetValue));
+        settings->setValue("Zero", offsetValue);
+    }
+}
+
+void SettingsWidget::on_calDecreasePressed(){
+    if(slopeCheckBox->isChecked()){
+        calSlopeField->setStyleSheet("QLabel { color : gray; }");
+        slopeValue--;
+        if(slopeValue < MIN_SLOPE_VALUE)
+            slopeValue = MAX_SLOPE_VALUE;
+        calSlopeField->setText(QString::number(slopeValue/100, 'g', 2));
+        settings->setValue("Slope", slopeValue);
+    }else if(offsetCheckBox->isChecked()){
+        calOffsetField->setStyleSheet("QLabel { color : gray; }");
+        offsetValue--;
+        if(offsetValue < MIN_OFFSET_VALUE)
+            offsetValue = MAX_OFFSET_VALUE;
+        calOffsetField->setText(QString::number(offsetValue));
+        settings->setValue("Zero", offsetValue);
+    }
+}
+
+void SettingsWidget::on_slopeCheckBoxPressed(){
+    offsetCheckBox->setChecked(false);
+}
+
+void SettingsWidget::on_offsetCheckBoxPressed(){
+    slopeCheckBox->setChecked(false);
+}
+
+void SettingsWidget::on_relayDecreasePressed(){
+    if(rOLowCheckBox->isChecked()){
+        rOLowField->setStyleSheet("QLabel { color : gray; }");
+        relayOneLowValue--;
+        if(relayOneLowValue<MIN_RELAY_VALUE)
+            relayOneLowValue = MAX_RELAY_VALUE;
+        rOLowField->setText(QString::number(relayOneLowValue));
+        settings->setValue("RelOn", relayOneLowValue);
+    }else if(rOHighCheckBox->isChecked()){
+        rOHighField->setStyleSheet("QLabel { color : gray; }");
+        relayOneHighValue--;
+        if(relayOneHighValue<MIN_RELAY_VALUE)
+            relayOneHighValue = MAX_RELAY_VALUE;
+        rOHighField->setText(QString::number(relayOneHighValue));
+        settings->setValue("RelOff", relayOneHighValue);
+    }
+
+}
+void SettingsWidget::on_relayIncreasePressed(){
+    if(rOLowCheckBox->isChecked()){
+        rOLowField->setStyleSheet("QLabel { color : gray; }");
+        relayOneLowValue++;
+        if(relayOneLowValue>MAX_RELAY_VALUE)
+            relayOneLowValue = MIN_RELAY_VALUE;
+        rOLowField->setText(QString::number(relayOneLowValue));
+        settings->setValue("RelOn", relayOneLowValue);
+    }else if(rOHighCheckBox->isChecked()){
+        rOHighField->setStyleSheet("QLabel { color : gray; }");
+        relayOneHighValue++;
+        if(relayOneHighValue>MAX_RELAY_VALUE)
+            relayOneHighValue = MIN_RELAY_VALUE;
+        rOHighField->setText(QString::number(relayOneHighValue));
+        settings->setValue("RelOff", relayOneHighValue);
+    }
+
+}
+void SettingsWidget::on_relayLowCheckBoxPressed(){
+    rOHighCheckBox->setChecked(false);
+}
+
+void SettingsWidget::on_relayHighCheckBoxPressed(){
+    rOLowCheckBox->setChecked(false);
 }
 
 /*void SettingsWidget::twoSecPressed() {
@@ -907,15 +1031,21 @@ void SettingsWidget::rOHighPressed() {
 }*/
 
 void SettingsWidget::rOSubmitPressed() {
-    float lowf = rOLowField->text().toFloat();
-    QString low = QString::number(lowf * 10);
+
+    QMessageBox msg;
+    msg.setText("The new relay settings are now saved.");
+    msg.exec();
+    QString low = QString::number(relayOneLowValue);
     settings->setValue("RelOn", low);
     sendMessage("l:"+low);
 
-    float highf = rOHighField->text().toFloat();
-    QString high = QString::number(highf * 10);
+
+    QString high = QString::number(relayOneHighValue);
     settings->setValue("RelOff", high);
     sendMessage("h:"+high);
+
+    rOLowField->setStyleSheet("QLabel { color : black; }");
+    rOHighField->setStyleSheet("QLabel { color : black; }");
 }
 
 void SettingsWidget::rOHelpPressed() {
