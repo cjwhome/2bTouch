@@ -27,6 +27,8 @@
 #define MAX_SLOPE_VALUE 150
 #define MIN_OFFSET_VALUE -30
 #define MAX_OFFSET_VALUE 30
+#define MAX_VOLT_PPB_VALUE 1000
+#define MIN_VOLT_PPB_VALUE 5
 
 namespace Ui {
 class SettingsWidget;
@@ -123,10 +125,14 @@ private:
     QLabel *voltTitle;
     QLabel *voltVoltLabel;
     QHBoxLayout *voltPPBRow;
-    KeyLineEdit *voltPPBField;
+    QLabel *voltPPBField;
     QLabel *voltPPBLabel;
     QPushButton *voltSubmitButton;
+    QPushButton *increaseVoltButton;
+    QPushButton *decreaseVoltButton;
     QIcon *voltIcon;
+    int voltPPBValue;
+
     //Keypad *voltPad;
 
     //Files
@@ -214,8 +220,8 @@ private slots:
     void initializeViews();
     void homePressed();
 
-    //Landing
-    //void landingSubmit();
+
+
     //Calibration
     void calSubmitReleased();
     void on_calIncreasePressed();
@@ -223,22 +229,25 @@ private slots:
     void on_slopeCheckBoxPressed();
     void on_offsetCheckBoxPressed();
 
+    //Relay
     void rOSubmitPressed();
     void rOHelpPressed();
     void on_relayIncreasePressed();
     void on_relayDecreasePressed();
     void on_relayLowCheckBoxPressed();
     void on_relayHighCheckBoxPressed();
-    //Relay Two
-   /* void rTOzonePresed();
-    void rTDiagnosticsPressed();
-    void rTHelpPressed();*/
+
+
     //Volt
     void voltSubmitPressed();
+    void on_increaseVoltButton();
+    void on_decreaseVoltButton();
+
     //Files
     void copySelectedPressed();
     void deleteAllPressed();
     void deleteSelectedPressed();
+
     //Date and Time
     void dateSubmitPressed();
     void on_increaseDTButtonPressed();

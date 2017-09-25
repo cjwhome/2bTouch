@@ -102,12 +102,14 @@ QWidget* SettingsWidget::widgetForCal() {
     slopeCheckBox->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
     //qDebug()<<"before slopestring";
     slopeValue = settings->value("Slope").toFloat();
+    qDebug()<<"Slope value read from settings:"<<slopeValue;
+    qDebug()<<"String with fraction value:"<<QString::number(slopeValue/100, 'f', 2);
     //qDebug()<<"after appending";
     //calSlopeField = new KeyLineEdit(slopeString, calWidget);
     calSlopeField = new QLabel();
     calSlopeField->setAlignment(Qt::AlignLeft);
     calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
-    //calSlopeField->setText("blah");
+
     //qDebug()<<"after making keylineedit";
     calSlopeField->setMaximumWidth(100);
     calOffsetRow= new QHBoxLayout(calWidget);
@@ -168,7 +170,7 @@ QWidget* SettingsWidget::widgetForCal() {
     homeButton->setParent(calWidget);
 
     calOffsetField->setText(settings->value("Zero").toString());
-    calSlopeField->setText(settings->value("Slope").toString());
+
 
     calIncreaseButton->setAutoRepeat(true);
     calDecreaseButton->setAutoRepeat(true);
@@ -304,26 +306,36 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltWidget = new QWidget(this);
     voltVLayout = new QVBoxLayout(voltWidget);
     voltTitle = new QLabel("ANALOG OUTPUT", voltWidget);
-    voltVoltLabel = new QLabel("2.5 V & 20 mA", voltWidget);
+    voltVoltLabel = new QLabel("2.5 V =", voltWidget);
     voltVoltLabel->setMaximumWidth(250);
     voltPPBRow = new QHBoxLayout(voltWidget);
     QString voltString;
     voltString.append(settings->value("VOut").toString());
-    voltPPBField = new KeyLineEdit(voltString,voltWidget);
+    voltPPBField = new QLabel(voltString);
     voltPPBField->setMaximumWidth(50);
     voltPPBLabel = new QLabel("ppb", voltWidget);
     voltSubmitButton = new QPushButton("SAVE", voltWidget);
+    increaseVoltButton = new QPushButton("+");
+    decreaseVoltButton = new QPushButton("-");
     //Styling
     voltTitle->setFont(titleFont);
     voltTitle->setAlignment(Qt::AlignHCenter);
     voltVoltLabel->setFont(labelFont);
     voltVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    voltPPBField->setFont(labelFont);
+    voltPPBLabel->setFont(labelFont);
+    increaseVoltButton->setFont(labelFont);
+    decreaseVoltButton->setFont(labelFont);
+    voltSubmitButton->setFont(labelFont);
     //Voltage - Fill Layout
     voltVLayout->addWidget(voltTitle);
     //voltVLayout->addWidget(voltVoltLabel);
     voltPPBRow->addWidget(voltVoltLabel);
     voltPPBRow->addWidget(voltPPBField);
     voltPPBRow->addWidget(voltPPBLabel);
+    voltPPBRow->addWidget(increaseVoltButton);
+    voltPPBRow->addSpacing(10);
+    voltPPBRow->addWidget(decreaseVoltButton);
     voltVLayout->addLayout(voltPPBRow);
     voltVLayout->addWidget(voltSubmitButton);
     voltWidget->setLayout(voltVLayout);
@@ -334,6 +346,11 @@ QWidget* SettingsWidget::widgetForVoltage() {
     //voltPad = new Keypad(voltPPBField, false, voltWidget);
 
     connect(voltSubmitButton, SIGNAL(pressed()), this, SLOT(voltSubmitPressed()));
+    connect(increaseVoltButton, SIGNAL(pressed()), this, SLOT(on_increaseVoltButton()));
+    connect(decreaseVoltButton, SIGNAL(pressed()), this, SLOT(on_decreaseVoltButton()));
+
+    increaseVoltButton->setAutoRepeat(true);
+    decreaseVoltButton->setAutoRepeat(true);
 
     homeButton->setParent(voltWidget);
 
@@ -825,7 +842,7 @@ void SettingsWidget::calSubmitReleased() {
 
     QString slopeMsg = "s:"+calSlopeField->text();
     sendMessage(slopeMsg);
-    settings->setValue("Slope", calSlopeField->text());
+    settings->setValue("Slope", QString::number(slopeValue));
 }
 
 
@@ -837,14 +854,14 @@ void SettingsWidget::on_calIncreasePressed(){
             slopeValue = MIN_SLOPE_VALUE;
         calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
 
-        settings->setValue("Slope", slopeValue);
+        //settings->setValue("Slope", slopeValue);
     }else if(offsetCheckBox->isChecked()){
         calOffsetField->setStyleSheet("QLabel { color : gray; }");
         offsetValue++;
         if(offsetValue > MAX_OFFSET_VALUE)
             offsetValue = MIN_OFFSET_VALUE;
         calOffsetField->setText(QString::number(offsetValue));
-        settings->setValue("Zero", offsetValue);
+        //settings->setValue("Zero", offsetValue);
     }
 }
 
@@ -857,14 +874,14 @@ void SettingsWidget::on_calDecreasePressed(){
         calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
 
 
-        settings->setValue("Slope", slopeValue);
+        //settings->setValue("Slope", slopeValue);
     }else if(offsetCheckBox->isChecked()){
         calOffsetField->setStyleSheet("QLabel { color : gray; }");
         offsetValue--;
         if(offsetValue < MIN_OFFSET_VALUE)
             offsetValue = MAX_OFFSET_VALUE;
         calOffsetField->setText(QString::number(offsetValue));
-        settings->setValue("Zero", offsetValue);
+        //settings->setValue("Zero", offsetValue);
     }
 }
 
@@ -948,10 +965,32 @@ void SettingsWidget::rOHelpPressed() {
 
 
 void SettingsWidget::voltSubmitPressed() {
+    QMessageBox msgBox;
+    msgBox.setText("The voltage output setting has been saved.");
+    msgBox.exec();
     QString msg = "v:"+voltPPBField->text();
     sendMessage(msg);
+    settings->setValue("VOut", voltPPBValue);
+    voltPPBField->setStyleSheet("QLabel { color : black; }");
 }
 
+void SettingsWidget::on_increaseVoltButton(){
+    voltPPBValue++;
+    if(voltPPBValue > MAX_VOLT_PPB_VALUE){
+        voltPPBValue = MIN_VOLT_PPB_VALUE;
+    }
+    voltPPBField->setText(QString::number(voltPPBValue));
+    voltPPBField->setStyleSheet("QLabel { color : gray; }");
+}
+
+void SettingsWidget::on_decreaseVoltButton(){
+    voltPPBValue--;
+    if(voltPPBValue < MIN_VOLT_PPB_VALUE){
+        voltPPBValue = MAX_VOLT_PPB_VALUE;
+    }
+    voltPPBField->setText(QString::number(voltPPBValue));
+    voltPPBField->setStyleSheet("QLabel { color : gray; }");
+}
 
 void SettingsWidget::on_increaseDTButtonPressed(){
     if(dayTenButton->isChecked()){

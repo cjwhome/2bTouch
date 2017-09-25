@@ -141,9 +141,9 @@ DisplayGraph::~DisplayGraph()
 }
 
 void DisplayGraph::setData(QVector<double> a, QVector<double> b){
-    x = a;      //x is time
-    y = b;      //y is measurement
-    customPlot->graph(0)->setData(x, y);
+    //x = a;      //x is time
+    //y = b;      //y is measurement
+    customPlot->graph(0)->setData(a, b);
 
 }
 void DisplayGraph::redrawPlot(){

@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     //play_jingle();
     started_file = false;
     //this->setStyleSheet("background-color:white;");
@@ -422,8 +423,8 @@ bool MainWindow::parseDataLine(QString dLine){
         }else{
             x.insert(data_index,data_point);
             y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
-            //t=x;                    //copy the vectors to order them to get high and low for range
-            //u=y;
+            t=x;                    //copy the vectors to order them to get high and low for range
+            u=y;
             data_index++;
         }
 
