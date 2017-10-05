@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-white.png);");
     //ControlBacklight controlBacklight;
     //controlBacklight.setPercentage(100);
-    //listFonts();
+    listFonts();
 
     settings = new QSettings("2B Technologies", "2B Touch");
     usbMounted = false;
@@ -86,19 +86,22 @@ MainWindow::MainWindow(QWidget *parent) :
     stats_button->setIcon(statsButtonIcon);
     stats_button->setIconSize(QSize(35,31));
     stats_button->setFixedSize(buttonSize);
-    QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
-    QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
+    QFont labelFont("Courier", 50, QFont::ForceIntegerMetrics);
 
-    QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
+    QFont unitsLabelFont("Courier", 40, QFont::ForceIntegerMetrics);
+
+    QFont timeFont("Courier", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
+
+
     main_label->setFont(labelFont);
-    main_label->setStyleSheet("QLabel { color : black; }");
-    main_units_label->setFont(unitsLabelFont);
+
     main_units_label->setStyleSheet("QLabel { color : black; }");
+    main_units_label->setFont(unitsLabelFont);
     main_measurement_display->setFont(labelFont);
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
-    //main_measurement_display->setFixedWidth(8);
+    main_measurement_display->setFixedWidth(8);
 
     warningLabel = new QLabel("Warming Up", this);
     warningLabel->setGeometry(35, 190, 400, 20);
@@ -200,7 +203,7 @@ MainWindow::MainWindow(QWidget *parent) :
     usbIcon = new QPushButton(this);
     usbIcon->setIcon(icon);
     //usbIcon->setGeometry(15, 20, 20, 20);
-    usbIcon->setGeometry(35, 20, 40, 20);
+    usbIcon->setGeometry(20, 20, 40, 20);
     usbIcon->setFixedSize(QSize(20, 20));
     usbIcon->setIconSize(QSize(20, 20));
 
@@ -445,7 +448,7 @@ bool MainWindow::parseDataLine(QString dLine){
 void MainWindow::updateAverage(double value) {
     int avgIndex = settings->value("Avg").toInt();
     avgIndex = 0;
-    qDebug()<<"Avg Index: "<<avgIndex;
+    //qDebug()<<"Avg Index: "<<avgIndex;
     int avgDur;
     if (avgIndex == 0) {
         avgDur = 2;
@@ -489,7 +492,7 @@ void MainWindow::updateAverage(double value) {
         avgList = tempList;
     }
     avgList<<value;
-    qDebug()<<"Avg List: "<<avgList;
+    //qDebug()<<"Avg List: "<<avgList;
 
     double sum = 0;
     for(int i = 0; i < avgList.length(); i++) {
@@ -500,6 +503,7 @@ void MainWindow::updateAverage(double value) {
 
 void MainWindow::updateDisplay(void){
     double current_value;
+    double scrubber_temperature;
 
     if(!started_file){
         qDebug()<<"File not started yet, attempting to start file";
@@ -507,11 +511,12 @@ void MainWindow::updateDisplay(void){
         this->createFileName();
     }
     SerialDataItem tempSerialDataItem;
-
-    tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position());
-
-    //current_value = avg;//tempSerialDataItem.getDvalue();
-current_value = tempSerialDataItem.getDvalue();
+    //first, get the main measurement value
+    tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getMain_display_position()); 
+    current_value = tempSerialDataItem.getDvalue();
+    //check of the scrubber temperature is hot enough
+    //tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDiagnosticC_position());
+    //scrubber_temperature = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
     if(deviceProfile.getMain_display_name().contains("3")){
         main_label->setText("O<sub>3</sub>: ");
@@ -519,6 +524,10 @@ current_value = tempSerialDataItem.getDvalue();
          main_label->setText("NO<sub>2</sub>: ");
     }
 
+    //skip first 3 minutes of data by default
+    if(allParsedRecordsList.size()<18){
+        current_value = 0;
+    }
     QString mesStr = QString::number(current_value);
 
     if(mesStr.contains(".")) {
@@ -535,9 +544,13 @@ current_value = tempSerialDataItem.getDvalue();
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
 //qDebug()<<"Current time:"<<tempSerialDataItem.getDateTime().toString("dd/mm/yy");
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
-
+    //QString tempDate = tempSerialDataItem.getDateTime().toString("ddMMyy");
+    //qDebug()<<"DateString:"<<tempDate;
+    //QString tempTime = tempSerialDataItem.getDateTime().toString("hhmmss");
+    //qDebug()<<"TimeString:"<<tempTime;
+    //qDebug()<<"Here next";
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
-    settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddmmyy"));
+    settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddMMyy"));
     //qDebug()<<"Before statswidget";
     statsWidget->setData(&allParsedRecordsList, &deviceProfile);
      //qDebug()<<"Here9";
@@ -686,7 +699,7 @@ void MainWindow::usbTimerTick() {
 
 void MainWindow::errorTimerTick() {
     //Check STemp
-    qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
+    //qDebug()<<"Error Timer Tick: "<<QDateTime::currentDateTime().toTime_t();
     if(deviceProfile.getDevice_name()=="IAQ"||deviceProfile.getDevice_name()=="IAQ-PC"){
         if(allParsedRecordsList.length() != 0) {
             SerialDataItem item = allParsedRecordsList.last().at(deviceProfile.getDiagnosticC_position());
@@ -694,13 +707,13 @@ void MainWindow::errorTimerTick() {
             if(val < (80 + 273)) {
                 //errorIcon->show();
                 //warningIcon->show();
-                warningLabel->setText("Status: Warming up");
+                warningLabel->setText("Warming up");
                 //warningLabel->show();
             } else {
                 //errorIcon->hide();
                 //warningIcon->hide();
                 //warningLabel->hide();
-                warningLabel->setText("Status: OK");
+                warningLabel->setText("OK");
             }
         }
     }

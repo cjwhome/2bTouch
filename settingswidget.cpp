@@ -22,6 +22,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     device = reader->getADevice(1);
 
 
+
 }
 
 SettingsWidget::~SettingsWidget()
@@ -48,6 +49,7 @@ void SettingsWidget::initializeViews() {
 
     titleFont = QFont("Times serif", 30, 4);
     labelFont = QFont("Times serif", 20, 3);
+    labelFontSmall = QFont("Times serif", 10, 2);
 
     widgetForLanding();
 
@@ -65,7 +67,7 @@ void SettingsWidget::widgetForLanding() {
 
         QPushButton *left = new QPushButton(cal);
         left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-        connect(left, SIGNAL(released()), this, SLOT(showNet()));
+        connect(left, SIGNAL(released()), this, SLOT(showAbout()));
 
         QPushButton *right = new QPushButton(cal);
         right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -159,7 +161,7 @@ QWidget* SettingsWidget::widgetForCal() {
     calVLayout->addLayout(calOffsetRow);
     calVLayout->addWidget(calSubmit);
     calWidget->setLayout(calVLayout);
-    calWidget->setStyleSheet(univStyle);
+    //calWidget->setStyleSheet(univStyle);
     //Calibration - Connect Buttons
     connect(calSubmit, SIGNAL(released()), this, SLOT(calSubmitReleased()));
     connect(calIncreaseButton, SIGNAL(released()), this, SLOT(on_calIncreasePressed()));
@@ -312,7 +314,7 @@ QWidget* SettingsWidget::widgetForVoltage() {
     QString voltString;
     voltString.append(settings->value("VOut").toString());
     voltPPBField = new QLabel(voltString);
-    voltPPBField->setMaximumWidth(50);
+    voltPPBField->setMaximumWidth(100);
     voltPPBLabel = new QLabel("ppb", voltWidget);
     voltSubmitButton = new QPushButton("SAVE", voltWidget);
     increaseVoltButton = new QPushButton("+");
@@ -326,6 +328,8 @@ QWidget* SettingsWidget::widgetForVoltage() {
     voltPPBLabel->setFont(labelFont);
     increaseVoltButton->setFont(labelFont);
     decreaseVoltButton->setFont(labelFont);
+    increaseVoltButton->setStyleSheet("color: blue;");
+    decreaseVoltButton->setStyleSheet("color: blue;");
     voltSubmitButton->setFont(labelFont);
     //Voltage - Fill Layout
     voltVLayout->addWidget(voltTitle);
@@ -491,11 +495,12 @@ QWidget* SettingsWidget::widgetForDate() {
     increaseDTButton = new QPushButton("+", dateWidget);
     decreaseDTButton = new QPushButton("-", dateWidget);
 
+
     //style
     dateTitle->setFont(titleFont);
     dateTitle->setAlignment(Qt::AlignHCenter);
-    dateDateLabel->setFont(labelFont);
-    dateTimeLabel->setFont(labelFont);
+    dateDateLabel->setFont(labelFontSmall);
+    dateTimeLabel->setFont(labelFontSmall);
     dateVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     monthTenButton->setFont(labelFont);
     monthButton->setFont(labelFont);
@@ -510,6 +515,12 @@ QWidget* SettingsWidget::widgetForDate() {
     minButton->setFont(labelFont);
     secTenButton->setFont(labelFont);
     secButton->setFont(labelFont);
+    increaseDTButton->setFont(labelFont);
+    increaseDTButton->setMinimumSize(30,30);
+    decreaseDTButton->setFont(labelFont);
+    decreaseDTButton->setMinimumSize(30,30);
+    increaseDTButton->setStyleSheet("color: blue;");
+    decreaseDTButton->setStyleSheet("color: blue;");
 
 
     //lay it out
@@ -559,6 +570,9 @@ QWidget* SettingsWidget::widgetForDate() {
     connect(increaseDTButton, SIGNAL(pressed()), this, SLOT(on_increaseDTButtonPressed()));
     connect(decreaseDTButton, SIGNAL(pressed()), this, SLOT(on_decreaseDTButtonPressed()));
     connect(dateSubmitButton, SIGNAL(released()), this, SLOT(dateSubmitPressed()));
+
+    increaseDTButton->setAutoRepeat(true);
+    decreaseDTButton->setAutoRepeat(true);
 
     return dateWidget;
 }
@@ -635,6 +649,53 @@ QWidget* SettingsWidget::widgetForNet() {
     return widget;
 }
 
+QWidget* SettingsWidget::widgetForAbout() {
+
+    /*
+     * dateVLayout = new QVBoxLayout(dateWidget);
+    dateTitle = new QLabel("DATE & TIME", dateWidget);
+    dateDateRow = new QHBoxLayout(dateWidget);
+    dateDateLabel = new QLabel("(DDMMYY): ", dateWidget);
+     */
+    aboutWidget = new QWidget(this);
+    aboutVLayout = new QVBoxLayout(aboutWidget);
+    aboutVersionRow = new QHBoxLayout(aboutWidget);
+    aboutCopyrightRow = new QHBoxLayout(aboutWidget);
+    aboutTitle = new QLabel("ABOUT", aboutWidget);
+    aboutNameLabel = new QLabel(APP_NAME);
+
+    QString copyrightString = "2B Technologies, Inc. ";
+
+    copyrightString.append(COPYRIGHT_DATE);
+    QString appVersionString = "Version: ";
+    appVersionString.append(APP_VERSION);
+    appVersionString.append(".");
+    appVersionString.append(BUILD_NUMBER);
+    aboutCopyrightLabel = new QLabel(copyrightString);
+    aboutVersionLabel = new QLabel(appVersionString);
+
+
+
+    aboutVLayout->addWidget(aboutTitle);
+
+    aboutVersionRow->addWidget(aboutNameLabel);
+    aboutVersionRow->addWidget(aboutVersionLabel);
+    aboutCopyrightRow->addWidget(aboutCopyrightLabel);
+    aboutVLayout->addLayout(aboutVersionRow);
+    aboutVLayout->addLayout(aboutCopyrightRow);
+
+
+    aboutTitle->setFont(titleFont);
+    aboutNameLabel->setFont(labelFont);
+    aboutVersionLabel->setFont(labelFont);
+    aboutVersionLabel->setStyleSheet("color: blue;");
+
+
+    aboutVLayout->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    aboutWidget->setStyleSheet(univStyle);
+    return aboutWidget;
+}
 
 
 void SettingsWidget::homePressed() {
@@ -651,7 +712,7 @@ void SettingsWidget::showCal() {
 
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showNet()));
+    connect(left, SIGNAL(released()), this, SLOT(showAbout()));
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -801,6 +862,34 @@ void SettingsWidget::showNet() {
 
     QPushButton *right = new QPushButton(widget);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
+    connect(right, SIGNAL(released()), this, SLOT(showAbout()));
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(left);
+    layout->addWidget(widget);
+    layout->addWidget(right);
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    homeButton->setParent(w);
+    mainLayout->addWidget(w);
+}
+
+void SettingsWidget::showAbout(){
+    clearView();
+    QWidget *widget = widgetForAbout();
+
+    QPushButton *left = new QPushButton(widget);
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
+    connect(left, SIGNAL(released()), this, SLOT(showNet()));
+
+    QPushButton *right = new QPushButton(widget);
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
     connect(right, SIGNAL(released()), this, SLOT(showCal()));
 
     right->setFixedSize(buttonSize);
@@ -820,7 +909,6 @@ void SettingsWidget::showNet() {
 }
 
 
-
 void SettingsWidget::clearView() {
     QWidget *widget = mainLayout->itemAt(0)->widget();
     mainLayout->removeWidget(widget);
@@ -831,6 +919,8 @@ void SettingsWidget::clearView() {
 
 void SettingsWidget::calSubmitReleased() {
     QMessageBox msg;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msg.setStyleSheet(msgBoxStyle);
     msg.setText("The new Slope and Zero settings are now saved.");
     msg.exec();
 
@@ -852,6 +942,8 @@ void SettingsWidget::on_calIncreasePressed(){
         slopeValue++;
         if(slopeValue > MAX_SLOPE_VALUE)
             slopeValue = MIN_SLOPE_VALUE;
+        else if(slopeValue < MIN_SLOPE_VALUE)
+            slopeValue = MIN_SLOPE_VALUE;
         calSlopeField->setText(QString::number(slopeValue/100, 'f', 2));
 
         //settings->setValue("Slope", slopeValue);
@@ -859,6 +951,8 @@ void SettingsWidget::on_calIncreasePressed(){
         calOffsetField->setStyleSheet("QLabel { color : gray; }");
         offsetValue++;
         if(offsetValue > MAX_OFFSET_VALUE)
+            offsetValue = MIN_OFFSET_VALUE;
+        else if(offsetValue < MIN_OFFSET_VALUE)
             offsetValue = MIN_OFFSET_VALUE;
         calOffsetField->setText(QString::number(offsetValue));
         //settings->setValue("Zero", offsetValue);
@@ -942,6 +1036,8 @@ void SettingsWidget::on_relayHighCheckBoxPressed(){
 void SettingsWidget::rOSubmitPressed() {
 
     QMessageBox msg;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msg.setStyleSheet(msgBoxStyle);
     msg.setText("The new relay settings are now saved.");
     msg.exec();
     QString low = QString::number(relayOneLowValue);
@@ -959,6 +1055,8 @@ void SettingsWidget::rOSubmitPressed() {
 
 void SettingsWidget::rOHelpPressed() {
     QMessageBox msg;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msg.setStyleSheet(msgBoxStyle);
     msg.setText("LOW is the O3 in ppb that the relay will remain ON until. HIGH is the O3 in ppb that the relay will turn OFF.");
     msg.exec();
 }
@@ -966,6 +1064,8 @@ void SettingsWidget::rOHelpPressed() {
 
 void SettingsWidget::voltSubmitPressed() {
     QMessageBox msgBox;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msgBox.setStyleSheet(msgBoxStyle);
     msgBox.setText("The voltage output setting has been saved.");
     msgBox.exec();
     QString msg = "v:"+voltPPBField->text();
@@ -1224,6 +1324,8 @@ void SettingsWidget::copyAllPressed() {
         }
     }
     QMessageBox completion;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    completion.setStyleSheet(msgBoxStyle);
     if(success) {
         completion.setText("Files Copied Successfully");
     } else {
@@ -1249,6 +1351,8 @@ void SettingsWidget::copySelectedPressed() {
         }
     }
     QMessageBox completion;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    completion.setStyleSheet(msgBoxStyle);
     if(success) {
         completion.setText("Files Copied Successfully");
     } else {
@@ -1259,6 +1363,8 @@ void SettingsWidget::copySelectedPressed() {
 
 void SettingsWidget::deleteAllPressed() {
     QMessageBox msg;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msg.setStyleSheet(msgBoxStyle);
     msg.setText("Do you want to delete all of the files?");
     msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     int ret = msg.exec();
@@ -1283,6 +1389,8 @@ void SettingsWidget::deleteAllPressed() {
 
 void SettingsWidget::deleteSelectedPressed() {
     QMessageBox msg;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msg.setStyleSheet(msgBoxStyle);
     msg.setText("Do you want to delete these files?");
     msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     int ret = msg.exec();
@@ -1317,6 +1425,13 @@ void SettingsWidget::dateSubmitPressed() {
 
     QString timeMsg = "t:" + timeString;
     sendMessage(timeMsg);
+
+    QMessageBox msgBox;
+    msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    msgBox.setStyleSheet(msgBoxStyle);
+    msgBox.setText("The date and time have been saved.");
+    msgBox.exec();
+
 }
 
 void SettingsWidget::connSubmitPressed() {

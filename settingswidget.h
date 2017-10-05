@@ -20,6 +20,7 @@
 #include "filewriter.h"
 #include "keypad.h"
 #include "keylineedit.h"
+#include "defines.h"
 
 #define MAX_RELAY_VALUE 1000
 #define MIN_RELAY_VALUE 0
@@ -57,6 +58,7 @@ private:
     QVBoxLayout *mainLayout;
     QFont titleFont;
     QFont labelFont;
+    QFont labelFontSmall;
     QSize buttonSize;
     QString regButtonStyle;
     QString selButtonStyle;
@@ -210,8 +212,19 @@ private:
     //Keypad *connPassPad;
     QPushButton *connSubmitButton;
 
+    //About - display info about the software
+    QWidget *aboutWidget;
+    QVBoxLayout *aboutVLayout;
+    QLabel *aboutTitle;
+    QLabel *aboutNameLabel;
+    QLabel *aboutVersionLabel;
+    QLabel *aboutCopyrightLabel;
+    QHBoxLayout *aboutVersionRow;
+    QHBoxLayout *aboutCopyrightRow;
+
 
     QSettings *settings;
+    QString msgBoxStyle;
 
     TwobTechDevice device;
     bool firstTimeViewed;
@@ -267,6 +280,7 @@ private slots:
     QWidget* widgetForFiles();
     QWidget* widgetForDate();
     QWidget* widgetForNet();
+    QWidget* widgetForAbout();
 
 
     void showCal();
@@ -277,6 +291,7 @@ private slots:
     void showFiles();
     void showDate();
     void showNet();
+    void showAbout();
     void widgetForLanding();
 
     void clearView();

@@ -45,9 +45,9 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     mainLayout->addWidget(right);
 
     currentIndex = 0;
-    //widgets<<widgetForAvg();
+    widgets<<widgetForAvg();
     widgets<<widgetForOne();
-    qDebug()<<"before widget for two";
+    //qDebug()<<"before widget for two";
 
     widgets<<widgetForTwo();
     //qDebug()<<"device name:"<<profile.getDevice_name();
@@ -102,7 +102,7 @@ void StatsWidget::homePressed() {
 
 QWidget* StatsWidget::widgetForAvg() {
     if(!avgWidget) {
-       // qDebug()<<"Avg widget setup";
+        qDebug()<<"Avg widget setup";
         avgWidget = new QWidget(this);
         avgVLayout = new QVBoxLayout(avgWidget);
         avgNonRow = new QHBoxLayout(avgWidget);
@@ -142,7 +142,7 @@ QWidget* StatsWidget::widgetForAvg() {
 
 QWidget* StatsWidget::widgetForOne() {
     qDebug()<<"One widget setup before";
-    //if(!oneWidget) {
+    if(!oneWidget) {
         qDebug()<<"One widget setup";
         oneWidget = new QWidget(this);
         oneVLayout = new QVBoxLayout(oneWidget);
@@ -169,7 +169,7 @@ QWidget* StatsWidget::widgetForOne() {
         oneBTitle->setFont(titleFont);
         oneBLabel->setFont(titleFont);
         oneWidget->hide();
-    //}
+    }
     return oneWidget;
 }
 
@@ -202,12 +202,12 @@ QWidget* StatsWidget::widgetForTwo() {
         twoBTitle->setFont(titleFont);
         twoBLabel->setFont(titleFont);
         twoWidget->hide();
-    //}
+   // }
     return twoWidget;
 }
 
 QWidget* StatsWidget::widgetForThree() {
-    if(!threeWidget) {
+    //if(!threeWidget) {
         qDebug()<<"Three widget setup";
         threeWidget = new QWidget(this);
         threeVLayout = new QVBoxLayout(threeWidget);
@@ -232,7 +232,7 @@ QWidget* StatsWidget::widgetForThree() {
         threeATitle->setFont(titleFont);
         threeALabel->setFont(titleFont);
         threeWidget->hide();
-    }
+   // }
     qDebug()<<"Leaving widget for three";
     return threeWidget;
 }
@@ -293,7 +293,7 @@ void StatsWidget::setData(QList< QList<SerialDataItem> > *records, DeviceProfile
 
     QString strVal;
     double val;
-   // qDebug()<<"Diagnostics start:";
+    //qDebug()<<"Diagnostics start:";
     //Diagnostic A - A
     val = curr.at(profile->getDiagnosticA_position()).getDvalue();
 

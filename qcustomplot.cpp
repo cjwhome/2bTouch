@@ -10406,7 +10406,7 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
   
   emit afterReplot();
   mReplotting = false;
-  qDebug()<<"Replotting Took: "<<replotTimer.elapsed();
+  //qDebug()<<"Replotting Took: "<<replotTimer.elapsed();
   replotTimer.invalidate();
 }
 
