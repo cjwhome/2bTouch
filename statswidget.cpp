@@ -64,7 +64,7 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
     badStylesheet = "QLabel { font-size: 25px; color: red; }";
 
-    titleFont = QFont("Times serif", 20, 2);
+    titleFont = QFont("Cabin", 20, 3);
 
     this->setStyleSheet(goodStylesheet);
     qDebug()<<"after setstylesheet";
@@ -114,6 +114,12 @@ QWidget* StatsWidget::widgetForAvg() {
         avgEightRow = new QHBoxLayout(avgWidget);
         avgEightTitle = new QLabel("Eight Avg", avgWidget);
         avgEightLabel = new QLabel("Eight Label", avgWidget);
+        avgNonTitle->setFont(titleFont);
+        avgNonLabel->setFont(titleFont);
+        avgHourTitle->setFont(titleFont);
+        avgHourLabel->setFont(titleFont);
+        avgEightTitle->setFont(titleFont);
+        avgEightLabel->setFont(titleFont);
 
         avgNonRow->addWidget(avgNonTitle);
         avgNonRow->addWidget(avgNonLabel);
@@ -129,12 +135,7 @@ QWidget* StatsWidget::widgetForAvg() {
         avgWidget->setFixedSize(widgetSize);
         avgWidget->setGeometry(widgetGeo);
         avgVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        avgNonTitle->setFont(titleFont);
-        avgNonLabel->setFont(titleFont);
-        avgHourTitle->setFont(titleFont);
-        avgHourLabel->setFont(titleFont);
-        avgEightTitle->setFont(titleFont);
-        avgEightLabel->setFont(titleFont);
+
         avgWidget->hide();
     }
     return avgWidget;
@@ -152,6 +153,10 @@ QWidget* StatsWidget::widgetForOne() {
         oneBRow = new QHBoxLayout(oneWidget);
         oneBTitle = new QLabel("One B", oneWidget);
         oneBLabel = new QLabel("One B Label", oneWidget);
+        oneATitle->setFont(titleFont);
+        oneALabel->setFont(titleFont);
+        oneBTitle->setFont(titleFont);
+        oneBLabel->setFont(titleFont);
 
         oneARow->addWidget(oneATitle);
         oneARow->addWidget(oneALabel);
@@ -164,10 +169,7 @@ QWidget* StatsWidget::widgetForOne() {
         oneWidget->setFixedSize(widgetSize);
         oneWidget->setGeometry(widgetGeo);
         oneVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        oneATitle->setFont(titleFont);
-        oneALabel->setFont(titleFont);
-        oneBTitle->setFont(titleFont);
-        oneBLabel->setFont(titleFont);
+
         oneWidget->hide();
     }
     return oneWidget;

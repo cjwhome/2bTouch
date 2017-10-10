@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //this->setStyleSheet(" background-image: url(:/keyboard/keyboard/Touch-Keyboard-white.png);");
     //ControlBacklight controlBacklight;
     //controlBacklight.setPercentage(100);
-    listFonts();
+    //listFonts();
 
     settings = new QSettings("2B Technologies", "2B Touch");
     usbMounted = false;
@@ -86,11 +86,11 @@ MainWindow::MainWindow(QWidget *parent) :
     stats_button->setIcon(statsButtonIcon);
     stats_button->setIconSize(QSize(35,31));
     stats_button->setFixedSize(buttonSize);
-    QFont labelFont("Courier", 50, QFont::ForceIntegerMetrics);
+    QFont labelFont("Cabin", 50, QFont::ForceIntegerMetrics);
 
-    QFont unitsLabelFont("Courier", 40, QFont::ForceIntegerMetrics);
+    QFont unitsLabelFont("Cabin", 40, QFont::ForceIntegerMetrics);
 
-    QFont timeFont("Courier", 12, QFont::ForceIntegerMetrics);
+    QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
 
@@ -101,12 +101,13 @@ MainWindow::MainWindow(QWidget *parent) :
     main_units_label->setFont(unitsLabelFont);
     main_measurement_display->setFont(labelFont);
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
-    main_measurement_display->setFixedWidth(8);
+    //main_measurement_display->setFixedWidth(8);
 
     warningLabel = new QLabel("Warming Up", this);
     warningLabel->setGeometry(35, 190, 400, 20);
     warningLabel->setMinimumWidth(100);
     warningLabel->setAlignment(Qt::AlignCenter);
+    warningLabel->setFont(timeFont);
 
     topTimeLayout->addWidget(warningLabel);
     topTimeLayout->addSpacing(300);
@@ -414,7 +415,8 @@ bool MainWindow::parseDataLine(QString dLine){
 
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
 
-        data_point = QDateTime::currentDateTime().toTime_t();
+       // data_point = QDateTime::currentDateTime().toTime_t();
+        data_point = tempDate.toTime_t();
 
         //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
         if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){

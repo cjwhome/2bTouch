@@ -37,6 +37,11 @@ void SettingsWidget::initializeViews() {
     this->setStyleSheet("QPushButton { border: none; }");
 
     univStyle = "QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
+    //set font for entire setup
+
+
+    QFont genericFont("Cabin");
+
 
     homeButton = new QPushButton();
     homeButton->setIcon(QIcon(":/buttons/pics/home-icon.gif"));
@@ -47,9 +52,9 @@ void SettingsWidget::initializeViews() {
     regButtonStyle = "background-color: rgba(255, 255, 255, 0); color: #000000";
     selButtonStyle = "background-color: #002266; color: #ffffff";
 
-    titleFont = QFont("Times serif", 30, 4);
-    labelFont = QFont("Times serif", 20, 3);
-    labelFontSmall = QFont("Times serif", 10, 2);
+    titleFont = QFont("Cabin", 30, 4);
+    labelFont = QFont("Cabin", 20, 3);
+    labelFontSmall = QFont("Cabin", 10, 2);
 
     widgetForLanding();
 

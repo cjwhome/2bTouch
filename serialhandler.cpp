@@ -123,7 +123,7 @@ void SerialHandler::dataReady() {
 }
 
 void SerialHandler::readData(QString data) {
-    qDebug()<<"Top received new line from serial: "<<data;
+    qDebug()<<data;
     //serialPort->flush();
     QString *retDataStr = new QString(data);
     retDataStr->remove('\r');
