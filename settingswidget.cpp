@@ -1106,6 +1106,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
                 dayTenValue = 0;
         }else if(dayTenValue > 3){
             dayTenValue = 0;
+        }else if(dayTenValue < 0){
+            dayTenValue = 1;
         }
         dayTenButton->setText(QString::number(dayTenValue));
 
@@ -1116,6 +1118,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
                 dayValue = 0;
         }else if(dayValue > 9){
             dayValue = 0;
+        }else if(dayValue < 0){
+            dayValue = 1;
         }
         dayButton->setText(QString::number(dayValue));
 
@@ -1124,6 +1128,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         monthTenValue++;
         if(monthTenValue > 1){
               monthTenValue = 0;
+        }else if(monthTenValue < 0){
+            monthTenValue = 1;
         }
         monthTenButton->setText(QString::number(monthTenValue));
 
@@ -1134,6 +1140,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
                 monthValue = 0;
         }else if(monthValue > 9){
             monthValue = 0;
+        }else if(monthValue < 0){
+            monthValue = 1;
         }
         monthButton->setText(QString::number(monthValue));
 
@@ -1141,6 +1149,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         yearTenValue++;
         if(yearTenValue > 9){
             yearTenValue = 0;
+        }else if(yearTenValue < 0){
+            yearTenValue = 1;
         }
         yearTenButton->setText(QString::number(yearTenValue));
 
@@ -1149,6 +1159,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         yearValue++;
         if(yearValue > 9){
             yearValue = 0;
+        }else if(yearValue < 0){
+            yearValue = 1;
         }
         yearButton->setText(QString::number(yearValue));
 
@@ -1160,6 +1172,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
                 hourTenValue = 0;
         }else if(hourTenValue > 2){
             hourTenValue = 0;
+        }else if(hourTenValue < 0){
+            hourTenValue = 1;
         }
         hourTenButton->setText(QString::number(hourTenValue));
 
@@ -1170,6 +1184,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
                 hourValue = 0;
         }else if(hourValue > 9){
             hourValue = 0;
+        }else if(hourValue < 0){
+            hourValue = 1;
         }
         hourButton->setText(QString::number(hourValue));
 
@@ -1185,6 +1201,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         minValue++;
         if(minValue > 9){
             minValue = 0;
+        }else if(minValue < 0){
+            minValue = 1;
         }
         minButton->setText(QString::number(minValue));
 
@@ -1192,6 +1210,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         secTenValue++;
         if(secTenValue > 6){
             secTenValue = 0;
+        }else if(secTenValue < 0){
+            secTenValue = 1;
         }
         secTenButton->setText(QString::number(secTenValue));
 
@@ -1200,6 +1220,8 @@ void SettingsWidget::on_increaseDTButtonPressed(){
         secValue++;
         if(secValue > 9){
             secValue = 0;
+        }else if(secValue < 0){
+            secValue = 1;
         }
         secButton->setText(QString::number(secValue));
 
