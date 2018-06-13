@@ -222,6 +222,15 @@ private:
     QHBoxLayout *aboutVersionRow;
     QHBoxLayout *aboutCopyrightRow;
 
+    //Modbus
+    QWidget *modbusWidget;
+    QVBoxLayout *modbusVLayout;
+    QLabel *modbusTitle;
+    QHBoxLayout *modbusFirstRow;
+    KeyLineEdit *modbusCustomEntry;
+    KeyLineEdit *modbusCustomAddress;
+    QPushButton *modbusSaveButton;
+
 
     QSettings *settings;
     QString msgBoxStyle;
@@ -270,6 +279,9 @@ private slots:
     void netDisButtonPressed();
     void connSubmitPressed();
 
+    //Modbus
+    void modbusSavePressed();
+
 
 
     QWidget* widgetForCal();
@@ -281,6 +293,7 @@ private slots:
     QWidget* widgetForDate();
     QWidget* widgetForNet();
     QWidget* widgetForAbout();
+    QWidget* widgetForModbus();
 
 
     void showCal();
@@ -292,6 +305,7 @@ private slots:
     void showDate();
     void showNet();
     void showAbout();
+    void showModbus();
     void widgetForLanding();
 
     void clearView();

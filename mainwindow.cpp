@@ -5,7 +5,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <linux/i2c-dev.h>
+//#include <linux/i2c-dev.h>
+
+#include "modbus_server.h"
 
 class I : public QThread
 {
@@ -191,7 +193,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupSerial();
 
-
+    modbus = ModbusServer::getInstance();//new ModbusServer();
+    modbus->updateRegister(0, new QByteArray("BBBBBB"));
+    modbus->updateRegister(10, new QByteArray("MMMMMM"));
 
     msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
     this->setStyleSheet(msgBoxStyle);
@@ -507,6 +511,8 @@ void MainWindow::updateDisplay(void){
     double current_value;
     double scrubber_temperature;
 
+    qDebug()<<"UPDATING DISPLAY! UPDATING DISPLAY! UPDATING DISPLAY!";
+
     if(!started_file){
         qDebug()<<"File not started yet, attempting to start file";
 
@@ -566,6 +572,8 @@ void MainWindow::updateDisplay(void){
     }else
         qDebug()<<"No Data to Plot";
     //qDebug()<<"Here9";
+
+    modbus->updateRegister(ModbusServer::MAIN_VALUE, new QByteArray(QString::number(current_value).toLatin1()));
 }
 
 void MainWindow::displayBigPlot(void){

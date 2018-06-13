@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     serialhandler.cpp \
     keylineedit.cpp \
     diagnosticobject.cpp \
-    statswidget.cpp
+    statswidget.cpp \
+    modbus_server.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -65,7 +66,8 @@ HEADERS  += mainwindow.h \
     serialhandler.h \
     keylineedit.h \
     diagnosticobject.h \
-    statswidget.h
+    statswidget.h \
+    modbus_server.h
 
 FORMS    += mainwindow.ui \
     displaygraph.ui \

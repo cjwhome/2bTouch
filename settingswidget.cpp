@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QException>
 #include <QDebug>
+#include "modbus_server.h"
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -72,7 +73,7 @@ void SettingsWidget::widgetForLanding() {
 
         QPushButton *left = new QPushButton(cal);
         left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-        connect(left, SIGNAL(released()), this, SLOT(showAbout()));
+        connect(left, SIGNAL(released()), this, SLOT(showModbus()));
 
         QPushButton *right = new QPushButton(cal);
         right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -702,6 +703,28 @@ QWidget* SettingsWidget::widgetForAbout() {
     return aboutWidget;
 }
 
+QWidget* SettingsWidget::widgetForModbus() {
+    modbusWidget = new QWidget(this);
+    modbusVLayout = new QVBoxLayout(modbusWidget);
+    modbusTitle = new QLabel("MODBUS", modbusWidget);
+    modbusFirstRow = new QHBoxLayout(modbusWidget);
+    modbusCustomEntry = new KeyLineEdit("Custom Entry", modbusWidget);
+    modbusCustomAddress = new KeyLineEdit("0", modbusWidget);
+    modbusSaveButton = new QPushButton("SAVE", modbusWidget);
+
+    modbusVLayout->addWidget(modbusTitle);
+    modbusVLayout->addLayout(modbusFirstRow);
+    modbusFirstRow->addWidget(modbusCustomEntry);
+    modbusFirstRow->addWidget(modbusCustomAddress);
+    modbusVLayout->addWidget(modbusSaveButton);
+
+    modbusTitle->setFont(titleFont);
+    modbusSaveButton->setFont(labelFont);
+
+    connect(modbusSaveButton, SIGNAL(released()), this, SLOT(modbusSavePressed()));
+
+    return modbusWidget;
+}
 
 void SettingsWidget::homePressed() {
     //invalidate();
@@ -717,7 +740,7 @@ void SettingsWidget::showCal() {
 
     QPushButton *left = new QPushButton(cal);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showAbout()));
+    connect(left, SIGNAL(released()), this, SLOT(showModbus()));
 
     QPushButton *right = new QPushButton(cal);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -892,6 +915,35 @@ void SettingsWidget::showAbout(){
     QPushButton *left = new QPushButton(widget);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
     connect(left, SIGNAL(released()), this, SLOT(showNet()));
+
+    QPushButton *right = new QPushButton(widget);
+    right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
+    connect(right, SIGNAL(released()), this, SLOT(showModbus()));
+
+    right->setFixedSize(buttonSize);
+    right->setIconSize(buttonSize);
+    left->setFixedSize(buttonSize);
+    left->setIconSize(buttonSize);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(left);
+    layout->addWidget(widget);
+    layout->addWidget(right);
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    homeButton->setParent(w);
+    mainLayout->addWidget(w);
+}
+
+void SettingsWidget::showModbus()
+{
+    clearView();
+    QWidget *widget = widgetForModbus();
+
+    QPushButton *left = new QPushButton(widget);
+    left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
+    connect(left, SIGNAL(released()), this, SLOT(showAbout()));
 
     QPushButton *right = new QPushButton(widget);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -1563,6 +1615,15 @@ void SettingsWidget::netDisButtonPressed() {
     process->waitForFinished();
 
     showNet();
+}
+
+void SettingsWidget::modbusSavePressed()
+{
+    ModbusServer::getInstance()->deleteRegister(settings->value("modbus_CUSTOMADDR", 50).toInt());
+    settings->setValue("modbus_CUSTOMSTR", modbusCustomEntry->text());
+    settings->setValue("modbus_CUSTOMADDR", modbusCustomAddress->text());
+
+    ModbusServer::getInstance()->updateRegister(modbusCustomAddress->text().toInt(), new QByteArray(modbusCustomEntry->text().toLatin1()));
 }
 
 void SettingsWidget::invalidate() {

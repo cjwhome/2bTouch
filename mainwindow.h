@@ -27,6 +27,7 @@
 #include "controlbacklight.h"
 #include "settingswidget.h"
 #include "serialhandler.h"
+#include "modbus_server.h"
 
 namespace Ui {
     class MainWindow;
@@ -125,6 +126,8 @@ private:
     QList< QList<SerialDataItem> > allParsedRecordsList;
     FileWriter fileWriter;
     SerialHandler *serialHandler;
+
+    ModbusServer *modbus;
 
     QSettings *settings;
     bool usbMounted;
