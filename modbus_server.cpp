@@ -128,8 +128,9 @@ void ModbusServer::updateRegister(int position, QByteArray *value)
     modbus_register *reg = nullptr;
     for (int i = 0; i < registers.length(); i++) {
         if (registers.at(i)->startAddress == position) {
-            reg = registers.at(i);
-            break;
+            reg = new modbus_register(position, value); //registers.at(i);
+            registers.replace(i, reg);
+            return;
         } else if (registers.at(i)->containsAddress(position)) {
             return;
         }
@@ -139,8 +140,6 @@ void ModbusServer::updateRegister(int position, QByteArray *value)
         reg = new modbus_register(position, value);
         registers.append(reg);
     }
-
-    reg->value = value;
 }
 
 void ModbusServer::updateRegister(int position, int value)
@@ -164,11 +163,11 @@ void ModbusServer::updateRegister(int position, int value)
 
 void ModbusServer::updateRegister(int position, QString base)
 {
-    QString *value = new QString(base);
     modbus_register *reg = nullptr;
     for (int i = 0; i < registers.length(); i++) {
         if (registers.at(i)->startAddress == position) {
-            reg = new modbus_register(position, value); //registers.at(i);
+            reg = new modbus_register(position, new QString(base)); //registers.at(i);
+            registers.replace(i, reg);
             return;
         } else if (registers.at(i)->containsAddress(position)) {
             return;
@@ -176,7 +175,7 @@ void ModbusServer::updateRegister(int position, QString base)
     }
 
     if (reg == nullptr) {
-        reg = new modbus_register(position, value);
+        reg = new modbus_register(position, new QString(base));
         registers.append(reg);
     }
 }

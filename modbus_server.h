@@ -69,11 +69,26 @@ private:
         QByteArray *value;
 
         modbus_register() {}
-        modbus_register(int addr, QByteArray *val) {
-            init(addr, val);
+        modbus_register(int addr, QByteArray *val, bool interpolate=true) {
+            if (interpolate) {
+                QByteArray *array = new QByteArray();
+                for (int i = 0; i < val->length(); i++) {
+                    array->append('\0');
+                    array->append(val->at(i));
+                }
+                init(addr, array);
+            } else {
+                init(addr, val);
+            }
         }
         modbus_register(int addr, QString *str) {
-            init(addr, new QByteArray(str->toLatin1()));
+            //init(addr, new QByteArray(str->toLatin1()));
+            QByteArray *array = new QByteArray();
+            for (int i = 0; i < str->length(); i++) {
+                array->append('\0');
+                array->append(str->at(i));
+            }
+            init(addr, array);
         }
         modbus_register(int addr, int val) {
             int count = 0;
@@ -83,7 +98,8 @@ private:
                 count ++;
             }
             QByteArray *arr = new QByteArray();
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count/2; i += 2) {
+                arr->append((val >> (8 * (i+1))) & 0xFF);
                 arr->append((val >> (8 * i)) & 0xFF);
             }
             init(addr, arr);
@@ -94,7 +110,7 @@ private:
         }
 
         int wordCount() {
-            return value->length();
+            return (value->length() / 2);
         }
 
         bool containsAddress(int addr) {
@@ -105,10 +121,8 @@ private:
             int currentLength = (message->at(4)<<8) + message->at(5);
             currentLength += 2;
             int byteIndex = addr - startAddress;
-            unsigned int a = static_cast<unsigned int>(static_cast<unsigned char>(value->at(byteIndex)));
-//            unsigned int b = static_cast<unsigned int>(static_cast<unsigned char>(value->at(byteIndex)));
-            message->append(a>>8);
-            message->append(a & 0xFF);
+            message->append(value->at(byteIndex*2));
+            message->append(value->at(byteIndex*2 + 1));
             message->replace(4, 1, QString(currentLength>>8).toLatin1().data(), 1);
             message->replace(5, 1, QString(currentLength & 0xFF).toLatin1().data(), 1);
         }
