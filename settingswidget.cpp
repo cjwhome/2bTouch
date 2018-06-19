@@ -1623,7 +1623,7 @@ void SettingsWidget::modbusSavePressed()
     settings->setValue("modbus_CUSTOMSTR", modbusCustomEntry->text());
     settings->setValue("modbus_CUSTOMADDR", modbusCustomAddress->text());
 
-    ModbusServer::getInstance()->updateRegister(modbusCustomAddress->text().toInt(), new QByteArray(modbusCustomEntry->text().toLatin1()));
+    ModbusServer::getInstance()->updateRegister(modbusCustomAddress->text().toInt(), modbusCustomEntry->text());
 }
 
 void SettingsWidget::invalidate() {

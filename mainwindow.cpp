@@ -196,6 +196,8 @@ MainWindow::MainWindow(QWidget *parent) :
     modbus = ModbusServer::getInstance();//new ModbusServer();
     modbus->updateRegister(0, new QByteArray("BBBBBB"));
     modbus->updateRegister(10, new QByteArray("MMMMMM"));
+    //modbus->updateRegister(20, 270);
+    modbus->updateRegister(50, 260);
 
     msgBoxStyle = "QPushButton { border: none; } QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
     this->setStyleSheet(msgBoxStyle);

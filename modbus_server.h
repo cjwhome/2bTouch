@@ -10,13 +10,12 @@
 #define PORT        (502)
 #define UNIT_ID     (9)
 
+#define READ_MULTIPLE_REG_FUNC  0x03
+#define WRITE_MULTIPLE_REG_FUNC   0x10
+
 class ModbusServer : public QObject
 {
     Q_OBJECT
-public:
-    enum Regs {
-        MAIN_VALUE = 0
-    };
 
 private:
     static ModbusServer *singleton;
@@ -71,8 +70,27 @@ private:
 
         modbus_register() {}
         modbus_register(int addr, QByteArray *val) {
-            startAddress = addr;
-            value = val;
+            init(addr, val);
+        }
+        modbus_register(int addr, QString *str) {
+            init(addr, new QByteArray(str->toLatin1()));
+        }
+        modbus_register(int addr, int val) {
+            int count = 0;
+            int temp = val;
+            while (temp != 0) {
+                temp >>= 8;
+                count ++;
+            }
+            QByteArray *arr = new QByteArray();
+            for (int i = 0; i < count; i++) {
+                arr->append((val >> (8 * i)) & 0xFF);
+            }
+            init(addr, arr);
+        }
+        void init(int addr , QByteArray *val) {
+            this->startAddress = addr;
+            this->value = val;
         }
 
         int wordCount() {
@@ -87,10 +105,10 @@ private:
             int currentLength = (message->at(4)<<8) + message->at(5);
             currentLength += 2;
             int byteIndex = addr - startAddress;
-            message->append(value->at(byteIndex)>>8);
-            message->append(value->at(byteIndex) & 0xFF);
-            int a = currentLength>>8;
-            int b = currentLength & 0xFF;
+            unsigned int a = static_cast<unsigned int>(static_cast<unsigned char>(value->at(byteIndex)));
+//            unsigned int b = static_cast<unsigned int>(static_cast<unsigned char>(value->at(byteIndex)));
+            message->append(a>>8);
+            message->append(a & 0xFF);
             message->replace(4, 1, QString(currentLength>>8).toLatin1().data(), 1);
             message->replace(5, 1, QString(currentLength & 0xFF).toLatin1().data(), 1);
         }
@@ -106,7 +124,22 @@ private:
     };
     QList<modbus_register *> registers;
 
+    static void addByte(QByteArray *data, int value) {
+        int currentLength = (data->at(4)<<8) + data->at(5);
+        currentLength += 2;
+        data->replace(4, 1, QString(currentLength>>8).toLatin1().data(), 1);
+        data->replace(5, 1, QString(currentLength & 0xFF).toLatin1().data(), 1);
+        data->append(value>>8);
+        data->append(value & 0xFF);
+    }
+
 signals:
+
+
+public:
+    enum Regs {
+        MAIN_VALUE = 0
+    };
 
 public slots:
     static ModbusServer *getInstance() {
@@ -119,8 +152,11 @@ public slots:
     void readAvailable();
     QByteArray* parseData(QByteArray *data);
     QByteArray* read_multiple_registers(modbus_request *req, QByteArray *data);
+    QByteArray* write_multiple_register(modbus_request *req, QByteArray *data);
 
     void updateRegister(int position, QByteArray *value);
+    void updateRegister(int address, int value);
+    void updateRegister(int address, QString value);
     void deleteRegister(int address);
 };
 
