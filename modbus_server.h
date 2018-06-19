@@ -98,6 +98,9 @@ private:
                 count ++;
             }
             QByteArray *arr = new QByteArray();
+            if (count % 2 == 1) {
+                count ++;
+            }
             for (int i = 0; i < count/2; i += 2) {
                 arr->append((val >> (8 * (i+1))) & 0xFF);
                 arr->append((val >> (8 * i)) & 0xFF);
