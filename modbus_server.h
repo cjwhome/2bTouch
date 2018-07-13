@@ -6,6 +6,7 @@
 #include <QList>
 #include <QSettings>
 #include <QDebug>
+#include <sstream>
 
 #define PORT        (502)
 #define UNIT_ID     (9)
@@ -69,6 +70,30 @@ private:
         QByteArray *value;
 
         modbus_register() {}
+        modbus_register(int addr, float f) {
+            static_assert(std::numeric_limits<float>::is_iec559, "Not An IEEE FLOAT!!!");
+            union { float fval; std::uint32_t ival; };
+            fval = f;
+
+            std::uint32_t *testArr = &ival;
+            std::uint8_t *test8_1 = (std::uint8_t *) testArr;
+            std::uint8_t *test8_2 = (std::uint8_t *) testArr+1;
+            std::uint8_t *test8_3 = (std::uint8_t *) testArr+2;
+            std::uint8_t *test8_4 = (std::uint8_t *) testArr+3;
+
+            QByteArray *array = new QByteArray();
+            array->append(*test8_4);
+            array->append(*test8_3);
+            array->append(*test8_2);
+            array->append(*test8_1);
+
+            std::ostringstream stm;
+            stm << std::hex << std::uppercase << ival;
+            QString strVal = QString::fromStdString(stm.str());
+            qDebug()<<strVal;
+
+            init(addr, array);
+        }
         modbus_register(int addr, QByteArray *val, bool interpolate=true) {
             if (interpolate) {
                 QByteArray *array = new QByteArray();
@@ -151,7 +176,7 @@ private:
     }
 
 signals:
-
+    void sendMsg(QString msg);
 
 public:
     enum Regs {
@@ -174,6 +199,7 @@ public slots:
     void updateRegister(int position, QByteArray *value);
     void updateRegister(int address, int value);
     void updateRegister(int address, QString value);
+    void updateRegister(int address, float value);
     void deleteRegister(int address);
 };
 

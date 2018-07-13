@@ -20,6 +20,7 @@ SerialHandler::SerialHandler(QThread *thr, QObject *parent) : QObject(parent) {
 }
 
 void SerialHandler::writeSync(QString *dat) {
+    qDebug()<<"Sending serial data: " + *dat;
     if(dat == QString("v")) {
         //updateSettings();
     } else {

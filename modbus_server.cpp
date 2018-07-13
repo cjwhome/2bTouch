@@ -108,8 +108,8 @@ QByteArray* ModbusServer::write_multiple_register(modbus_request *req, QByteArra
         int a = static_cast<unsigned int>(static_cast<unsigned char>(data->at(13 + (i*2))));
         int b = static_cast<unsigned int>(static_cast<unsigned char>(data->at(13 + (i*2 + 1))));
         int value = (a << 8) + (b);
-        int test = (unsigned int) data->at(13 + (i*2 + 1));
         updateRegister(req->startPos + i, value);
+        emit sendMsg("write_multiple_registers: " + QString::number(req->startPos + i) + "=" + QString::number(value));
     }
     addByte(resp, req->startPos);
     addByte(resp, wordCount);
@@ -176,6 +176,25 @@ void ModbusServer::updateRegister(int position, QString base)
 
     if (reg == nullptr) {
         reg = new modbus_register(position, new QString(base));
+        registers.append(reg);
+    }
+}
+
+void ModbusServer::updateRegister(int address, float value)
+{
+    modbus_register *reg = nullptr;
+    for (int i = 0; i < registers.length(); i++) {
+        if (registers.at(i)->startAddress == address) {
+            reg = new modbus_register(address, value);
+            registers.replace(i, reg);
+            return;
+        } else if (registers.at(i)->containsAddress(address)) {
+            return;
+        }
+    }
+
+    if (reg == nullptr) {
+        reg = new modbus_register(address, value);
         registers.append(reg);
     }
 }
