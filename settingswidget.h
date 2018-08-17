@@ -94,7 +94,6 @@ private:
     QCheckBox *slopeCheckBox;
     QCheckBox *offsetCheckBox;
 
-
     //Relay One
     QWidget *rOWidget;
     QVBoxLayout *rOVLayout;

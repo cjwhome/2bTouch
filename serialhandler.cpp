@@ -78,7 +78,7 @@ void SerialHandler::configSerialPort() {
     reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
 
-    device = reader->getADevice(1);
+    device = reader->getADevice(6);
     portName = device.getCom_port();
     baudRate = device.getBaud_rate();
 
@@ -92,8 +92,10 @@ void SerialHandler::configSerialPort() {
         qDebug()<<"Setup Serial Port successfully";
         serialPort->flush();
         connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
+        currentConnectionType = SerialHandler::Synchronously;
     }else{
-        qDebug()<<"Error setting up serial port";
+        //qDebug()<<"Error setting up serial port";
+        qDebug()<<serialPort->errorString();
     }
 
 }
@@ -120,7 +122,15 @@ void SerialHandler::dataReady() {
     if(serialPort->canReadLine()) {
         QByteArray retData = serialPort->readAll();
         readData(QString(retData));
-    }
+    }// else {
+//        try {
+//            QByteArray retData = serialPort->readAll();
+//            QString str(retData);
+//            readData(str);
+//        } catch(QException e) {
+//            qDebug()<<"CANNOT READ SERIAL DATA";
+//        }
+//    }
 }
 
 void SerialHandler::readData(QString data) {
@@ -134,7 +144,7 @@ void SerialHandler::readData(QString data) {
         QString line = QString(list.at(i));
 
         if((line.length() == 0) || (line == "\r")) {
-
+            continue;
         } else {
             if(line.length() < 10) {
                 qDebug()<<"Received new line from serial: "<<line;

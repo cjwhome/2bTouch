@@ -10,8 +10,12 @@
 #include <QVector>
 #include <QThread>
 #include <QSettings>
+
+#include "selectgasdialog.h"
 #include "qcustomplot.h"
 #include "graphsettingsdialog.h"
+#include "graphsettingsdialogb.h"
+#include "gasdatastate.h"
 
 
 namespace Ui {
@@ -23,11 +27,15 @@ class DisplayGraph : public QWidget
     Q_OBJECT
 
 public:
-    explicit DisplayGraph(QWidget *parent = 0);
+    explicit DisplayGraph(QWidget *parent = 0, QList<GasDataState *> * data = nullptr);
     ~DisplayGraph();
     void setData(QVector<double> a, QVector<double> b);
+    void setData(QVector<double> a, QVector<double> b, int gIndex);
 
     void drawPlot();
+
+    void addPlot();
+    void setPlotData();
 
 
     void setYaxisLabel(QString label);
@@ -49,7 +57,8 @@ private slots:
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
-    GraphSettingsDialog *settingsdialog;
+    GraphSettingsDialogB *settingsdialog;
+    SelectGasDialog* gas;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
     QHBoxLayout *buttonLayout;
@@ -65,10 +74,17 @@ private:
 
     void fixScale();
 
-    bool autoscalex;
-    bool autoscaley;
+    bool autoscalex = true;
+    bool autoscaley = true;
 
     bool isVisible;
+
+    double minY = 0;
+    double maxY = 10;
+
+    QList<GasDataState *> * gasses;
+
+
 };
 
 #endif // DISPLAYGRAPH_H

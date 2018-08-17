@@ -40,7 +40,10 @@ SOURCES += main.cpp\
     keylineedit.cpp \
     diagnosticobject.cpp \
     statswidget.cpp \
-    modbus_server.cpp
+    modbus_server.cpp \
+    graphdialog.cpp \
+    graphsettingsdialogb.cpp \
+    selectgasdialog.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -67,7 +70,11 @@ HEADERS  += mainwindow.h \
     keylineedit.h \
     diagnosticobject.h \
     statswidget.h \
-    modbus_server.h
+    modbus_server.h \
+    graphdialog.h \
+    graphsettingsdialogb.h \
+    selectgasdialog.h \
+    gasdatastate.h
 
 FORMS    += mainwindow.ui \
     displaygraph.ui \
@@ -79,7 +86,11 @@ FORMS    += mainwindow.ui \
     usertypeview.ui \
     adminview.ui \
     settingswidget.ui \
-    statswidget.ui
+    statswidget.ui \
+    graphdialog.ui \
+    designsettingsdialog.ui \
+    graphsettingsdialogb.ui \
+    selectgasdialog.ui
 
 RESOURCES += \
     res.qrc

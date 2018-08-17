@@ -3,10 +3,12 @@
 #include <QDateTime>
 #define MAXIMUM_X_AXIS 10
 
-DisplayGraph::DisplayGraph(QWidget *parent) :
+DisplayGraph::DisplayGraph(QWidget *parent, QList<GasDataState *> * data) :
     QWidget(parent),
     ui(new Ui::DisplayGraph)
 {
+    gasses = data;
+
     ui->setupUi(this);
     this->setStyleSheet("background-color:white;");
     this->setStyleSheet("QPushButton { border: none;}");        //remove border on all buttons
@@ -40,7 +42,8 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     settingsButton->setIconSize(QSize(35,31));
     settingsButton->setFixedSize(buttonSize);
 
-    settingsdialog = new GraphSettingsDialog(this);
+    settingsdialog = new GraphSettingsDialogB(this);
+    gas = new SelectGasDialog(this,data);
 
 
     QPushButton *zoomInButton = new QPushButton();
@@ -74,6 +77,7 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     // create graph and assign data to it:
     customPlot->addGraph();
+    customPlot->addGraph();
     verticalLayout->addWidget(customPlot);
     verticalLayout->addWidget(myFrame);
     verticalLayout->addLayout(buttonLayout);
@@ -101,10 +105,12 @@ DisplayGraph::DisplayGraph(QWidget *parent) :
     zoomOutButton->setAutoRepeatDelay(500);
 
     connect(homeButton, SIGNAL(released()), this, SLOT(goback()));
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
+    //connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
+    connect(clearButton, SIGNAL(clicked()), gas, SLOT(show()));
     connect(zoomInButton, SIGNAL(pressed()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(zoomOut()));
     connect(settingsButton, SIGNAL(clicked(bool)), settingsdialog, SLOT(show()));
+    connect(clearButton, SIGNAL(clicked()), gas, SLOT(update()));
     connect(settingsdialog, SIGNAL(applyGraphSettings()), this, SLOT(redrawPlot()));
     // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
     connect(customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
@@ -144,19 +150,29 @@ void DisplayGraph::setData(QVector<double> a, QVector<double> b){
     x = a;      //x is time
     y = b;      //y is measurement
     customPlot->graph(0)->setData(a, b);
-
 }
+
+void DisplayGraph::setData(QVector<double> a, QVector<double> b, int gIndex){
+    x = a;      //x is time
+    y = b;      //y is measurement
+    customPlot->graph(gIndex)->setData(a, b);
+}
+
+
 void DisplayGraph::redrawPlot(){
     QVector<double> u;
     u = y;
     loadSettings();
 
     if(autoscalex) {
-        customPlot->xAxis->setRange(x.first(), x.last());
+//        customPlot->xAxis->setRange(x.first(), x.last());
+        customPlot->xAxis->setRange(gasses->at(0)->minT, gasses->at(0)->maxT);
     }
 
     if(autoscaley) {
-        double min, max;
+
+
+        /*double min, max;
         for(int i = 0; i < u.length(); i++) {
             double val = u.at(i);
             if(val < min) {
@@ -164,8 +180,8 @@ void DisplayGraph::redrawPlot(){
             } else if(val > max) {
                 max = val;
             }
-        }
-        customPlot->yAxis->setRange(min - 1, max + 1);
+        }*/
+        customPlot->yAxis->setRange(minY - 1, maxY + 1);
     }
 
     fixScale();

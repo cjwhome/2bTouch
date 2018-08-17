@@ -14,6 +14,7 @@
 #include <QVector>
 #include <QList>
 #include <QFile>
+
 #include "defines.h"
 #include "statswidget.h"
 #include "displaygraph.h"
@@ -28,6 +29,7 @@
 #include "settingswidget.h"
 #include "serialhandler.h"
 #include "modbus_server.h"
+#include "gasdatastate.h"
 
 namespace Ui {
     class MainWindow;
@@ -44,7 +46,7 @@ public:
     void createDevice();
     void setupSerial();
     void updateDisplay();
-    QVector<double> x,y;
+    QVector<double> x,y,test;
 
     void initFile();            //determine where the file will be saved (usb, locally)
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
@@ -81,6 +83,7 @@ private slots:
 
 private:
 	//bool yLessThan(const double &p1, const double &p2);
+    QList<QVector<double>*> *dataPoints;
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     StatsWidget *statsWidget;
@@ -118,6 +121,7 @@ private:
 
     XmlDeviceReader* xmlDeviceReader;
     TwobTechDevice twobTechDevice;
+    QList<TwobTechDevice> *devices;
     DeviceProfile deviceProfile;
     ParsedData parsedData;
 
@@ -137,6 +141,9 @@ private:
 
     QString msgBoxStyle;
     void play_jingle(void);
+
+
+    QList<GasDataState *> *gases;
 };
 
 #endif // MAINWINDOW_H

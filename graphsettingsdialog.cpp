@@ -45,9 +45,6 @@
 #include "ui_graphsettingsdialog.h"
 #include <QDebug>
 
-
-
-
 GraphSettingsDialog::GraphSettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GraphSettingsDialog)

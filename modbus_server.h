@@ -185,7 +185,8 @@ public:
 
 public slots:
     static ModbusServer *getInstance() {
-        if (singleton == nullptr) {
+        if (singleton == nullptr)
+        {
             singleton = new ModbusServer();
         }
         return singleton;

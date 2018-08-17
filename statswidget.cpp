@@ -56,10 +56,10 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
         widgets<<widgetForThree();
 
     //}
-    qDebug()<<"Before showing first widget";
+    /*qDebug()<<"Before showing first widget";
     widgets.at(currentIndex)->show();
     qDebug()<<"after showing first widget";
-    widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
+    widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());*/
 
     goodStylesheet = "QLabel { font-size: 25px; color: green; }";
     badStylesheet = "QLabel { font-size: 25px; color: red; }";

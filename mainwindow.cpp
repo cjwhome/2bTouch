@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
-#include <sys/ioctl.h>
+//#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    gases = nullptr;
 
     //play_jingle();
     started_file = false;
@@ -105,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent) :
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
 
-    warningLabel = new QLabel("Warming Up", this);
+    warningLabel = new QLabel("Nothing to see here", this);  // Nothing to see here Warming Up
     warningLabel->setGeometry(35, 190, 400, 20);
     warningLabel->setMinimumWidth(100);
     warningLabel->setAlignment(Qt::AlignCenter);
@@ -155,7 +157,8 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 
-    displayGraph = new DisplayGraph();
+    gases = new QList<GasDataState *>();
+    displayGraph = new DisplayGraph(this, gases);
     displayGraph->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(this, SIGNAL(validDataReady()), displayGraph, SLOT(redrawPlot()));
@@ -186,9 +189,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
-    statsWidget = new StatsWidget(deviceProfile, this);
-    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+//    statsWidget = new StatsWidget(deviceProfile, this);
+//    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+//    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
     //qDebug()<<"After stats widget creation";
 
     setupSerial();
@@ -272,7 +275,7 @@ MainWindow::~MainWindow()
 //build a device from the xml and prepare place to put the data
 void MainWindow::createDevice(){
     int i;
-    twobTechDevice = xmlDeviceReader->getADevice(1);
+    twobTechDevice = xmlDeviceReader->getADevice(6);
 
     deviceProfile.setDevice_name(twobTechDevice.getDevice_name());
     deviceProfile.setCom_port(twobTechDevice.getCom_port());
@@ -281,8 +284,16 @@ void MainWindow::createDevice(){
     //qDebug()<<"Device Profile comport: "<<deviceProfile.getCom_port();
 
     //determine the index of elements
+    if (gases == nullptr) {
+        gases = new QList<GasDataState *>();
+    }
     for(i=0;i<twobTechDevice.data_items.size();i++){
         SerialDataItem serialDataItem = twobTechDevice.data_items.at(i);
+
+        GasDataState *state = new GasDataState();
+        state->name = new QString(serialDataItem.getName());
+        gases->append(state);
+
         if(serialDataItem.getName() == "Date")
             deviceProfile.setDate_position(i);
         else if(serialDataItem.getName()=="Time")
@@ -328,7 +339,6 @@ void MainWindow::createDevice(){
     qDebug()<<"Finished Profile Setup";
     deviceProfile.setNumber_of_columns(i);
     qDebug()<<"Number of columns:"<<deviceProfile.getNumber_of_columns();
-
 }
 
 void MainWindow::setupSerial(){
@@ -373,7 +383,9 @@ void MainWindow::newDataLine(QString dLine){
     //qDebug()<<"New Line: "<<dLine;
 
     if(parseDataLine(dLine)){
-        displayGraph->setData(x, y);
+//        int t = 0;
+//        displayGraph->setData(x, gases->at(0)->data, 0);
+//        displayGraph->setData(x, gases->at(1)->data, 1);
         emit validDataReady();
     }
 }
@@ -381,6 +393,11 @@ void MainWindow::newDataLine(QString dLine){
 
 
 bool MainWindow::parseDataLine(QString dLine){
+    if(gases == nullptr)
+    {
+        gases = new QList<GasDataState *>();
+    }
+
     QStringList fields;
     QVector<double> t,u;
     QDateTime tempDate;
@@ -410,8 +427,9 @@ bool MainWindow::parseDataLine(QString dLine){
         serialDataItemb.setDateTime(tempDate);
 
         parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
+        parsedDataRecord.removeAt(deviceProfile.getDate_position() + 1);
 
-        if(allParsedRecordsList.size()<MAXIMUM_PARSED_DATA_RECORDS){
+        if(allParsedRecordsList.size() < MAXIMUM_PARSED_DATA_RECORDS){
 
             allParsedRecordsList.append(parsedDataRecord);
         }else{
@@ -428,17 +446,33 @@ bool MainWindow::parseDataLine(QString dLine){
 
         //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
         if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
-            qDebug()<<"Maximum size reached";
             x.removeFirst();
             x.append(data_point);
-            y.removeFirst();
-            y.append(avg);
+            for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
+            {
+                gases->removeFirst();
+                gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
+            }
+            qDebug()<<"Maximum size reached";
         }else{
-            x.insert(data_index,data_point);
-            y.insert(data_index,avg);//parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
-            t=x;                    //copy the vectors to order them to get high and low for range
-            u=y;
-            data_index++;
+            x.append(data_point);
+            if(gases->size() == 0)
+            {
+//                for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
+//                {
+//                    GasDataState * state = new GasDataState();
+//                    state->name = new QString(allParsedRecordsList[allParsedRecordsList.size()-1][i].getName());
+//                    state->addData(allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
+//                    gases->append(state);
+//                }
+            }
+            else
+            {
+                for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
+                {
+                    gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
+                }
+            }
         }
 
         //for(int i=0;i<y.size();i++){
@@ -564,14 +598,15 @@ void MainWindow::updateDisplay(void){
     settings->setValue("Time", tempSerialDataItem.getDateTime().toString("hhmmss"));
     settings->setValue("Date", tempSerialDataItem.getDateTime().toString("ddMMyy"));
     //qDebug()<<"Before statswidget";
-    statsWidget->setData(&allParsedRecordsList, &deviceProfile);
+    //statsWidget->setData(&allParsedRecordsList, &deviceProfile);
      //qDebug()<<"Here9";
     //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
      //qDebug()<<"Here10";
     this->writeFile();
     if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
-        displayGraph->setData(x, y);
+        displayGraph->setData(x, *dataPoints->at(0), 0);
+        displayGraph->setData(x, *dataPoints->at(1), 1);
         displayGraph->drawPlot();
     }else
         qDebug()<<"No Data to Plot";
@@ -581,10 +616,10 @@ void MainWindow::updateDisplay(void){
 }
 
 void MainWindow::displayBigPlot(void){
-        displayGraph->setData(x, y);
-        displayGraph->drawPlot();
-        displayGraph->show();
-
+    displayGraph->setData(x, gases->at(0)->data, 0);
+    displayGraph->setData(x, gases->at(1)->data, 1);
+    displayGraph->drawPlot();
+    displayGraph->show();
 }
  
 void MainWindow::clearPlotData(void){
@@ -596,7 +631,7 @@ void MainWindow::clearPlotData(void){
 }
 
 void MainWindow::displayStats(void){
-    statsWidget->show();
+    //statsWidget->show();
     //showStats->show();
 }
 
@@ -731,6 +766,7 @@ void MainWindow::errorTimerTick() {
             }
         }
     }
+    int t = -1;
     /*cpuIcon->setText(getCpuUsage());
     QString spaceStr = getFreeSpace();
     //qDebug()<<"Space: "<<spaceStr;
@@ -803,18 +839,6 @@ QString MainWindow::getFreeSpace() {
     qDebug()<<"Free Elapsed"<<freeTimer.elapsed();
     return QString::number(space);
 
-}
-
-void MainWindow::i2c_test(void){
-    int file;
-    char *filename = "/dev/i2c-1";
-    if ((file = open(filename, O_RDWR)) < 0) {
-        /* ERROR HANDLING: you can check errno to see what went wrong */
-        qDebug()<<"Failed to open the i2c bus";
-        return;
-    }else{
-        qDebug()<<"Opened the i2c bus";
-    }
 }
 
 void MainWindow::play_jingle(void){
