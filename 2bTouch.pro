@@ -43,7 +43,10 @@ SOURCES += main.cpp\
     modbus_server.cpp \
     graphdialog.cpp \
     graphsettingsdialogb.cpp \
-    selectgasdialog.cpp
+    selectgasdialog.cpp \
+    maindisplay.cpp \
+    clickablelabel.cpp \
+    clickablegroup.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -74,7 +77,10 @@ HEADERS  += mainwindow.h \
     graphdialog.h \
     graphsettingsdialogb.h \
     selectgasdialog.h \
-    gasdatastate.h
+    gasdatastate.h \
+    maindisplay.h \
+    clickablelabel.h \
+    clickablegroup.h
 
 FORMS    += mainwindow.ui \
     displaygraph.ui \
@@ -90,7 +96,8 @@ FORMS    += mainwindow.ui \
     graphdialog.ui \
     designsettingsdialog.ui \
     graphsettingsdialogb.ui \
-    selectgasdialog.ui
+    selectgasdialog.ui \
+    maindisplay.ui
 
 RESOURCES += \
     res.qrc

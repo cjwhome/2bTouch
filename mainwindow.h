@@ -30,6 +30,8 @@
 #include "serialhandler.h"
 #include "modbus_server.h"
 #include "gasdatastate.h"
+#include "clickablelabel.h"
+#include "clickablegroup.h"
 
 namespace Ui {
     class MainWindow;
@@ -60,6 +62,7 @@ signals:
     void validDataReady();
 
 public slots:
+    void changeMainLabel(int val);
     void clearPlotData();
     void on_sendMsg(QString msg);
     
@@ -82,8 +85,9 @@ private slots:
     QString getFreeSpace();
 
 private:
+    int mainLabelContent = 0;
 	//bool yLessThan(const double &p1, const double &p2);
-    QList<QVector<double>*> *dataPoints;
+//    QList<QVector<double>*> *dataPoints;
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
     StatsWidget *statsWidget;
@@ -91,6 +95,29 @@ private:
     SettingsWidget *settingsWidget;
     QSerialPort *serial;
     DisplayGraph *displayGraph;
+
+    ClickableLabel *ba;
+    ClickableLabel *bb;
+    ClickableLabel *bc;
+    QLabel *label;
+    QGridLayout *layout;
+
+    QGroupBox *gBox;
+    QLabel *mainL;
+    QLabel *NO2;
+    QLabel *NO2Value;
+    QLabel *NO2Units;
+    QLabel *NO;
+    QLabel *NOValue;
+    QLabel *NOUnits;
+    QLabel *NOx;
+    QLabel *NOxValue;
+    QLabel *NOxUnits;
+
+    ClickableGroup *gNO2;
+    ClickableGroup *gNO;
+    ClickableGroup *gNOx;
+
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;

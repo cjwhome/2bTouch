@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QObject>
+#include <QCheckBox>
 
 #include "gasdatastate.h"
 
@@ -21,11 +22,15 @@ public:
 
 public slots:
     void update();
+    void boxSelected(int state);
 
 private:
     Ui::SelectGasDialog *ui;
     QList<GasDataState *> * gasses;
     int numGasses;
+    QList<QCheckBox*> * boxes;
+    QList<QColor> *colors;
+    QPushButton *apply;
 };
 
 #endif // SELECTGASDIALOG_H

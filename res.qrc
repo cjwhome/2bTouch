@@ -18,6 +18,7 @@
         <file>pics/right-arrow-icon.png</file>
         <file>pics/left-arrow-icon.gif</file>
         <file>pics/help-icon.png</file>
+        <file>pics/select-gas-icon.gif</file>
     </qresource>
     <qresource prefix="/">
         <file>deviceConfig.xml</file>

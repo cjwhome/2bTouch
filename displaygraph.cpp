@@ -29,7 +29,7 @@ DisplayGraph::DisplayGraph(QWidget *parent, QList<GasDataState *> * data) :
     homeButton->setFixedSize(buttonSize);
 
     QPushButton *clearButton = new QPushButton();
-    QPixmap clearPixmap(":/buttons/pics/clear-icon.gif");
+    QPixmap clearPixmap(":/buttons/pics/select-gas-icon.gif");
     QIcon clearButtonIcon(clearPixmap);
     clearButton->setIcon(clearButtonIcon);
     clearButton->setIconSize(QSize(35,31));
@@ -73,11 +73,31 @@ DisplayGraph::DisplayGraph(QWidget *parent, QList<GasDataState *> * data) :
     QFrame* myFrame = new QFrame();
     myFrame->setFrameShape(QFrame::HLine);
 
+    pens = new QList<QPen*>();
+    pens->append(new QPen(Qt::blue));
+    pens->append(new QPen(Qt::black));
+    pens->append(new QPen(Qt::cyan));
+    pens->append(new QPen(Qt::red));
+    pens->append(new QPen(Qt::magenta));
+    pens->append(new QPen(Qt::green));
+    pens->append(new QPen(Qt::yellow));
+    pens->append(new QPen(Qt::gray));
+    pens->append(new QPen(Qt::darkRed));
+    pens->append(new QPen(Qt::darkMagenta));
+    pens->append(new QPen(Qt::darkGreen));
+    pens->append(new QPen(Qt::darkYellow));
+    pens->append(new QPen(Qt::darkBlue));
+    pens->append(new QPen(Qt::darkGray));
+
     customPlot = new QCustomPlot();
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     // create graph and assign data to it:
-    customPlot->addGraph();
-    customPlot->addGraph();
+    for(int i = 0; i < gasses->size(); i++)
+    {
+        customPlot->addGraph();
+        customPlot->graph(i)->setPen(*pens->at(i));
+        customPlot->graph(i)->setVisible(false);
+    }
     verticalLayout->addWidget(customPlot);
     verticalLayout->addWidget(myFrame);
     verticalLayout->addLayout(buttonLayout);
@@ -124,7 +144,6 @@ DisplayGraph::DisplayGraph(QWidget *parent, QList<GasDataState *> * data) :
     customPlot->xAxis->setTickStep(10);
     customPlot->xAxis->setSubTickCount(3);
 
-    customPlot->graph(0)->setData(x, y);
     //customPlot->xAxis->setLabel("Time");
     //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
@@ -140,48 +159,85 @@ void DisplayGraph::goback(){
     close();
 }
 
-
 DisplayGraph::~DisplayGraph()
 {
     delete ui;
 }
 
-void DisplayGraph::setData(QVector<double> a, QVector<double> b){
-    x = a;      //x is time
-    y = b;      //y is measurement
-    customPlot->graph(0)->setData(a, b);
-}
-
-void DisplayGraph::setData(QVector<double> a, QVector<double> b, int gIndex){
-    x = a;      //x is time
-    y = b;      //y is measurement
-    customPlot->graph(gIndex)->setData(a, b);
-}
-
-
 void DisplayGraph::redrawPlot(){
-    QVector<double> u;
-    u = y;
+    if(gasses->size() != customPlot->graphCount())
+    {
+        customPlot->clearGraphs();
+        for(int i = 0; i < gasses->size(); i++)
+        {
+            customPlot->addGraph();
+            customPlot->graph(i)->setPen(*pens->at(i));
+            customPlot->graph(i)->setVisible(false);
+        }
+    }
+
+    for(int i = 0; i < gasses->size(); i++)
+    {
+        if(gasses->at(i)->selected)
+        {
+            customPlot->graph(i)->setVisible(true);
+            customPlot->graph(i)->setData(gasses->at(i)->x,gasses->at(i)->data);
+        }
+        else
+        {
+            customPlot->graph(i)->setVisible(false);
+        }
+    }
+
     loadSettings();
 
+    double min = gasses->at(0)->minT;
+    double max = gasses->at(0)->maxT;
+    double min2 = 0;
+    double max2 = 0;
+    bool setMin = false;
+    bool setMax = false;
+
+    for(int i = 0; i < gasses->size(); i++)
+    {
+        if(gasses->at(i)->selected)
+        {
+            if(min > gasses->at(i)->minT)
+            {
+                min = gasses->at(i)->minT;
+            }
+            if(max < gasses->at(i)->maxT)
+            {
+                max = gasses->at(i)->maxT;
+            }
+            if(min2 > gasses->at(i)->min || setMin == false)
+            {
+                setMin = true;
+                min2 = gasses->at(i)->min;
+            }
+            if(max2 < gasses->at(i)->max || setMax == false)
+            {
+                setMax = true;
+                max2 = gasses->at(i)->max;
+            }
+        }
+    }
+
+    if(setMin == false)
+    {
+        min2 = 0;
+    }
+    if(setMax == false)
+    {
+        max2 = 0;
+    }
+
     if(autoscalex) {
-//        customPlot->xAxis->setRange(x.first(), x.last());
-        customPlot->xAxis->setRange(gasses->at(0)->minT, gasses->at(0)->maxT);
+        customPlot->xAxis->setRange(min, max);
     }
 
     if(autoscaley) {
-
-
-        /*double min, max;
-        for(int i = 0; i < u.length(); i++) {
-            double val = u.at(i);
-            if(val < min) {
-                min = val;
-            } else if(val > max) {
-                max = val;
-            }
-        }*/
-        customPlot->yAxis->setRange(minY - 1, maxY + 1);
+        customPlot->yAxis->setRange(min2 - 1, max2 + 1);
     }
 
     fixScale();
@@ -197,28 +253,6 @@ void DisplayGraph::loadSettings() {
 
 void DisplayGraph::clear(){
     emit userClearedPlot();
-}
-
-void DisplayGraph::drawPlot(){
-    QVector<double> u;
-
-
-    customPlot->graph(0)->setData(x, y);
-    u = y;  //copy it so we can align them from lowest to highest to get the range
-    // give the axes some labels:
-    //customPlot->xAxis->setLabel("Time");
-    //customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    //customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    //customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    //customPlot->yAxis->setLabel("Ozone (ppb)");
-    // set axes ranges, so we see all data:
-    //customPlot->xAxis->setRange(0, 100);
-    std::sort(u.begin(),u.end());
-    //int highest_value;
-    //qDebug()<<"Max value is:"<<u.last();
-    //customPlot->yAxis->setRange(getYRange().lower, getYRange().upper);
-    customPlot->replot();
-
 }
 
 void DisplayGraph::setYaxisLabel(QString label){

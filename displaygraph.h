@@ -10,6 +10,7 @@
 #include <QVector>
 #include <QThread>
 #include <QSettings>
+#include <QPen>
 
 #include "selectgasdialog.h"
 #include "qcustomplot.h"
@@ -46,6 +47,7 @@ public slots:
     void redrawPlot();
     void clear();
 
+
 private slots:
     void goback();
     void mousePress();
@@ -62,6 +64,7 @@ private:
     QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
     QHBoxLayout *buttonLayout;
+    QList<QPen*> *pens;
 
     QCustomPlot *customPlot;
     QVector<double> x,y;

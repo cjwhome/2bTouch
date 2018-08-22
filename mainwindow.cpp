@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     gases = nullptr;
 
+
     //play_jingle();
     started_file = false;
     //this->setStyleSheet("background-color:white;");
@@ -98,8 +99,60 @@ MainWindow::MainWindow(QWidget *parent) :
     current_time->setFont(timeFont);
     current_date->setFont(timeFont);
 
+    gNO2 = new ClickableGroup(this, new QLabel(), new QLabel(), new QLabel());
+    gNO2->updateLabelA("NO<sub>2</sub>: ");
+    gNO2->updateLabelB("0.0");
+    gNO2->updateLabelC(" ppb");
 
+    gNO = new ClickableGroup(this, new QLabel(), new QLabel(), new QLabel());
+    gNO->updateLabelA("NO<sub>2</sub>: ");
+    gNO->updateLabelB("0.0");
+    gNO->updateLabelC(" ppb");
+
+    gNOx = new ClickableGroup(this, new QLabel(), new QLabel(), new QLabel());
+    gNOx->updateLabelA("NO<sub>2</sub>: ");
+    gNOx->updateLabelB("0.0");
+    gNOx->updateLabelC(" ppb");
+
+    ba = new ClickableLabel(nullptr, 0);
+    bb = new ClickableLabel(nullptr, 1);
+    bc = new ClickableLabel(nullptr, 2);
+
+    connect(ba, SIGNAL(clicked(int)), this, SLOT(changeMainLabel(int)));
+    connect(bb, SIGNAL(clicked(int)), this, SLOT(changeMainLabel(int)));
+    connect(bc, SIGNAL(clicked(int)), this, SLOT(changeMainLabel(int)));
+
+    //bc->installEventFilter(,);
+    label = new QLabel();
+    label->setText("NO<sub>2</sub>: 0.0 ppb");
+    label->setFont(QFont("Arial", 45, QFont::Bold));
+    ba->setText("NO<sub>2</sub>: 0.0 ppb");
+    ba->setFont(QFont("Arial", 15, QFont::Bold));
+    bb->setText("NO: 0.0 ppb");
+    bb->setFont(QFont("Arial", 15, QFont::Bold));
+    bc->setText("NO<sub>x</sub>: 0.0 ppb");
+    bc->setFont(QFont("Arial", 15, QFont::Bold));
+
+    layout = new QGridLayout();
+    layout->setSpacing(10);
+    layout->addWidget(ba, 0, 0);
+    layout->addWidget(bb, 0, 1);
+    layout->addWidget(bc, 0, 2);
+    layout->addWidget(label,1,0,2,3);
+
+    main_label = new QLabel();
     main_label->setFont(labelFont);
+//    NO2->setText("NO<sub>2</sub>: ");
+//    NO2Value->setText("0.0");
+//    NO2Units->setText(" ppb");
+//    NO->setText("NO: ");
+//    NOValue->setText("0.0");
+//    NOUnits->setText(" ppb");
+//    NOx->setText("NO<sub>x</sub>: ");
+//    NOxValue->setText("0.0");
+//    NOxUnits->setText(" ppb");
+
+    gBox = new QGroupBox();
 
     main_units_label->setStyleSheet("QLabel { color : black; }");
     main_units_label->setFont(unitsLabelFont);
@@ -107,24 +160,25 @@ MainWindow::MainWindow(QWidget *parent) :
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
 
-    warningLabel = new QLabel("Nothing to see here", this);  // Nothing to see here Warming Up
-    warningLabel->setGeometry(35, 190, 400, 20);
-    warningLabel->setMinimumWidth(100);
-    warningLabel->setAlignment(Qt::AlignCenter);
-    warningLabel->setFont(timeFont);
+//    warningLabel = new QLabel("Nothing to see here", this);  // Nothing to see here Warming Up
+//    warningLabel->setGeometry(35, 190, 400, 20);
+//    warningLabel->setMinimumWidth(100);
+//    warningLabel->setAlignment(Qt::AlignCenter);
+//    warningLabel->setFont(timeFont);
 
-    topTimeLayout->addWidget(warningLabel);
-    topTimeLayout->addSpacing(300);
+    //topTimeLayout->addWidget(warningLabel);
+//    topTimeLayout->addSpacing(300);
     //topTimeLayout->addWidget(current_date);
     //topTimeLayout->addSpacing(150);
     topTimeLayout->addWidget(current_time);
 
 
     //mainDisplayLayout->addSpacerItem(new QSpacerItem(20,1));
-    mainDisplayLayout->addWidget(main_label);
+    //mainDisplayLayout->addWidget(main_label);
+    mainDisplayLayout->addItem(layout);
     //mainDisplayLayout->addWidget(main_lcd_display);
-    mainDisplayLayout->addWidget(main_measurement_display);
-    mainDisplayLayout->addWidget(main_units_label);
+    //mainDisplayLayout->addWidget(main_measurement_display);
+    //mainDisplayLayout->addWidget(main_units_label);
     mainDisplayLayout->setAlignment(Qt::AlignCenter);
     mainDisplayLayout->setSpacing(5);
     measurementDisplayLayoutArea->addLayout(mainDisplayLayout);
@@ -292,6 +346,7 @@ void MainWindow::createDevice(){
 
         GasDataState *state = new GasDataState();
         state->name = new QString(serialDataItem.getName());
+        state->unit = QString(serialDataItem.getUnits());
         gases->append(state);
 
         if(serialDataItem.getName() == "Date")
@@ -405,7 +460,6 @@ bool MainWindow::parseDataLine(QString dLine){
     tempDLine = dLine;
 
     dLine.remove(QRegExp("[\\n\\t\\r]"));
-    //qDebug()<<dLine;
     fields = dLine.split(QRegExp(","));
     if(fields.length()==deviceProfile.getNumber_of_columns()){
 
@@ -430,10 +484,8 @@ bool MainWindow::parseDataLine(QString dLine){
         parsedDataRecord.removeAt(deviceProfile.getDate_position() + 1);
 
         if(allParsedRecordsList.size() < MAXIMUM_PARSED_DATA_RECORDS){
-
             allParsedRecordsList.append(parsedDataRecord);
         }else{
-
             allParsedRecordsList.removeFirst();
             allParsedRecordsList.append(parsedDataRecord);
             qDebug()<<"Maxed out the qlist size, removing first element and adding";
@@ -441,15 +493,14 @@ bool MainWindow::parseDataLine(QString dLine){
 
         updateAverage(parsedDataRecord.at(deviceProfile.getMain_display_position()).getDvalue());
 
-       // data_point = QDateTime::currentDateTime().toTime_t();
         data_point = tempDate.toTime_t();
 
-        //to do - limit how big the graph can get (if size == GRAPH_SIZE_LIMIT) then shift list and add to end of list
         if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
             x.removeFirst();
             x.append(data_point);
             for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
             {
+                //qDebug()<<"List num: " + QString(1);
                 gases->removeFirst();
                 gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
             }
@@ -458,31 +509,21 @@ bool MainWindow::parseDataLine(QString dLine){
             x.append(data_point);
             if(gases->size() == 0)
             {
-//                for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
-//                {
-//                    GasDataState * state = new GasDataState();
-//                    state->name = new QString(allParsedRecordsList[allParsedRecordsList.size()-1][i].getName());
-//                    state->addData(allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
-//                    gases->append(state);
-//                }
+
             }
             else
             {
                 for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
                 {
                     gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
+//                    gases->at(i)->unit = allParsedRecordsList[allParsedRecordsList.size()-1][i].getUnits();
                 }
+                qDebug()<<"Number of data points: " + QString(allParsedRecordsList[allParsedRecordsList.size() - 1].size());
             }
         }
 
-        //for(int i=0;i<y.size();i++){
-         //   qDebug()<<"y["<<i<<"]="<<y.at(i);
-        //}
-
         updateDisplay();
         return true;
-
-
     }else{
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
         return false;
@@ -545,6 +586,12 @@ void MainWindow::updateAverage(double value) {
     avg = sum / avgList.length();
 }
 
+void MainWindow::changeMainLabel(int val)
+{
+    mainLabelContent = val;
+    updateDisplay();
+}
+
 void MainWindow::updateDisplay(void){
     double current_value;
     double scrubber_temperature;
@@ -564,11 +611,11 @@ void MainWindow::updateDisplay(void){
     //tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDiagnosticC_position());
     //scrubber_temperature = tempSerialDataItem.getDvalue();
     //main_label->setText(deviceProfile.getMain_display_name()+": ");
-    if(deviceProfile.getMain_display_name().contains("3")){
-        main_label->setText("O<sub>3</sub>: ");
-    }else if(deviceProfile.getMain_display_name().contains("2")){
-         main_label->setText("NO<sub>2</sub>: ");
-    }
+//    if(deviceProfile.getMain_display_name().contains("3")){
+//        main_label->setText("O<sub>3</sub>: ");
+//    }else if(deviceProfile.getMain_display_name().contains("2")){
+//         main_label->setText("NO<sub>2</sub>: ");
+//    }
 
     //skip first 3 minutes of data by default
     if(allParsedRecordsList.size()<18){
@@ -584,11 +631,22 @@ void MainWindow::updateDisplay(void){
        mesStr.append(".0");
     }
 
-    main_measurement_display->setText(mesStr);
-    main_units_label->setText(" "+deviceProfile.getMain_display_units());
+    //label->setText("NO<sub>2</sub>: 0.0 ppb");
+    ba->setText(*gases->at(0)->name + ": <font color='green'>" + QString::number(gases->at(0)->data.at(gases->at(0)->data.size() - 1)) + "</font> " + gases->at(0)->unit);
+    bb->setText(*gases->at(1)->name + ": <font color='green'>" + QString::number(gases->at(1)->data.at(gases->at(0)->data.size() - 1)) + "</font> " + gases->at(1)->unit);
+    bc->setText(*gases->at(2)->name + ": <font color='green'>" + QString::number(gases->at(2)->data.at(gases->at(0)->data.size() - 1)) + "</font> " + gases->at(2)->unit);
+    label->setText(*gases->at(mainLabelContent)->name + ": <font color='green'>" + QString::number(gases->at(mainLabelContent)->data.at(gases->at(mainLabelContent)->data.size() - 1)) + "</font> " + gases->at(mainLabelContent)->unit);
+    ba->setAlignment(Qt::AlignCenter);
+    bb->setAlignment(Qt::AlignCenter);
+    bc->setAlignment(Qt::AlignCenter);
+    label->setAlignment(Qt::AlignCenter);
+
+
+    //main_measurement_display->setText(mesStr);
+    //main_units_label->setText(" "+deviceProfile.getMain_display_units());
     //qDebug()<<"date position:"<<deviceProfile.getDate_position();
     tempSerialDataItem = allParsedRecordsList.at(allParsedRecordsList.size() -1).at(deviceProfile.getDate_position());
-//qDebug()<<"Current time:"<<tempSerialDataItem.getDateTime().toString("dd/mm/yy");
+    //qDebug()<<"Current time:"<<tempSerialDataItem.getDateTime().toString("dd/mm/yy");
     current_time->setText(tempSerialDataItem.getDateTime().toString("hh:mm"));
     //QString tempDate = tempSerialDataItem.getDateTime().toString("ddMMyy");
     //qDebug()<<"DateString:"<<tempDate;
@@ -603,22 +661,31 @@ void MainWindow::updateDisplay(void){
     //statsWidget->calculateMaxMinMedian(allParsedRecordsList, 0);
      //qDebug()<<"Here10";
     this->writeFile();
-    if(!y.isEmpty()){
+    /*if(!y.isEmpty()){
         //displayGraph->setYaxisLabel(deviceProfile.getMain_display_name()+" "+deviceProfile.getMain_display_units());
-        displayGraph->setData(x, *dataPoints->at(0), 0);
-        displayGraph->setData(x, *dataPoints->at(1), 1);
-        displayGraph->drawPlot();
-    }else
-        qDebug()<<"No Data to Plot";
-    //qDebug()<<"Here9";
 
+    }else
+        qDebug()<<"No Data to Plot";*/
+    //qDebug()<<"Here9";
+    if(!x.isEmpty() && !gases->empty())
+    {
+        int fail = gases->size();
+        //qDebug()<< "Data Types: " + QString(gases->size());
+//        displayGraph->setData(x, *gases->at(0), 0);
+        //displayGraph->setData(x, *dataPoints->at(1), 1);
+        displayGraph->redrawPlot();
+    }
+    else
+    {
+        int i = 0;
+    }
     modbus->updateRegister(ModbusServer::MAIN_VALUE, new QByteArray(QString::number(current_value).toLatin1()));
 }
 
 void MainWindow::displayBigPlot(void){
-    displayGraph->setData(x, gases->at(0)->data, 0);
-    displayGraph->setData(x, gases->at(1)->data, 1);
-    displayGraph->drawPlot();
+    //displayGraph->setData(x, gases->at(0)->data, 0);
+    //displayGraph->setData(x, gases->at(1)->data, 1);
+    displayGraph->redrawPlot();
     displayGraph->show();
 }
  
@@ -766,7 +833,6 @@ void MainWindow::errorTimerTick() {
             }
         }
     }
-    int t = -1;
     /*cpuIcon->setText(getCpuUsage());
     QString spaceStr = getFreeSpace();
     //qDebug()<<"Space: "<<spaceStr;

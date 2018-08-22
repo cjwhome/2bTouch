@@ -13,6 +13,7 @@ struct GasDataState {
     double max = -99999;
     double minT = 999999999999999999;
     double maxT = -99999;
+    QString unit = "";
     QVector<double> data;
     QVector<double> x;
 
