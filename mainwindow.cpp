@@ -233,8 +233,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(settingsWidget, SIGNAL(sendMsg(QString)), this, SLOT(on_sendMsg(QString)));
     //connect(settingsWidget, SIGNAL(sendAMsg(QString*)), serialHandler, SLOT(writeAsync(QString*)));
 
-
-
     xmlDeviceReader = new XmlDeviceReader(":/deviceConfig.xml");
     xmlDeviceReader->read();
 
