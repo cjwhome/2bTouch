@@ -73,6 +73,7 @@ DisplayGraph::DisplayGraph(QWidget *parent, QList<GasDataState *> * data) :
     QFrame* myFrame = new QFrame();
     myFrame->setFrameShape(QFrame::HLine);
 
+    //pens are used by the qtcustomplot class to color the plot
     pens = new QList<QPen*>();
     pens->append(new QPen(Qt::blue));
     pens->append(new QPen(Qt::black));

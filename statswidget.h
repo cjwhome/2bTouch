@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QList>
+
 #include "serialdataitem.h"
 #include "deviceprofile.h"
 

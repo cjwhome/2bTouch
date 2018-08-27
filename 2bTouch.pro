@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     selectgasdialog.cpp \
     maindisplay.cpp \
     clickablelabel.cpp \
-    clickablegroup.cpp
+    clickablegroup.cpp \
+    statswidget2.cpp
 
 HEADERS  += mainwindow.h \
     serialthread.h \
@@ -80,7 +81,8 @@ HEADERS  += mainwindow.h \
     gasdatastate.h \
     maindisplay.h \
     clickablelabel.h \
-    clickablegroup.h
+    clickablegroup.h \
+    statswidget2.h
 
 FORMS    += mainwindow.ui \
     displaygraph.ui \
@@ -97,7 +99,8 @@ FORMS    += mainwindow.ui \
     designsettingsdialog.ui \
     graphsettingsdialogb.ui \
     selectgasdialog.ui \
-    maindisplay.ui
+    maindisplay.ui \
+    statswidget2.ui
 
 RESOURCES += \
     res.qrc

@@ -32,6 +32,7 @@
 #include "gasdatastate.h"
 #include "clickablelabel.h"
 #include "clickablegroup.h"
+#include "statswidget2.h"
 
 namespace Ui {
     class MainWindow;
@@ -90,7 +91,7 @@ private:
 //    QList<QVector<double>*> *dataPoints;
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
-    StatsWidget *statsWidget;
+    StatsWidget2 *statsWidget;
     SettingsView *settingsView;
     SettingsWidget *settingsWidget;
     QSerialPort *serial;

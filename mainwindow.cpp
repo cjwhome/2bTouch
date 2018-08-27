@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     gases = nullptr;
 
-
     //play_jingle();
     started_file = false;
     //this->setStyleSheet("background-color:white;");
@@ -47,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QHBoxLayout *buttonLayout = new QHBoxLayout();
 	QVBoxLayout *measurementDisplayLayoutArea = new QVBoxLayout();
     current_time = new QLabel();
-    current_date = new QLabel();
+//    current_date = new QLabel();
     main_label = new QLabel();
     main_units_label = new QLabel();
 
@@ -97,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QFont timeFont("Cabin", 12, QFont::ForceIntegerMetrics);
     current_time->setFont(timeFont);
-    current_date->setFont(timeFont);
+//    current_date->setFont(timeFont);
 
     gNO2 = new ClickableGroup(this, new QLabel(), new QLabel(), new QLabel());
     gNO2->updateLabelA("NO<sub>2</sub>: ");
@@ -154,8 +153,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     gBox = new QGroupBox();
 
-    main_units_label->setStyleSheet("QLabel { color : black; }");
-    main_units_label->setFont(unitsLabelFont);
+//    main_units_label->setStyleSheet("QLabel { color : black; }");
+//    main_units_label->setFont(unitsLabelFont);
     main_measurement_display->setFont(labelFont);
     main_measurement_display->setStyleSheet("QLabel { color : green; }");
     //main_measurement_display->setFixedWidth(8);
@@ -243,9 +242,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //current_time->setText("8:30:45");
     //current_date->setText("02/17/2016");
     createDevice();
-//    statsWidget = new StatsWidget(deviceProfile, this);
-//    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-//    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
+    statsWidget = new StatsWidget2(this, gases);
+    statsWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    connect(stats_button, SIGNAL(clicked()), this, SLOT(displayStats()));
     //qDebug()<<"After stats widget creation";
 
     setupSerial();
@@ -483,7 +482,8 @@ bool MainWindow::parseDataLine(QString dLine){
         parsedDataRecord.insert(deviceProfile.getDate_position(),serialDataItemb);
         parsedDataRecord.removeAt(deviceProfile.getDate_position() + 1);
 
-        if(allParsedRecordsList.size() < MAXIMUM_PARSED_DATA_RECORDS){
+        //if(allParsedRecordsList.size() < MAXIMUM_PARSED_DATA_RECORDS){
+        if(allParsedRecordsList.size() > -1){
             allParsedRecordsList.append(parsedDataRecord);
         }else{
             allParsedRecordsList.removeFirst();
@@ -495,39 +495,38 @@ bool MainWindow::parseDataLine(QString dLine){
 
         data_point = tempDate.toTime_t();
 
-        if(x.size()==MAXIMUM_PARSED_DATA_RECORDS){
+        if(x.size() == 2)
+        {
+            int numberOfEnteriesAnHour = (int) ((3600) / (x.at(1) - x.at(0)));
+        }
+
+        if(x.size()==MAXIMUM_PARSED_DATA_RECORDS && false){
             x.removeFirst();
             x.append(data_point);
             for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
             {
                 //qDebug()<<"List num: " + QString(1);
-                gases->removeFirst();
+                gases->at(i)->data.removeFirst();
+                gases->at(i)->x.removeFirst();
                 gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
             }
             qDebug()<<"Maximum size reached";
         }else{
             x.append(data_point);
-            if(gases->size() == 0)
+            for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
             {
-
-            }
-            else
-            {
-                for(int i = 0; i < allParsedRecordsList[allParsedRecordsList.size() - 1].size(); i++)
-                {
-                    gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
-//                    gases->at(i)->unit = allParsedRecordsList[allParsedRecordsList.size()-1][i].getUnits();
-                }
-                qDebug()<<"Number of data points: " + QString(allParsedRecordsList[allParsedRecordsList.size() - 1].size());
+                gases->at(i)->addData(data_point, allParsedRecordsList[allParsedRecordsList.size()-1][i].getDvalue());
             }
         }
 
         updateDisplay();
+        statsWidget->updateDisplay();
         return true;
     }else{
         qDebug()<<"Incomplete line: "<<fields.length()<<" columns.";
         return false;
     }
+
 }
 
 void MainWindow::updateAverage(double value) {
@@ -594,7 +593,7 @@ void MainWindow::changeMainLabel(int val)
 
 void MainWindow::updateDisplay(void){
     double current_value;
-    double scrubber_temperature;
+    //double scrubber_temperature;
 
     qDebug()<<"UPDATING DISPLAY! UPDATING DISPLAY! UPDATING DISPLAY!";
 
@@ -669,15 +668,10 @@ void MainWindow::updateDisplay(void){
     //qDebug()<<"Here9";
     if(!x.isEmpty() && !gases->empty())
     {
-        int fail = gases->size();
         //qDebug()<< "Data Types: " + QString(gases->size());
 //        displayGraph->setData(x, *gases->at(0), 0);
         //displayGraph->setData(x, *dataPoints->at(1), 1);
         displayGraph->redrawPlot();
-    }
-    else
-    {
-        int i = 0;
     }
     modbus->updateRegister(ModbusServer::MAIN_VALUE, new QByteArray(QString::number(current_value).toLatin1()));
 }
@@ -698,7 +692,8 @@ void MainWindow::clearPlotData(void){
 }
 
 void MainWindow::displayStats(void){
-    //statsWidget->show();
+    statsWidget->show();
+    statsWidget->iHateCpp();
     //showStats->show();
 }
 
