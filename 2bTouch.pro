@@ -106,3 +106,5 @@ RESOURCES += \
     res.qrc
 
 DISTFILES +=
+
+QMAKE_CXXFLAGS += -std=c++11
