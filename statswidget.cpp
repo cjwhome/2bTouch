@@ -57,6 +57,9 @@ StatsWidget::StatsWidget(DeviceProfile profile, QWidget *parent) :
 
     //}
     qDebug()<<"Before showing first widget";
+
+    //for(int i=0;i<1000000000;i++);
+
     widgets.at(currentIndex)->show();
     qDebug()<<"after showing first widget";
     widgets.at(0)->setStyleSheet(widgets.at(1)->styleSheet());
@@ -101,7 +104,7 @@ void StatsWidget::homePressed() {
 }
 
 QWidget* StatsWidget::widgetForAvg() {
-    if(!avgWidget) {
+    //if(avgWidget != nullptr) {
         qDebug()<<"Avg widget setup";
         avgWidget = new QWidget(this);
         avgVLayout = new QVBoxLayout(avgWidget);
@@ -137,13 +140,13 @@ QWidget* StatsWidget::widgetForAvg() {
         avgVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
         avgWidget->hide();
-    }
+    //}
     return avgWidget;
 }
 
 QWidget* StatsWidget::widgetForOne() {
     qDebug()<<"One widget setup before";
-    if(!oneWidget) {
+    //if(!oneWidget) {
         qDebug()<<"One widget setup";
         oneWidget = new QWidget(this);
         oneVLayout = new QVBoxLayout(oneWidget);
@@ -171,7 +174,7 @@ QWidget* StatsWidget::widgetForOne() {
         oneVLayout->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 
         oneWidget->hide();
-    }
+   // }
     return oneWidget;
 }
 

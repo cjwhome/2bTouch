@@ -3,8 +3,8 @@
 
 #define APP_NAME "IAQ"
 #define APP_VERSION "2"
-#define BUILD_NUMBER "3"
-#define COPYRIGHT_DATE "2017"
+#define BUILD_NUMBER "4"
+#define COPYRIGHT_DATE "2018"
 
 #define MINIMUM_BIG_SCREEN_WIDTH 800	//usefull for determining if using embedded system screen
 //#define MAXIMUM_PARSED_DATA_RECORDS 8640 //one day of data at 10 seconds
