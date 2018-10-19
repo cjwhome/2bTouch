@@ -382,6 +382,8 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
+    filesTable->setStyleSheet("QScrollBar:vertical { width: 50px; }");
+    filesTable->setMaximumHeight(100);
 
     QStringList extFilter("*.csv");
     QDir currentDir = QDir("/"+device.getDevice_name());
@@ -400,6 +402,10 @@ QWidget* SettingsWidget::widgetForFiles() {
 
     filesDeleteActionsMenu = new QHBoxLayout(filesWidget);
     filesDeleteAllButton = new QPushButton("Delete All", filesWidget);
+    //filesDeleteSelectedButton->setMinimumWidth(150);
+    //filesDeleteSelectedButton->setMinimumHeight(50);
+    //filesDeleteAllButton->setMinimumWidth(150);
+    //filesDeleteAllButton->setMinimumHeight(50);
     filesDeleteSelectedButton = new QPushButton("Delete Selected", filesWidget);
 
     filesTitle->setFont(titleFont);
@@ -618,7 +624,7 @@ QWidget* SettingsWidget::widgetForNet() {
         connTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
         connTable->verticalHeader()->hide();
         connTable->setShowGrid(false);
-
+        connTable->setStyleSheet("QScrollBar:vertical { width: 50px; }");
         QList<QString> availableNets = availableNetworks();
         for(int i = 0; i < availableNets.length(); i++) {
             QString ssid = availableNets.at(i);

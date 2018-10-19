@@ -163,6 +163,7 @@ void SerialHandler::readData(QString data) {
                 handleSyncData(QString(line));
             } else {
                 emit dataAvailable(line);
+                line.append("\n\r");
                 foreach(QTcpSocket *socket, netSockets) {
                     socket->write(line.toLatin1());
                 }
@@ -185,8 +186,11 @@ void SerialHandler::handleSyncData(QString retData) {
         }
     } else {
         emit dataAvailable(retData);
+
         foreach(QTcpSocket *socket, netSockets) {
             socket->write(retData.toLatin1());
+
+
         }
     }
 }
