@@ -1,40 +1,38 @@
 <RCC>
-    <qresource prefix="/splash">
-        <file>pics/2B_Tech_Logo.jpg</file>
-        <file>pics/2btechlogo_block.jpg</file>
-        <file>pics/2btechlogo_small.jpg</file>
-        <file>pics/2B_Screen_v1.jpg</file>
-    </qresource>
-    <qresource prefix="/buttons">
-        <file>pics/config.jpg</file>
-        <file>pics/home-icon.gif</file>
-        <file>pics/stats-icon.gif</file>
-        <file>pics/chart-icon.gif</file>
-        <file>pics/settings-icon.gif</file>
-        <file>pics/clear-icon.gif</file>
-        <file>pics/zoom-in-icon.gif</file>
-        <file>pics/zoom-out-icon.gif</file>
-        <file>pics/home-icon-selected.gif</file>
-        <file>pics/right-arrow-icon.png</file>
-        <file>pics/left-arrow-icon.gif</file>
-        <file>pics/help-icon.png</file>
-    </qresource>
     <qresource prefix="/">
-        <file>deviceConfig.xml</file>
-    </qresource>
-    <qresource prefix="/icons">
-        <file>pics/usb-icon.png</file>
-        <file>pics/error-icon.png</file>
-        <file>pics/disk-error-icon.png</file>
-    </qresource>
-    <qresource prefix="/keyboard">
+        <file>keyboard/Touch-Keyboard2-Line.png</file>
+        <file>keyboard/Touch-Keyboard-Line.png</file>
         <file>keyboard/Touch-Keyboard.png</file>
         <file>keyboard/Touch-Keyboard1.png</file>
+        <file>keyboard/Touch-Keyboard1-Line.png</file>
         <file>keyboard/Touch-Keyboard2.png</file>
         <file>keyboard/Touch-Keyboard-white.png</file>
         <file>keyboard/Touch-Keyboard-white-Line.png</file>
-        <file>keyboard/Touch-Keyboard1-Line.png</file>
-        <file>keyboard/Touch-Keyboard2-Line.png</file>
-        <file>keyboard/Touch-Keyboard-Line.png</file>
+        <file>deviceConfig.xml</file>
+        <file>pics/2B_Screen_v1.jpg</file>
+        <file>pics/2B_Tech_Logo.gif</file>
+        <file>pics/2B_Tech_Logo.jpg</file>
+        <file>pics/2btechlogo_block.jpg</file>
+        <file>pics/2btechlogo_small.jpg</file>
+        <file>pics/calibrate.xcf</file>
+        <file>pics/chart-icon.gif</file>
+        <file>pics/clear-icon.gif</file>
+        <file>pics/config.jpg</file>
+        <file>pics/disk-error-icon.png</file>
+        <file>pics/error-icon.png</file>
+        <file>pics/help-icon.png</file>
+        <file>pics/home-icon.gif</file>
+        <file>pics/home-icon-selected.gif</file>
+        <file>pics/left-arrow-icon.gif</file>
+        <file>pics/right-arrow-icon.gif</file>
+        <file>pics/right-arrow-icon.png</file>
+        <file>pics/select-gas-icon.gif</file>
+        <file>pics/select-gas-icon.png</file>
+        <file>pics/select-gas-icon2.png</file>
+        <file>pics/settings-icon.gif</file>
+        <file>pics/stats-icon.gif</file>
+        <file>pics/usb-icon.png</file>
+        <file>pics/zoom-in-icon.gif</file>
+        <file>pics/zoom-out-icon.gif</file>
     </qresource>
 </RCC>

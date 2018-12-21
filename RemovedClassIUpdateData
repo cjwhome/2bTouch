@@ -1,0 +1,33 @@
+This class was not being built correctly by qt
+It was an inteface designed to allow grabdata send information to each class without directly calling them
+
+#ifndef IUPDATEDATA_H
+#define IUPDATEDATA_H
+
+#include <QString>
+
+//This is an interface that is designed to let forms be updated through uimanager
+class IUpdateData
+{
+public:
+    IUpdateData();
+    virtual void update(int, QString); //int is used ig there is an index involved and QString supplies the data
+    virtual void update(QString);
+};
+
+#endif // IUPDATEDATA_H
+
+#include "iupdatedata.h"
+
+IUpdateData::IUpdateData()
+{
+
+}
+
+void IUpdateData::update(int , QString){
+//The base class has nothing to update
+}
+
+void IUpdateData::update(QString){
+    //The base class has nothing to update
+}

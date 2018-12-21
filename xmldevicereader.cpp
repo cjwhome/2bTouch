@@ -1,36 +1,16 @@
 #include "xmldevicereader.h"
 
-#include <QFile>
-#include <QDebug>
-
-
 XmlDeviceReader::XmlDeviceReader(const QString fname){
     filename = fname;
 }
-
-
 
 void XmlDeviceReader::read() {
     QFile xmlFile(filename);
     xmlFile.open(QIODevice::ReadOnly);
     xml.setDevice(&xmlFile);
 
-
-
     if (xml.readNextStartElement() && xml.name() == "devices")
        processDevices();
-
-    /*qDebug()<<"After processing devices here is the qlist:";
-    for(int i=0;i<deviceList.size();i++){
-        TwobTechDevice outputDevice = (deviceList.at(i));
-        qDebug()<<"Device name:"<<outputDevice.device_name;
-        for(int a=0;a<outputDevice.data_items.size();a++){
-            SerialDataItem outputItem = outputDevice.data_items.at(a);
-            qDebug()<<"dataItem name:"<<outputItem.getName()<<" and type:"<<outputItem.getType();
-            //delete &outputItem;
-        }
-        //delete &outputDevice;
-    }*/
 
     if (xml.tokenType() == QXmlStreamReader::Invalid)
         xml.readNext();
@@ -50,14 +30,11 @@ void XmlDeviceReader::processDevices() {
                 processDevice();
             else{
                 //qDebug()<<"Skipping element in process devices:"<<xml.name().toString();
-
             }
         }
     }
 
 }
-
-
 
 void XmlDeviceReader::processDevice() {
     //qDebug()<<"Processing a Device";
@@ -68,7 +45,7 @@ void XmlDeviceReader::processDevice() {
     foreach(const QXmlStreamAttribute &attr, xml.attributes()) {
         if (attr.name().toString() == QLatin1String("name")) {
 
-            twobTechDevice.device_name = attr.value().toString();
+            twobTechDevice.setDevice_name(attr.value().toString());
             //qDebug()<<"Found a "<<twobTechDevice.device_name<<" device";
         }else if(attr.name().toString() == QLatin1String("portName")){
             //qDebug()<<"Using port:"<<attr.value().toString();
@@ -95,9 +72,6 @@ void XmlDeviceReader::processDataItems(TwobTechDevice *device){
             processDataItem(device);
         }
     }while(xml.name()!="device");
-
-
-
 }
 
 void XmlDeviceReader::processDataItem(TwobTechDevice *device){
@@ -112,8 +86,6 @@ void XmlDeviceReader::processDataItem(TwobTechDevice *device){
 
             QString typeString = attr.value().toString();
 
-
-
         }else if(attr.name().toString() == QLatin1String("units")){
             serialDataItem->setUnits(attr.value().toString());
         }else if(attr.name().toString() == QLatin1String("priority")){
@@ -122,8 +94,8 @@ void XmlDeviceReader::processDataItem(TwobTechDevice *device){
     }
     device->data_items.append(*serialDataItem);
     delete serialDataItem;
-
 }
+
 QString XmlDeviceReader::readNextText() {
 #ifndef USE_READ_ELEMENT_TEXT
     xml.readNext();

@@ -2,48 +2,61 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QApplication>
-#include "serialthread.h"
-#include <QtSerialPort/QSerialPort>
-#include <QDateTime>
-#include <QMessageBox>
-#include <QLabel>
-#include <QtGui>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QFrame>
 #include <QPushButton>
-#include <QThread>
-#include <QVector>
+#include <QListView>
+#include <QLabel>
+#include <QStringListModel>
 #include <QList>
-#include <QFile>
-#include "defines.h"
-#include "statswidget.h"
+#include <QListWidgetItem>
+#include <QDebug>
+
+#include "richtextdelegate.h"
+#include "calform.h"
+#include "analogform.h"
+#include "datetimeform.h"
+#include "modform.h"
+#include "averageform.h"
+#include "uimanager.h"
+#include "grabdata.h"
+#include "modbusform.h"
+#include "networkform.h"
+#include "networkconnectedform.h"
+#include "serialthread.h"
+#include "statsaverageform.h"
 #include "displaygraph.h"
-#include "settingsview.h"
-#include "xmldevicereader.h"
+#include "clickablelabel.h" //Not sure if using still
 #include "twobtechdevice.h"
+#include "xmldevicereader.h"
 #include "deviceprofile.h"
-#include "serialdataitem.h"
 #include "parseddata.h"
 #include "filewriter.h"
-#include "controlbacklight.h"
-#include "settingswidget.h"
 #include "serialhandler.h"
+#include "statsmenuform.h"
+
+#include "testform.h"
+
+#define MAXIMUM_PARSED_DATA_RECORDS 25
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    bool syncedWithBoard = false;
+
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
     void createDevice();
     void setupSerial();
-    void updateDisplay();
-    QVector<double> x,y,x2,y2;
+    QVector<double> x,y,test;
 
     void initFile();            //determine where the file will be saved (usb, locally)
     void createFileName();      //use the device name and date-time.csv (ozone-11416-1553.csv)
@@ -51,16 +64,10 @@ public:
     void listFonts();
     void i2c_test(void);
 
-
-
 signals:
     void validDataReady();
 
 public slots:
-    void clearPlotData();
-    void sendMsg(QString msg);
-    
-private slots:
     void newDataLine(QString dLine);
     bool parseDataLine(QString dLine);
     void displayBigPlot(void);
@@ -78,15 +85,39 @@ private slots:
     QString getCpuUsage();
     QString getFreeSpace();
 
+    void updateMainDisplay(const QModelIndex);
+    void showSettings();
+
+    void powerDown();
+
+signals:
+    void receivedData(void);
+
 private:
-	//bool yLessThan(const double &p1, const double &p2);
+    int mainLabelContent = 0;
     Ui::MainWindow *ui;
     SerialThread *s_serialThread;
-    StatsWidget *statsWidget;
-    SettingsView *settingsView;
-    SettingsWidget *settingsWidget;
     QSerialPort *serial;
     DisplayGraph *displayGraph;
+
+    ClickableLabel *ba;
+    ClickableLabel *bb;
+    ClickableLabel *bc;
+    QLabel *label;
+    QGridLayout *layout;
+
+    QGroupBox *gBox;
+    QLabel *mainL;
+    QLabel *NO2;
+    QLabel *NO2Value;
+    QLabel *NO2Units;
+    QLabel *NO;
+    QLabel *NOValue;
+    QLabel *NOUnits;
+    QLabel *NOx;
+    QLabel *NOxValue;
+    QLabel *NOxUnits;
+
     QLabel *main_output;
     QLabel *main_label;
     QLabel *main_units_label;
@@ -111,20 +142,22 @@ private:
 
     double data_point;
     int data_index;
-	double start_time_seconds;
+    double start_time_seconds;
     double main_display_value;
     bool started_file;
 
     XmlDeviceReader* xmlDeviceReader;
     TwobTechDevice twobTechDevice;
+    QList<TwobTechDevice> *devices;
     DeviceProfile deviceProfile;
-    ParsedData parsedData;
 
     QList<double> avgList;
     double avg;
-    QList< QList<SerialDataItem> > allParsedRecordsList;
+    QList<QList<SerialDataItem>> allParsedRecordsList;
     FileWriter fileWriter;
     SerialHandler *serialHandler;
+
+    ModbusServer *modbus;
 
     QSettings *settings;
     bool usbMounted;
@@ -133,6 +166,22 @@ private:
     QTimer *errorTimer;
 
     QString msgBoxStyle;
+    void play_jingle(void);
+
+    QList<GasDataState *> *gases;
+
+    QListView * mListView;
+    QLabel * nmLabel;
+    GrabData * grabData;
+
+    StatsAverageForm * sAverage = nullptr;
+
+    void createSettingViews();
+
+    QStringListModel * model;
+
+    int currentIndex = 0;
+    void updateList();
 };
 
 #endif // MAINWINDOW_H

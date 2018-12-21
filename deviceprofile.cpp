@@ -277,4 +277,3 @@ void DeviceProfile::setBaud_rate(int value)
 void DeviceProfile::load() {
 
 }
-

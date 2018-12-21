@@ -1,10 +1,13 @@
 #ifndef XMLDEVICEREADER_H
 #define XMLDEVICEREADER_H
+
+#include <QString>
 #include <QXmlStreamReader>
+#include <QDebug>
 #include <QFile>
-#include <QList>
+#include <QDebug>
+
 #include "twobtechdevice.h"
-#include "serialdataitem.h"
 
 class XmlDeviceReader
 {
@@ -12,11 +15,9 @@ public:
     XmlDeviceReader(const QString fname);
 
     void read();
- 
     QList<TwobTechDevice> getDeviceList() const;
     TwobTechDevice getADevice(int element_number);        //returns a device in the divice list at element_number
     TwobTechDevice deviceByPort(QString name);
-
 
 private:
     void processDevices();
@@ -25,11 +26,10 @@ private:
     void processDataItem(TwobTechDevice *device);
     QString readNextText();
     QString errorString();
- 
+
     QString filename;
     QXmlStreamReader xml;
     QList<TwobTechDevice> deviceList;
-
 };
 
 #endif // XMLDEVICEREADER_H

@@ -1,0 +1,13 @@
+To Do List
+    Comment code
+    Add in pcb communication
+        Adding in grab data
+            Done
+    Add in string in gasdatastate with rich text tags because it is called in a lot of areas
+    Fix connecting to wifi
+    Write new serial communication classes to handle the new and old inputs
+
+Notes
+    Serial is treated like a file
+    Use the cable hanging over the edge
+    Might we worth sending start up and shutting down signal

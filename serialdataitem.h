@@ -1,14 +1,12 @@
 #ifndef SERIALDATAITEM_H
 #define SERIALDATAITEM_H
-#include <QString>
-#include <QDateTime>
+
+#include <QDate>
 
 class SerialDataItem
 {
 public:
     SerialDataItem();
-
-
 
     QString getName() const;
     void setName(const QString &value);
@@ -28,8 +26,6 @@ public:
     QDateTime getDateTime() const;
     void setDateTime(const QDateTime &value);
 
-
-
 private:
     QString name;
     QString units;      //examples are ppb, ppm, c, k,
@@ -37,7 +33,6 @@ private:
     int ivalue;
     int priority;
     QDateTime dateTime;
-
 };
 
 #endif // SERIALDATAITEM_H

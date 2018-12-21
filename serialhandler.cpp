@@ -1,65 +1,73 @@
 #include "serialhandler.h"
 
-SerialHandler::SerialHandler(QThread *thr, QObject *parent) : QObject(parent) {
-    thread = thr;
-    //this->moveToThread(thread);
+SerialHandler * SerialHandler::handler = nullptr;
 
+SerialHandler * SerialHandler::getHandler(QThread * t, QObject * p){
+    if(handler == nullptr){
+        handler = new SerialHandler(t, p);
+    }
+    return handler;
+}
+
+SerialHandler * SerialHandler::getHandler(){
+    if(handler == nullptr){
+        qDebug() << "Can not get the serial handler without creating new one";
+        return nullptr;
+    }
+    return handler;
+}
+
+SerialHandler::SerialHandler(QThread *thr, QObject *parent) : QObject(parent){
+    thread = thr;
+    handler = this;
     settings = new QSettings("2B Technologies", "2B Touch");
     gettingSettings = false;
-
     configSerialPort();
     currentConnectionType = SerialHandler::Inactive;
-
     if(server.listen(QHostAddress::Any, 45000)) {
         qDebug()<<"Started TCP Server";
     } else {
         qDebug()<<"Could not start TCP server";
     }
-
     connect(&server, SIGNAL(newConnection()), this, SLOT(newConnection()));
+    connect(this, SIGNAL(boardReady()), this, SLOT(getRead()));
 }
 
+void SerialHandler::getRead(){
+    qDebug() << "Made it here";
+    LandingPage * l = new LandingPage();
+    l->show();
+}
+
+//Does not work, only sends one char or causes getchar to glitch
 void SerialHandler::writeSync(QString *dat) {
+    //qDebug()<<"Sending serial data: " + *dat;
     if(dat == QString("v")) {
-        updateSettings();
+        //updateSettings();
     } else {
         dataList<<dat;
         if(currentConnectionType == SerialHandler::Synchronously) {
             qDebug()<<"Data operation already in process, adding to queue";
         } else {
-            qDebug()<<"Writing Sync";
+            //qDebug()<<"Writing Sync";
             currentConnectionType = SerialHandler::Synchronously;
             data = dat;
             syncIndex = 0;
-            serialPort->write(QString('<').toLocal8Bit().constData());
+            //serialPort->write(QString('<').toLocal8Bit().constData());
+            qDebug() << "Bytes written: " << serialPort->write(dat->toLocal8Bit().constData());
             //serialPort->write(QString("<").toLatin1().toStdString().c_str(), 1);
         }
     }
 }
 
-
-void SerialHandler::write106(QString *dat){
-    QByteArray retData;
-    bool notDone = true;
-    QString sendChar("@");
-    qDebug()<<"writing to serial port";
-    while(notDone){
-        serialPort->write(sendChar.toUtf8().constData());
-        if(serialPort->bytesAvailable()){
-             retData = serialPort->readAll();
-             qDebug()<<"data bytes read:"<<retData;
-             if(retData.contains("%"))
-                 notDone = false;
-        }
-
-    }
-}
-
 void SerialHandler::writeAsync(QString *dat) {
+    //qDebug() << "Sending |" << QString(*dat) << "|";
+    qDebug() << "Sending: " << *dat;
+    //qDebug() << serialPort->baudRate();
     currentConnectionType = SerialHandler::Asynchronously;
     data = dat;
     serialPort->write(dat->toLocal8Bit().constData(), dat->length());
-    currentConnectionType = (SerialHandler::Finished);
+    currentConnectionType = SerialHandler::Finished;
 }
 
 void SerialHandler::writeChar(char c) {
@@ -72,14 +80,18 @@ void SerialHandler::writeChar(char c) {
 }
 
 void SerialHandler::configSerialPort() {
+    qDebug() << "Creating new qSerialport";
     serialPort = new QSerialPort();
 
+    qDebug() << "creating new xmldevicereader";
     reader = new XmlDeviceReader(":/deviceConfig.xml");
     reader->read();
 
-    device = reader->getADevice(3);
+    device = reader->getADevice(6);
     portName = device.getCom_port();
     baudRate = device.getBaud_rate();
+
+    baudRate = 9600;
 
     qDebug()<<"Port Name: "<<portName;
     qDebug()<<"Baud Rate: "<<baudRate;
@@ -87,26 +99,38 @@ void SerialHandler::configSerialPort() {
     serialPort->setPortName(portName);
     serialPort->setBaudRate(baudRate);
 
-    if (serialPort->open(QIODevice::ReadWrite)) {
+    serialPort->open(QIODevice::ReadWrite);
+    if(serialPort->isOpen()){
+        serialPort->flush();
+        connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
+        currentConnectionType = SerialHandler::Synchronously;
+    }else{
+        qDebug()<< "Error with serial: " << serialPort->errorString();
+    }
+
+
+    /*if (serialPort->open(QIODevice::ReadWrite)) {
         qDebug()<<"Setup Serial Port successfully";
         serialPort->flush();
         connect(serialPort, SIGNAL(readyRead()), this, SLOT(dataReady()));
+        currentConnectionType = SerialHandler::Synchronously;
     }else{
-        qDebug()<<"Error setting up serial port";
+        //qDebug()<<"Error setting up serial port";
+        qDebug()<<serialPort->errorString();
     }
 
+    qDebug() << "Serial port open: " << serialPort->isOpen();*/
 }
 
 void SerialHandler::netDataReady() {
     QObject *send = sender();
-    QTcpSocket *socket;
+    QTcpSocket *socket = nullptr;
 
     foreach(QTcpSocket *test, netSockets) {
         if(test == send) {
             socket = test;
         }
     }
-
     QString *data = new QString(socket->readAll());
     QList<QString> list = data->split('\n');
     foreach(QString command, list) {
@@ -115,56 +139,92 @@ void SerialHandler::netDataReady() {
     }
 }
 
-void SerialHandler::dataReady() {
+void SerialHandler::dataReady(){
     if(serialPort->canReadLine()) {
         QByteArray retData = serialPort->readAll();
+        //qDebug() << "Reading: " << (QString)retData;
         readData(QString(retData));
     }
 }
 
 void SerialHandler::readData(QString data) {
-    //qDebug()<<"Received new line from serial: "<<data;
+    qDebug()<< "Serial: " << data;
+
     //serialPort->flush();
-    QString *retDataStr = new QString(data);
-    retDataStr->remove('\r');
-    QList<QString> list = retDataStr->split('\n');
-    //qDebug()<<"RetDataStr Length="<<list.length();
-    for(int i = 0; i < list.length(); i++) {
-        QString line = QString(list.at(i));
-
-        if((line.length() == 0) || (line == "\r")) {
-
-        } else {
-            if(line.length() < 10) {
-                qDebug()<<"Received new line from serial: "<<line;
-            }
-            if((line == "Settings") || (line == "\rSettings")) {
-               //qDebug()<<"Waiting For Settings";
-                gettingSettings = true;
-            } else if((gettingSettings) && (line.length() > 1)) {
-                qDebug()<<"Getting Settings";
-
-                gettingSettings = false;
-                QStringList settingsList = retDataStr->split(",");
-                qDebug()<<settingsList;
-                if(settingsList.length() == 6) {
-                    settings->setValue("Raw Settings String", line);
-                    settings->setValue("Zero", settingsList.at(0));
-                    settings->setValue("Avg", settingsList.at(1));
-                    settings->setValue("VOut", settingsList.at(2));
-                    settings->setValue("Rel1On", settingsList.at(3));
-                    settings->setValue("Rel1Off", settingsList.at(4));
-                    settings->setValue("Slope", settingsList.at(5));
-                } else {
-                    qDebug()<<"Incomplete Settings List";
-                }
-            } else if(currentConnectionType == SerialHandler::Synchronously) {
-                //qDebug()<<"Sync Data";
-                handleSyncData(QString(line));
+    LandingPage * l;
+    int r;
+    if(data[0] == '*'){
+        QChar i = data.at(1);
+        switch(i.unicode()){
+            case 48:
+                l = new LandingPage();
+                connect(l, SIGNAL(picked(QString*)), this, SLOT(writeInfo(QString*)));
+                l->show();
+                break;
+            case 97://analog setting, 97 = 'a'
+                r = data.split('|')[1].toInt();
+                break;
+            case 110:
+                r = data.split('|')[1].toInt();
+                break;
+            case 78:
+                r = data.split('|')[1].toInt();
+                break;
+            case 111:
+                r = data.split('|')[1].toInt();
+                break;
+            case 79:
+                r = data.split('|')[1].toInt();
+                break;
+            case 64:
+                r = data.split('|')[1].toInt();
+                break;
+        }
+    }else if(data[0] == 'E' && data[1] == '|'){
+        int err = data.split(data[1])[1].toInt();
+        ErrorForm *f = new ErrorForm(err);
+        f->show();
+    }else if(0){
+        QString *retDataStr = new QString(data);
+        retDataStr->remove('\r');
+        QList<QString> list = retDataStr->split('\n');
+        //qDebug()<<"RetDataStr Length="<<list.length();
+        for(int i = 0; i < list.length(); i++) {
+            QString line = QString(list.at(i));
+            if((line.length() == 0) || (line == "\r")) {
+                continue;
             } else {
-                emit dataAvailable(line);
-                foreach(QTcpSocket *socket, netSockets) {
-                    socket->write(line.toLatin1() + "\n\r");
+                if(line.length() < 10) {
+                    qDebug()<<"Received new line from serial: "<<line;
+                }
+                if((line == "Settings") || (line == "\rSettings")) {
+                   //qDebug()<<"Waiting For Settings";
+                    gettingSettings = true;
+                } else if((gettingSettings) && (line.length() > 1)) {
+                    qDebug()<<"Getting Settings";
+
+                    gettingSettings = false;
+                    QStringList settingsList = retDataStr->split(",");
+                    qDebug()<<settingsList;
+                    if(settingsList.length() == 6) {
+                        settings->setValue("Raw Settings String", line);
+                        settings->setValue("Zero", settingsList.at(0));
+                        settings->setValue("Avg", settingsList.at(1));
+                        settings->setValue("VOut", settingsList.at(2));
+                        settings->setValue("Rel1On", settingsList.at(3));
+                        settings->setValue("Rel1Off", settingsList.at(4));
+                        settings->setValue("Slope", settingsList.at(5));
+                    } else {
+                        qDebug()<<"Incomplete Settings List";
+                    }
+                } else if(currentConnectionType == SerialHandler::Synchronously) {
+                    //qDebug()<<"Sync Data";
+                    handleSyncData(QString(line));
+                } else {
+                    emit dataAvailable(line);
+                    foreach(QTcpSocket *socket, netSockets) {
+                        socket->write(line.toLatin1());
+                    }
                 }
             }
         }
@@ -186,7 +246,7 @@ void SerialHandler::handleSyncData(QString retData) {
     } else {
         emit dataAvailable(retData);
         foreach(QTcpSocket *socket, netSockets) {
-            socket->write(retData.toLatin1() + "\n\r");
+            socket->write(retData.toLatin1());
         }
     }
 }
@@ -210,19 +270,29 @@ void SerialHandler::updateSettings() {
         writeAsync(new QString("v"));
         settings->setValue("InitSettings", 1);
     } else {
-        writeSync(new QString("c:" + settings->value("Zero").toString()));
-        writeSync(new QString("a:" + settings->value("Avg").toString()));
-        writeSync(new QString("v:" + settings->value("VOut").toString()));
-        writeSync(new QString("l:" + settings->value("Rel1On").toString()));
-        writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
-        writeSync(new QString("s:" + settings->value("Slope").toString()));
+        //writeSync(new QString("c:" + settings->value("Zero").toString()));
+        //writeSync(new QString("a:" + settings->value("Avg").toString()));
+        //writeSync(new QString("v:" + settings->value("VOut").toString()));
+        //writeSync(new QString("l:" + settings->value("Rel1On").toString()));
+        //writeSync(new QString("h:" + settings->value("Rel1Off").toString()));
+        //writeSync(new QString("s:" + settings->value("Slope").toString()));
     }
-
 }
 
 void SerialHandler::newConnection() {
     QTcpSocket *socket = server.nextPendingConnection();
     netSockets<<socket;
     connect(socket, SIGNAL(readyRead()), this, SLOT(netDataReady()));
-    socket->write(QByteArray("Connected!\n\r"));
+    socket->write(QByteArray("Connected!"));
+}
+
+void SerialHandler::writeLine(QString s){
+    if(!s.contains('\n', Qt::CaseSensitivity::CaseInsensitive)){
+        s += '\n';
+    }
+    serialPort->write(s.toStdString().c_str());
+}
+
+void SerialHandler::writeInfo(QString * in){
+    writeAsync(in);
 }

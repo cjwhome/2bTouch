@@ -1,9 +1,10 @@
 #include "keylineedit.h"
-#include <QEvent>
 
-KeyLineEdit::KeyLineEdit(QWidget *parent)
-{
-    keypad = new Keypad(this, false, parent);
+KeyLineEdit::KeyLineEdit(QString currentString, QWidget *parent){
+    setParent(parent);
+    //qDebug()<<"currentString to keypad:"<<currentString;
+    keypad = new Keypad(this, parent);
+    this->setText(currentString);
 
     trigger = new QPushButton(this);
     this->setStyleSheet("QPushButton { background-color: rgba(10, 0, 0, 0); }");
@@ -11,3 +12,11 @@ KeyLineEdit::KeyLineEdit(QWidget *parent)
     connect(trigger, SIGNAL(released()), keypad, SLOT(show()));
 }
 
+void KeyLineEdit::setText(const QString & text){
+    QLineEdit::setText(text);
+    keypad->setText(text);
+}
+
+QString KeyLineEdit::text(){
+    return QLineEdit::text();
+}

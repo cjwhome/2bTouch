@@ -11,11 +11,20 @@
 class KeyLineEdit : public QLineEdit
 {
 public:
-    KeyLineEdit(QWidget *parent = 0);
+    KeyLineEdit(QWidget * parent = nullptr);
+    KeyLineEdit(QString currentString, QWidget *parent = nullptr);
+
+    QString * pPext = nullptr;
+
+    virtual void setText(const QString &);
+    virtual QString text();
+
+public slots:
+    void change();
 
 private:
-    Keypad *keypad;
-    QPushButton *trigger;
+    Keypad *keypad = nullptr;
+    QPushButton *trigger = nullptr;
 };
 
 #endif // KEYLINEEDIT_H

@@ -10,8 +10,12 @@
 #include <QVector>
 #include <QThread>
 #include <QSettings>
+#include <QPen>
+
+#include "selectgasform.h"
 #include "qcustomplot.h"
-#include "graphsettingsdialog.h"
+#include "graphsettingsform.h"
+#include "gasdatastate.h"
 
 
 namespace Ui {
@@ -23,12 +27,15 @@ class DisplayGraph : public QWidget
     Q_OBJECT
 
 public:
-    explicit DisplayGraph(QWidget *parent = 0);
+    explicit DisplayGraph(QWidget *parent = nullptr, QList<GasDataState *> * data = nullptr);
     ~DisplayGraph();
     void setData(QVector<double> a, QVector<double> b);
-    void setData2(QVector<double> a, QVector<double> b);
+    void setData(QVector<double> a, QVector<double> b, int gIndex);
 
     void drawPlot();
+
+    void addPlot();
+    void setPlotData();
 
 
     void setYaxisLabel(QString label);
@@ -38,6 +45,7 @@ signals:
 public slots:
     void redrawPlot();
     void clear();
+
 
 private slots:
     void goback();
@@ -50,13 +58,15 @@ private slots:
 private:
     Ui::DisplayGraph *ui;
     QWidget *centralWidget;
-    GraphSettingsDialog *settingsdialog;
+    GraphSettingsForm *settingsdialog;
+    SelectGasForm* gas;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *zoomHLayout;
     QHBoxLayout *buttonLayout;
+    QList<QPen*> *pens;
 
     QCustomPlot *customPlot;
-    QVector<double> x,y, x2, y2;
+    QVector<double> x,y;
 
     QString m_sSettingsFile;
 
@@ -66,10 +76,15 @@ private:
 
     void fixScale();
 
-    bool autoscalex;
-    bool autoscaley;
+    bool autoscalex = true;
+    bool autoscaley = true;
 
     bool isVisible;
+
+    double minY = 0;
+    double maxY = 10;
+
+    QList<GasDataState *> * gasses;
 };
 
 #endif // DISPLAYGRAPH_H

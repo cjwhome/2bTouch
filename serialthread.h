@@ -2,17 +2,13 @@
 #define SERIALTHREAD_H
 
 #include <QThread>
+#include <QtSerialPort>
 #include <QDebug>
-#include <QtSerialPort/QSerialPort>
-#include <QtSerialPort/QSerialPortInfo>
 #include <QProcess>
-#include <QStringList>
-#include <QString>
-
 
 class SerialThread : public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
     bool startSerial(QSerialPort *port);
@@ -22,12 +18,12 @@ signals:
     void newDataLine(QString dline);
 
 protected:
-	void run();
+    void run();
 
 private:
-    QSerialPort *s_port;
+    QSerialPort*s_port;
     volatile bool s_stop;
-    QProcess *process;
+    QProcess*process;
     QString prog;
     QStringList arguments;
     QString tmp;

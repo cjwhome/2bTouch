@@ -1,11 +1,11 @@
 #ifndef FILEWRITER_H
 #define FILEWRITER_H
-#include <QFile>
+
 #include <QString>
-#include <QStringList>
 #include <QProcess>
 #include <QDir>
-//creates a csv file
+#include <QDebug>
+
 class FileWriter
 {
 public:
@@ -27,7 +27,6 @@ private:
     QString local_path;
     QString full_data_path;
     bool usbMounted;
-
 };
 
 #endif // FILEWRITER_H

@@ -1,7 +1,10 @@
 #ifndef DEVICEPROFILE_H
 #define DEVICEPROFILE_H
+
 #include <QString>
 
+//Use this instead of devicemodel
+//This hold the information about the currently selected device
 class DeviceProfile
 {
 public:
