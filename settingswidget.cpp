@@ -12,7 +12,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
 
      settings = new QSettings("2B Technologies", "2B Touch");
-    qDebug()<<"before initializing views";
+   // qDebug()<<"before initializing views";
     initializeViews();
 
 
@@ -33,7 +33,7 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::initializeViews() {
     mainLayout = new QVBoxLayout(this);
 
-    buttonSize = QSize(35, 31);
+    buttonSize = QSize(40, 40);
     this->setStyleSheet("QPushButton { border: none; }");
 
     univStyle = "QMessageBox { border-width: 2px; border-color: rgb(0, 0, 153); border-radius: 9px; border-style: solid; }";
@@ -60,7 +60,7 @@ void SettingsWidget::initializeViews() {
 
     //mainLayout->addWidget(landing);
 
-    qDebug()<<"initialize views in settings widget";
+    //qDebug()<<"initialize views in settings widget";
 
 }
 
@@ -382,8 +382,8 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
-    filesTable->setStyleSheet("QScrollBar:vertical { width: 50px; }");
-    filesTable->setMaximumHeight(100);
+    filesTable->setStyleSheet("QScrollBar:vertical { width: 60px; }");
+    filesTable->setMaximumHeight(80);
 
     QStringList extFilter("*.csv");
     QDir currentDir = QDir("/"+device.getDevice_name());
@@ -409,6 +409,8 @@ QWidget* SettingsWidget::widgetForFiles() {
     filesDeleteSelectedButton = new QPushButton("Delete Selected", filesWidget);
 
     filesTitle->setFont(titleFont);
+
+
 
     filesVLayout->addWidget(filesTitle);
     filesCopyActionsMenu->addWidget(filesCopyAllButton);
@@ -440,13 +442,13 @@ QWidget* SettingsWidget::widgetForDate() {
     dateDateLabel = new QLabel("(DDMMYY): ", dateWidget);
     QString dateString;
     dateString.append(settings->value("Date").toString());
-    qDebug()<<"Current Date:"<<dateString;
+    //qDebug()<<"Current Date:"<<dateString;
 
     dateTimeRow = new QHBoxLayout(dateWidget);
     dateTimeLabel = new QLabel("(HHMMSS): ", dateWidget);
     QString timeString;
     timeString.append(settings->value("Time").toString());
-    qDebug()<<"Current Time:"<<timeString;
+    //qDebug()<<"Current Time:"<<timeString;
 
     dateSubmitButton = new QPushButton("SAVE", dateWidget);
     dayTenButton = new QPushButton("D", dateWidget);
@@ -718,7 +720,7 @@ void SettingsWidget::showCal() {
 
     clearView();
 
-    qDebug()<<"in show cal before making widget";
+    //qDebug()<<"in show cal before making widget";
     QWidget *cal = widgetForCal();
 
     QPushButton *left = new QPushButton(cal);
@@ -845,7 +847,7 @@ void SettingsWidget::showDate() {
 
     QPushButton *right = new QPushButton(files);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
-    connect(right, SIGNAL(released()), this, SLOT(showNet()));
+    connect(right, SIGNAL(released()), this, SLOT(showAbout()));
 
     right->setFixedSize(buttonSize);
     right->setIconSize(buttonSize);
@@ -897,7 +899,7 @@ void SettingsWidget::showAbout(){
 
     QPushButton *left = new QPushButton(widget);
     left->setIcon(QIcon(":/buttons/pics/left-arrow-icon.gif"));
-    connect(left, SIGNAL(released()), this, SLOT(showNet()));
+    connect(left, SIGNAL(released()), this, SLOT(showAbout()));
 
     QPushButton *right = new QPushButton(widget);
     right->setIcon(QIcon(":/buttons/pics/right-arrow-icon.png"));
@@ -1517,7 +1519,7 @@ QString SettingsWidget::checkNetwork() {
 }
 
 QList<QString> SettingsWidget::availableNetworks() {
-    qDebug()<<"Looking For Available Networks";
+    //qDebug()<<"Looking For Available Networks";
     QList<QString> list;
     QString prog = "/bin/bash";
     QStringList args;

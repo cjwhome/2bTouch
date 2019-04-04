@@ -69,7 +69,7 @@ public:
     {
         if (Keypad->objectName().isEmpty())
             Keypad->setObjectName(QStringLiteral("Keypad"));
-        Keypad->resize(480, 238);
+        Keypad->resize(480, 270);
         QFont font;
         font.setPointSize(14);
         font.setBold(true);

@@ -2,6 +2,7 @@
 #include "ui_usertypeview.h"
 #include <QDebug>
 
+
 UserTypeView::UserTypeView(QString label, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UserTypeView)
@@ -9,6 +10,7 @@ UserTypeView::UserTypeView(QString label, QWidget *parent) :
     ui->setupUi(this);
     ui->label->setText(label);
     ui->lineEdit->installEventFilter(this);
+    //bool testFlag = this->eventFilter(ui->lineEdit, QEvent::MouseButtonPress);
     //this->raise();
 }
 
